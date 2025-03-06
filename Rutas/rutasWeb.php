@@ -1,10 +1,10 @@
 <?php
+    use Controller\InicioControlador;
+    use Libreria\Enrutador;
 
-use Controller\InicioControlador;
-use Libreria\Enrutador;
+    // Rutas para la página de inicio
+    Enrutador::get("/", [InicioControlador::class, "inicio"]);
 
-// Ruta para la página de inicio
-Enrutador::get("/", [InicioControlador::class, "inicio"]);
-
-// Procesa la ruta
-Enrutador::obtenerRuta();
+    // Rutas de Login
+   
+    Enrutador::obtenerRuta();
