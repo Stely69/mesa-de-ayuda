@@ -11,7 +11,7 @@
     <div class="absolute inset-0 bg-white bg-opacity-40"></div>
 
     <header class="relative w-full bg-white shadow-md p-4 flex items-center">
-        <a href="../../views/inicio.php" class="flex items-center">
+        <a href="../" class="flex items-center">
             <span class="ml-4 text-lg font-bold text-[#39A900]">Volver a Inicio</span>
         </a>
     </header>
@@ -22,23 +22,14 @@
                 <img src="../../pictures/logoSena.png" alt="Logo de la entidad" class="h-16">
             </div>
             <h2 class="text-3xl font-bold text-center text-[#39A900]">Iniciar Sesión</h2>
-            <form action="#" method="POST" class="mt-6">
+            <form action="LoginAction" method="POST" class="mt-6">
                 <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                    <input type="email" id="email" name="email" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#39A900]">
+                    <label for="cedula" class="block text-sm font-medium text-gray-700">Documento</label>
+                    <input type="text" id="cedula" name="cedula" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#39A900]">
                 </div>
                 <div class="mb-4">
                     <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
                     <input type="password" id="password" name="password" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#39A900]">
-                </div>
-                <div class="mb-4">
-                    <label for="role" class="block text-sm font-medium text-gray-700">Selecciona tu rol</label>
-                    <select id="role" name="role" required class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#39A900]">
-                        <option value="almacen">Almacén</option>
-                        <option value="instructores">Instructores</option>
-                        <option value="soporte">Soporte Técnico</option>
-                        <option value="administrador">Administrador</option>
-                    </select>
                 </div>
                 <button type="submit" class="w-full bg-[#39A900] text-white p-3 rounded-lg hover:bg-green-700 transition">Ingresar</button>
             </form>

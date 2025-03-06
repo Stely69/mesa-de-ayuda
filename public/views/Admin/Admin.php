@@ -12,7 +12,10 @@
         <h1 class="text-xl font-bold text-[#39A900]">Panel de Administración</h1>
         <div>
             <a href="#" class="text-[#39A900] hover:underline mr-4">Volver a Inicio</a>
-            <a href="#" class="text-red-500 hover:underline">Cerrar Sesión</a>
+            <?php if (isset($_SESSION["user_cedula"])): ?>
+                <span class="text-gray-500">Bienvenido, <?php echo $_SESSION["nombre"]; ?></span>
+            <?php endif; ?>
+            <a href="../Login/LogoutAction" class="text-red-500 hover:underline">Cerrar Sesión</a>
         </div>
     </header>
     
@@ -22,7 +25,7 @@
             <h1 class="text-2xl font-bold mb-6">Admin SENA</h1>
             <nav class="flex flex-col space-y-4">
                 <a href="#" class="p-2 bg-white text-[#39A900] rounded-md">Dashboard</a>
-                <a href="#" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Gestión de Usuarios</a>
+                <a href="GestiondeUsuarios" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Gestión de Usuarios</a>
                 <a href="#" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Inventario</a>
                 <a href="#" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Reportes</a>
                 <a href="#" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Historial</a>

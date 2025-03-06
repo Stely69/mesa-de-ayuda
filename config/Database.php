@@ -1,19 +1,19 @@
 <?php 
     class Database {
-        private $namedatabase = "mesadeayuda";
+        private $db_name = "mesadeayuda";
         private $host = "localhost";
-        private $name ="root";
+        private $username ="root";
         private $password = "";
         private $conn;
 
-        public function getConnection(){
-            $this->conn =null;
-
+        public function getConnection() {
+            $this->conn = null;
             try {
-                $this->conn = new PDO("mysql:host" . $this->host . ";dbname=" .$this->namedatabase, $this->name, $this->password);
+                $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
                 $this->conn->exec("set names utf8");
-            } catch (Exception $e) {
-                echo "Connection error: " . $e->getMessage();
-            } 
+            } catch(PDOException $exception) {
+                echo "Connection error: " . $exception->getMessage();
+            }
+            return $this->conn;
         }
     }

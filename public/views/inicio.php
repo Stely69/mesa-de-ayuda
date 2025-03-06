@@ -32,7 +32,7 @@
     <!-- Navbar -->
     <nav class="bg-[#39A900] p-4 text-white flex justify-between items-center fixed w-full top-0 shadow-md z-50">
         <h1 class="text-xl font-bold">Gestión de Inventario - SENA</h1>
-        <a href="../views/Login/inicio_sesion.php" class="bg-white text-[#39A900] px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition-all">Iniciar sesion</a>
+        <a href="Login/inicio_sesion" class="bg-white text-[#39A900] px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition-all">Iniciar sesion</a>
     </nav>
     
     <!-- Hero Section -->
@@ -40,7 +40,7 @@
         <div class="md:w-1/2">
             <h2 class="text-4xl font-bold text-[#39A900]">Sistema de Gestión de Inventario</h2>
             <p class="text-gray-700 mt-4">Optimiza el control de entrada y salida de equipos y materiales en el SENA con nuestra plataforma digital.</p>
-            <button class="mt-6 bg-[#39A900] text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-700 transition-all">Iniciar sesion</button>
+            <a href="#"><button class="mt-6 bg-[#39A900] text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-700 transition-all">Iniciar sesion</button></a>
         </div>
         <div class="md:w-1/2 flex justify-center">
         <img src="../pictures/inv.png" alt="Logo SENA" class="w-100 md:w-100">        </div>

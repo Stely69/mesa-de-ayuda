@@ -11,7 +11,7 @@
             // ob_start();
 
             // Incluir el archivo de la vista
-            require_once "../Public/Views/{$nomAchivo}.php";
+            require_once "../public/Views/{$nomAchivo}.php";
 
             // Capturar y limpiar el contenido del búfer de salida (comentado)
             // $vistas = ob_get_clean();
