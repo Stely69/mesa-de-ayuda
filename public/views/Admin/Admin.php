@@ -12,8 +12,9 @@
         <h1 class="text-xl font-bold text-[#39A900]">Panel de Administración</h1>
         <div>
             <a href="#" class="text-[#39A900] hover:underline mr-4">Volver a Inicio</a>
-            <?php if (isset($_SESSION["user_cedula"])): ?>
-                <span class="text-gray-500">Bienvenido, <?php echo $_SESSION["nombre"]; ?></span>
+            <?php session_start(); ?>
+            <?php if (isset($_SESSION["id"])): ?>
+                <span class="text-gray-500">Bienvenido, <?php echo $_SESSION["nombres"]; ?></span>
             <?php endif; ?>
             <a href="../Login/LogoutAction" class="text-red-500 hover:underline">Cerrar Sesión</a>
         </div>

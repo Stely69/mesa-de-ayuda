@@ -1,6 +1,6 @@
 <?php 
     class Database {
-        private $db_name = "mesadeayuda";
+        private $db_name = "mesadeayuda2";
         private $host = "localhost";
         private $username ="root";
         private $password = "";

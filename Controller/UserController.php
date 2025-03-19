@@ -23,7 +23,7 @@
         }
 
         public function Updateuser($cedula, $nombre, $correo, $contraseña, $rol){
-            if (!$this->conn->updateUser($cedula, $nombre, $correo, $contraseña, $rol)){
+           if (!$this->conn->updateUser($cedula, $nombre, $correo, $contraseña, $rol)){
                 header('Location: ');
                 exit();
             }
@@ -37,8 +37,8 @@
                 header('Location: ');
                 exit();
             }   
-            header('');
-            exit();
+           header('');
+           exit();
         }
 
         public function Getuser($cedula){

@@ -15,11 +15,11 @@
                     <img src="../../../pictures/logoSena.png" alt="Logo de la entidad" class="h-16">
                 </div>
                 <h2 class="text-3xl font-bold text-center text-[#39A900]">Registo</h2>
-                <form action="RegistroAction.php" method="POST">
+                <form action="RegistroAction" method="POST">
                     <label for="cedula" class="block text-sm font-medium text-gray-700">Cedula</label>
                     <input type="text" name="cedula" required>
                     <label for="email" class="block text-sm font-medium text-gray-700">Nombre</label>
-                    <input type="email" name="nombre" required>
+                    <input type="text" name="nombre" required>
                     <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
                     <input type="email" name="correo" required>
                     <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
