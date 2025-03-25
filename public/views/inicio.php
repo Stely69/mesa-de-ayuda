@@ -27,7 +27,7 @@ include __DIR__ . '/../views/plantillas/header_inicio.php';
             <p class="text-xl md:text-2xl text-gray-700 mt-4">
                 Un sistema de gestión de inventario para los ambientes de formación y oficinas del CDAE, permitiendo el control y seguimiento de equipos electrónicos, mobiliario y otros recursos.
             </p>
-            <a href="Almacen/dashboard_Almacen" class="mt-6">
+            <a href="Login/inicio_sesion" class="mt-6">
                 <button class="mt-6 bg-[#39A900] text-white px-8 py-4 rounded-full text-xl md:text-2xl font-semibold hover:bg-green-700 transition-all">
                     Iniciar sesión
                 </button>

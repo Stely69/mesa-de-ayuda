@@ -50,6 +50,77 @@
                 <div id="lista-inventario" class="grid grid-cols-3 gap-4"></div>
                 <button class="mt-4 bg-[#39A900] text-white px-4 py-2 rounded-md w-full font-bold hover:bg-green-700">Inventario General del Ambiente</button>
             </div>
+
+            <div class="flex justify-center mt-6">
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all w-full max-w-md">
+                    <h3 class="text-xl font-bold text-[#39A900] mb-4">Agregar Bienes</h3>
+                    <p class="text-gray-700 mb-4">Puedes registrar nuevos bienes en el inventario.</p>
+                    <button onclick="openModal()" class="block bg-[#39A900] text-white px-4 py-2 rounded-md text-center font-bold hover:bg-green-700 w-full">Agregar Bienes</button>
+                </div>
+            </div>
+
+
+<!-- Modal responsive ancho -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 px-4">
+    <div class="bg-white p-6 md:p-10 rounded-2xl shadow-2xl w-11/12 md:w-full max-w-2xl relative max-h-[90vh] overflow-y-auto transition-all duration-300 transform scale-95 opacity-0" id="modal-content">
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-3xl font-bold">&times;</button>
+        <h2 class="text-3xl font-bold text-[#39A900] mb-6 text-center">Agregar Bienes</h2>
+        
+        <form action="AddAction" method="POST" class="space-y-6">
+            <div>
+                <label for="ambiente" class="block text-base font-medium text-gray-700 mb-1">Ambiente:</label>
+                <select id="ambiente" name="ambiente" required class="p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]">
+                    <option value="">Seleccione un ambiente</option>
+                    <?php
+                        require_once __DIR__ . '../../../../Controller/CasoController.php';
+                        $controller = new CasoController();
+                        $ambientes = $controller->allambientes();
+                        foreach ($ambientes as $ambiente) {
+                            echo "<option value='" . $ambiente['id'] . "'>" . $ambiente['nombre'] . "</option>";
+                        }
+                    ?>
+                </select>
+            </div>
+
+            <div>
+                <label for="clase" class="block text-base font-medium text-gray-700 mb-1">Marca:</label>
+                <select id="clase" name="clase" required class="p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]">
+                    <option value="">Seleccione un ambiente</option>
+                    <?php
+                        require_once __DIR__ . '../../../../Controller/CasoController.php';
+                        $controller = new CasoController();
+                        $marcas = $controller->allmarcas();
+                        foreach ($marcas as $marca) {
+                            echo "<option value='" . $marca['id'] . "'>" . $marca['nombre'] . "</option>";
+                        }
+                    ?>
+                </select>
+            </div>
+
+            <div>
+                <label for="numero_placa" class="block text-base font-medium text-gray-700 mb-1">Número de Placa:</label>
+                <input type="text" id="numero_placa" name="numero_placa" required class="p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]">
+            </div>
+
+            <div>
+                <label for="serial" class="block text-base font-medium text-gray-700 mb-1">Serial:</label>
+                <input type="text" id="serial" name="serial" required class="p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]">
+            </div>
+
+            <div>
+                <label for="descripcion" class="block text-base font-medium text-gray-700 mb-1">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" required rows="3" class="p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]"></textarea>
+            </div>
+
+            <div>
+                <label for="modelo" class="block text-base font-medium text-gray-700 mb-1">Modelo:</label>
+                <input type="text" id="modelo" name="modelo" required class="p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]">
+            </div>
+
+            <button type="submit" class="w-full bg-[#39A900] text-white py-3 rounded-md hover:bg-green-700 transition font-semibold shadow">Agregar Producto</button>
+        </form>
+    </div>
+</div>
         </main>
     </div>
     
@@ -97,6 +168,24 @@
                 }
             });
         });
+    //MODAL AGREGAR BIENES
+function openModal() {
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+        }, 50);
+    }
+    function closeModal() {
+        const modalContent = document.getElementById('modal-content');
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            document.getElementById('modal').classList.add('hidden');
+        }, 200);
+    }
     </script>
 </body>
 </html>

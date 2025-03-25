@@ -25,13 +25,10 @@
         <aside class="w-64 bg-[#39A900] text-white flex flex-col p-4 fixed h-screen">
             <h1 class="text-2xl font-bold mb-6">Admin SENA</h1>
             <nav class="flex flex-col space-y-4">
-                <a href="#" class="p-2 bg-white text-[#39A900] rounded-md">Dashboard</a>
-                <a href="GestiondeUsuarios" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Gestión de Usuarios</a>
-                <a href="#" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Inventario</a>
-                <a href="#" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Reportes</a>
-                <a href="#" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Historial</a>
-                <a href="#" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Configuración</a>
+                <a href="Admin" class="p-2 bg-white text-[#39A900] rounded-md" onclick="cargarPagina('dashboard.php')">Dashboard</a>
+                <a href="GestiondeUsuarios" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md" onclick="cargarPagina('GestiondeUsuarios.php')">Gestión de Usuarios</a>
             </nav>
+
         </aside>
         
         <!-- Contenido principal con margen izquierdo -->
@@ -133,5 +130,17 @@
             XLSX.writeFile(wb, "reportes_sena.xlsx");
         }
     </script>
+
+<script>
+function cargarPagina(pagina) {
+    fetch(pagina)  // Hace la petición AJAX
+    .then(response => response.text())  // Convierte la respuesta a texto
+    .then(data => {
+        document.getElementById("contenido").innerHTML = data; // Inserta el contenido en <main>
+    })
+    .catch(error => console.error("Error al cargar la página:", error));
+}
+</script>
+
 </body>
 </html>

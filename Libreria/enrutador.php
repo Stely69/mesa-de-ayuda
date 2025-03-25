@@ -74,6 +74,7 @@
                 }  
             }
 
+            var_dump($uri);
             // Si no se encuentra la ruta, carga la vista de error 404
             require_once("../Public/Views/404/error404.php");
         }

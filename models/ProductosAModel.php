@@ -6,18 +6,32 @@
 
         public function __construct() {
             $database = new Database();
-            $this->conn->getConnection();
+            $this->conn = $database->getConnection();
         }
 
-        public function  crearProductosA($descripcion, $modelo,$numero_placa,$serial,$ambiente_id){
-            $query ='INSERT INTO productos (numero_placa ,serial ,descripcion ,modelo ,ambiente_id)VALUES(:descripcion, :modelo, :numero_placa, :serial, :ambiente_id)';
+        public function crearProductosA( $numero_placa, $serial ,$descripcion,$modelo, $ambiente_id) {
+            $this->conn->beginTransaction();
+            
+            $query = 'INSERT INTO productos (numero_placa, serial, descripcion, modelo, fecha_creacion, fecha_modificacion) 
+                        VALUES (:numero_placa, :serial, :descripcion, :modelo, NOW(), NOW())';
             $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':descripcion', $descripcion) ;
-            $stmt->bindParam(':modelo', $modelo) ;
-            $stmt->bindParam(':nuemro_placa', $numero_placa) ;
-            $stmt->bindParam('ambiente_id', $ambiente_id) ;
+            $stmt->bindParam(':numero_placa', $numero_placa);
+            $stmt->bindParam(':serial', $serial);
+            $stmt->bindParam(':descripcion', $descripcion);
+            $stmt->bindParam(':modelo', $modelo);
             $stmt->execute();
-        }   
+            
+            $producto_id = $this->conn->lastInsertId();
+            
+            $sql_ambiente = "INSERT INTO ambiente_productos (ambiente_id, producto_id, cantidad) VALUES (?, ?, 1)";
+            $stmt_ambiente = $this->conn->prepare($sql_ambiente);
+            $stmt_ambiente->execute([$ambiente_id, $producto_id]);
+            
+            $this->conn->commit();
+        }
+        
+        
+          
          
         public function updateProductosA($id,$descripcion,$modelo,$numero_placa,$serial,$ambiente_id){
             $query = 'UPDATE productos SET descripcion = :descripcion, modelo = :modelo, numero_placa = :numero_placa, serial = :serial, ambiente_id = :ambiente_id WHERE id = :id';
@@ -36,14 +50,6 @@
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':id', $id) ;
             $stmt->execute();
-        }
-
-        public function getAmbientes($id){
-            $query = 'SELECT * FROM ambientes WHERE id = :id';
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':id', $id) ;
-            $stmt->execute();
-            return $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
         public function createAmbiente($nombre){

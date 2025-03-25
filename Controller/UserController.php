@@ -11,38 +11,53 @@
             $this->conn = new UserModel();
         }
 
-        public function Createuser($cedula, $nombre ,$correo, $Contraseña, $rol){
+        public function Createuser($documento, $nombres,$apellido ,$correo, $Contraseña, $rol){
             $password = password_hash($Contraseña, PASSWORD_DEFAULT);
-            if (!$this->conn->createUser($cedula, $nombre, $correo, $password, $rol)){
-                header('Location: ');
+            if (!$this->conn->createUser($documento, $nombres,$apellido, $correo, $password, $rol)){
+                header('Location: GestiondeUsuarios?controller=UserController&action=usuarioCreado');
                 exit();
             }
 
-            header('');
+            header('Location: GestiondeUsuarios?controller=UserController&action=usuarioNoCreado');
             exit();
         }
 
-        public function Updateuser($cedula, $nombre, $correo, $contraseña, $rol){
-           if (!$this->conn->updateUser($cedula, $nombre, $correo, $contraseña, $rol)){
-                header('Location: ');
+        public function Updateuser($id, $nombres,$apellido, $correo, $rol_id){
+           if (!$this->conn->updateUsuario($id, $nombres,$apellido,$correo,$rol_id)){
+                header('Location: GestiondaUsuarios?controller=UserController&action=usuario No Actualizado');
                 exit();
             }
 
-            header('');
+            header('location: GestiondeUsuarios?controller=UserController&action=usuarioActualizado');
             exit();
         }
 
-        public function Deleteuser($cedula){
-            if (!$this->conn->deleteUser($cedula)){
-                header('Location: ');
+        public function Updatestatus($id, $status) {
+            $deid = openssl_decrypt($id, AES, key);
+            if ($this->conn->updateStatus($deid, $status)) {
+                header('Location:  Gestión de Usuarios?controller=UserController&action=Estado No Actualizado');
+                exit();
+            }else {
+                header('location: GestiondeUsuarios?controller=UserController&action=Estado Actualizado');
+                exit();
+            }
+        }
+
+        public function Deleteuser($id){
+            if (!$this->conn->deleteUser($id)){
+                header('Location: GestiondeUsuarios?controller=UserController&action=usuarioNoEliminado');
                 exit();
             }   
-           header('');
+           header('Location: GestiondeUsuarios?controller=UserController&action=Usuario Eliminado');
            exit();
         }
 
-        public function Getuser($cedula){
-            return $this->conn->getUser($cedula);
+        public function Getuser($documento){
+            return $this->conn->getUser($documento);
+        }
+
+        public function alluser(){
+            return  $this->conn->allUser();
         }
 
     }

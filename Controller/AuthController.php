@@ -26,6 +26,11 @@
                 exit();
             }
 
+            if ($user['estado'] !== 'activo') {
+                echo "<script>alert('Usuario deshabilitado, contacta al administrador'); window.location.href='inicio_sesion';</script>";
+                exit();
+            }            
+
             if(!password_verify($password, $user['contraseña'])){
                 echo 'Contraseña incorrecta';
                 //header('');
@@ -42,13 +47,13 @@
                     header('Location: ../admin/admin');
                     break;
                 case 2:
-                    header('Location: ../Instructores/instructores');
+                    header('Location: ../Instr/instructores');
                     break;
                 case 3:
                    header('Location: ../Tics/Tics');
                     break;
                 case 4:
-                    header('Location: ../almacen/dashboard_Almacen');
+                    header('Location: ../Almn/Almacen');
                     break;
                 default:
                     header('Location: ../');

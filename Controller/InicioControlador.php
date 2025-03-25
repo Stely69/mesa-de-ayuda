@@ -24,7 +24,11 @@
         }
 
         public function instructor () {
-            $this->cargarVista("Instructores/instructores");
+            $this->cargarVista("Instr/instructores");
+        }
+
+        public function getambientes() {
+            $this->cargarVista("Instr/GetAmbienteAction");
         }
 
         public function gestiondeusuarios() {
@@ -35,25 +39,45 @@
             $this->cargarVista("Admin/RegistroAction");
         }
 
-        public function recuperar() {
-            $this->cargarVista("Login/recuperar");
+        public function updateaction() {
+            $this->cargarVista("Admin/UpdateAction");
         }
 
-        public function almacen(){
-            $this->cargarVista("Almacen/dashboard_Almacen");
+        public function statusaction() {
+            $this->cargarVista("Admin/UpdateStatus");
+        }
+
+        public function deleteaction() {
+            $this->cargarVista("Admin/DeleteAction");
+        }
+
+        public function recuperar() {
+            $this->cargarVista("Login/casos");
+        }
+
+        public function alm(){
+            $this->cargarVista("Almn/Almacen");
         }
 
         public function almacenhistrorial(){
-            $this->cargarVista("Almacen/historial");
+            $this->cargarVista("Almn/historial");
         }
         
 
         public function almaceninventario(){
-            $this->cargarVista("Almacen/inventario");
+            $this->cargarVista("Almn/inventario");
         }
 
         public function almacenreportes(){
-            $this->cargarVista("Almacen/reportes");
+            $this->cargarVista("Almn/reportes");
+        }
+
+        public function addproducto(){
+            $this->cargarVista("Almn/AddProducto");
+        }
+
+        public function addAction(){
+            $this->cargarVista("Almn/AddAction");
         }
 
         public function tics(){
@@ -63,4 +87,5 @@
         public function ticspendientes(){
             $this->cargarVista("Tics/pendientes");
         }
+
     }

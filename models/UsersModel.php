@@ -11,13 +11,14 @@
             $this->conn = $database->getConnection();
         }
 
-        public function createUser($cedula, $nombre, $correo, $password, $rol) {
-            $query = "INSERT INTO usuarios (documento, nombres, correo, contraseña, rol_id) 
-                      VALUES (:documento, :nombre, :correo, :password, :rol)";
+        public function createUser($documento, $nombre, $apellido, $correo ,$password, $rol) {
+            $query = "INSERT INTO usuarios (documento, nombres,apellido, correo, contraseña, rol_id,estado) 
+                      VALUES (:documento, :nombre,:apellido ,:correo, :password, :rol, 'activo')";
         
             $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(":documento", $cedula);
+            $stmt->bindParam(":documento", $documento);
             $stmt->bindParam(":nombre", $nombre);
+            $stmt->bindParam(":apellido", $apellido);
             $stmt->bindParam(":correo", $correo);
             $stmt->bindParam(":password", $password); // Cambié contraseña por password
             $stmt->bindParam(":rol", $rol);
@@ -44,18 +45,17 @@
         }
 
 
-        public function updateUser($documento, $nombre, $correo, $password, $rol) {
-            $query = "UPDATE usuarios SET documento = :documento , nombre = :nombre, correo = :correo, contraseña = :password, rol_id = :rol WHERE id = :documento";
+        public function updateUsuario($id, $nombres, $apellido, $correo, $rol_id) {
+                $sql = "UPDATE usuarios SET nombres = :nombres, apellido = :apellido, correo = :correo, rol_id = :rol_id WHERE id = :id";
+                $stmt = $this->conn->prepare($sql);
+                // Verifica que los parámetros sean correctos
+                $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+                $stmt->bindParam(":nombres", $nombres, PDO::PARAM_STR);
+                $stmt->bindParam(":apellido", $apellido, PDO::PARAM_STR);
+                $stmt->bindParam(":correo", $correo, PDO::PARAM_STR);
+                $stmt->bindParam(":rol_id", $rol_id, PDO::PARAM_INT);
         
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(":id", $id);
-            $stmt->bindParam(":documento", $documento);
-            $stmt->bindParam(":nombre", $nombre);
-            $stmt->bindParam(":correo", $correo);
-            $stmt->bindParam(":password", $password); // Cambié contraseña por password
-            $stmt->bindParam(":rol", $rol);
-        
-            $stmt->execute();
+                return $stmt->execute();
         }
 
         public function deleteUser($id) {
@@ -74,4 +74,19 @@
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
+        public function allUser(){
+            $query = "SELECT usuarios .*, roles.nombre as rol FROM usuarios INNER JOIN roles ON usuarios.rol_id = roles.id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        
+        public function updateStatus($id,$status) {
+            $query = 'UPDATE usuarios SET estado = :status WHERE id = :id';
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+        }
+
     }
