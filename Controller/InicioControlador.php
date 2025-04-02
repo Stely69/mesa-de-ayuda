@@ -31,6 +31,11 @@
             $this->cargarVista("Instr/GetAmbienteAction");
         }
 
+        public function registrarCaso() {
+            $this->cargarVista("Instr/ReportarFallaAction");
+        }
+
+
         public function gestiondeusuarios() {
             $this->cargarVista("Admin/GestiondeUsuarios");
         }

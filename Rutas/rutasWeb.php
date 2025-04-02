@@ -19,7 +19,7 @@
     // Rutas de los instructores
     Enrutador::get("instructores", [InicioControlador::class, "instructor"]);
     Enrutador::post("GetAmbienteAction", [InicioControlador::class,"getambientes"]);
-    Enrutador::post("RegistrarCasoAction", [InicioControlador::class,"registrarCaso"]);
+    Enrutador::post("ReportarFallaAction", [InicioControlador::class,"registrarCaso"]);
     // Rutas del almacén
     Enrutador::get("Almacen", [InicioControlador::class, "alm"]);
     Enrutador::get("historial", [InicioControlador::class,"almacenhistrorial"]);
