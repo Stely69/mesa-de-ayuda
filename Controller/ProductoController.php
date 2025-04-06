@@ -8,13 +8,13 @@
             $this->conn = new ProductosAModel();
         }
 
-        public function guardarProducto($numero_placa, $serial, $descripcion, $modelo, $ambiente_id) {
-            if (!$this->conn->crearProductosA($numero_placa, $serial, $descripcion, $modelo, $ambiente_id)) {
-                header("Location: AddProducto?controller=Producto&action=productoNoAgregado");
+        public function guardarProducto($numero_placa, $serial, $descripcion, $modelo,$clase_id, $ambiente_id,) {
+            if (!$this->conn->crearProductosA($numero_placa, $serial, $descripcion, $modelo, $clase_id,$ambiente_id)) {
+                header("Location: inventario?controller=Producto&action=productoAgregado");
                 exit();
             } else {
 
-                header("Location: AddProducto?controller=Producto&action=productoAgregado");
+                header("Location: inventario?controller=Producto&action=productoNoAgregado");
                 exit();
             }
         }
@@ -39,9 +39,8 @@
             }
         }
 
-        public function getBienes($id) {
-            return $this->conn->getBienes($id);
+        public function getClase() {
+            return $this->conn->getClase();
         }
-
     }
 ?>
