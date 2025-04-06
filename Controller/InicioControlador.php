@@ -57,7 +57,21 @@
         }
 
         public function recuperar() {
-            $this->cargarVista("Login/casos");
+            $this->cargarVista("Login/recuperar");
+        }
+
+        public function recuperaraction() {
+            $this->cargarVista("Login/RecuperarAction");
+        }
+
+        public function recuperarcontrasena() {
+            $this->cargarVista("Login/RecuperarContrasena");
+        }
+        public function recuperarcontraseñaction() {
+            $this->cargarVista("Login/RecuperarContraseñaAction");
+        }
+        public function updatepassword() {
+            $this->cargarVista("Login/UpdatePasswordAction");
         }
 
         public function alm(){
@@ -91,6 +105,14 @@
 
         public function ticspendientes(){
             $this->cargarVista("Tics/pendientes");
+        }
+
+        public function perfil(){
+            $this->cargarVista("Perfi/perfil");
+        }
+
+        public function updateUser(){
+            $this->cargarVista("Perfi/UpdateUserAction");
         }
 
     }
