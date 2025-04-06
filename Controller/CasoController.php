@@ -17,8 +17,8 @@
             return $this->conn->getByAmbiente($ambiente_id);
         }
              
-        public function createCaso($usuario_id,$ambiente_id,$producto_id,$rol,$descripcion,$estado){
-            return $this->conn->registrarCaso($ambiente_id,$usuario_id,$producto_id,$estado,$rol,$descripcion, );
+        public function createCaso($ambiente_id,$usuario_id,$producto_id,$estado,$rol,$descripcion){
+            return $this->conn->registrarCaso($ambiente_id,$ambiente_id,$producto_id,$estado,$rol,$descripcion );
         }
 
         public function registrar() {
@@ -33,4 +33,8 @@
         public function getCasos(){
             return $this->conn->getCasos();
         }
+
+        public function allroles(){
+            return $this->conn->allroles();
+        }   
     }
