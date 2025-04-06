@@ -70,7 +70,7 @@
         public function getUser($id) {
             $query = "SELECT * FROM usuarios WHERE id = :id";
             $stmt = $this->conn->prepare($query);   
-            $stmt->bindParam(":id", $cedula);
+            $stmt->bindParam(":id", $id);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
@@ -89,4 +89,49 @@
             $stmt->execute();
         }
 
+        public function updateUserDatos($id,$nombres,$apellido,$correo,$password) {
+            $query = "UPDATE usuarios SET nombres = :nombres, apellido = :apellido, correo = :correo, contraseña = :password WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":id", $id);
+            $stmt->bindParam(":nombres", $nombres);
+            $stmt->bindParam(":apellido", $apellido);
+            $stmt->bindParam(":correo", $correo);
+            $stmt->bindParam(":password", $password); // Cambié contraseña por password
+            
+            return $stmt->execute();
+        }
+
+        public function password_reset($email, $token, $expires_at) {
+            $query = "INSERT INTO password_reset (email, token, expires_at) VALUES (:email, :token, :expires_at)";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":email", $email);
+            $stmt->bindParam(":token", $token);
+            $stmt->bindParam(":expires_at", $expires_at);
+        
+            return $stmt->execute();
+        }
+        public function getPasswordReset($token) {
+            $query = "SELECT * FROM password_reset WHERE token = :token AND expires_at > NOW()";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":token", $token);
+            $stmt->execute();
+        
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        public function obtenerToken($token) {
+            $stmt = $this->conn->prepare("SELECT * FROM password_reset WHERE token = ? AND expires_at > NOW()");
+            $stmt->execute([$token]);
+            return $stmt->fetch();
+        }
+    
+        public function actualizarContraseña($email, $password_hash) {
+            $stmt = $this->conn->prepare("UPDATE usuarios SET contraseña = ? WHERE correo = ?");
+            return $stmt->execute([$password_hash, $email]);
+        }
+    
+        public function eliminarToken($token) {
+            $stmt = $this->conn->prepare("DELETE FROM password_reset WHERE token = ?");
+            return $stmt->execute([$token]);
+        }
     }

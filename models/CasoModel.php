@@ -40,18 +40,24 @@
             }
         }
 
-        public function registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado, $rol,$descripcion ){
-            $query = 'INSERT INTO casos (ambiente_id,usuario_id , producto_id, estado_id , asignado_id,descripcion, fecha_creacion) 
-        VALUES (:ambiente_id, :usuario_id, :producto_id, :estado,:rol ,:descripcion,  NOW())';
+        public function registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion) {
+            try {
+                $sql = "INSERT INTO casos (ambiente_id, usuario_id, producto_id, estado_id, asignado_a, descripcion, fecha_creacion) 
+                        VALUES (?, ?, ?, ?, ?, ?, NOW())";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute([$ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion]);
+                
+                return ["success" => true, "message" => "Caso registrado correctamente"];
+            } catch (PDOException $e) {
+                return ["error" => true, "message" => $e->getMessage()];
+            }
+        }
+        
+        public function allroles(){
+            $query = 'SELECT * FROM roles';
             $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':ambiente_id', $ambiente_id) ;
-            $stmt->bindParam(':usuario_id', $usuario_id) ;
-            $stmt->bindParam(':produto_id', $producto_id) ;
-            $stmt->bindParam(':estado', $estado) ;
-            $stmt->bindParam(':rol', $rol) ;
-            $stmt->bindParam(':descripcion', $descripcion) ;
-
             $stmt->execute();
+            return $stmt->fetchAll();
         }
         
         public function allmarca(){

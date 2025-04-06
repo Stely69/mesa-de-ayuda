@@ -1,3 +1,10 @@
+<?php 
+    require_once __DIR__ . '../../../../Controller/CasoController.php';
+    $casos = new CasoController();
+    $listadecasos = $casos->getCasos();
+    //var_dump($listadecasos);
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,27 +13,20 @@
     <title>Panel de Administración - SENA</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
-    <!-- Header -->
-    <header class="bg-white shadow-md p-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-[#39A900]">Panel de Administración</h1>
-        <div>
-            <a href="#" class="text-[#39A900] hover:underline mr-4">Volver a Inicio</a>
-            <?php session_start(); ?>
-            <?php if (isset($_SESSION["id"])): ?>
-                <span class="text-gray-500">Bienvenido, <?php echo $_SESSION["nombres"]; ?></span>
-            <?php endif; ?>
-            <a href="../Login/LogoutAction" class="text-red-500 hover:underline">Cerrar Sesión</a>
-        </div>
-    </header>
-    
+<body class="bg-gray-100">    
     <div class="flex h-screen">
         <!-- Barra lateral fija -->
         <aside class="w-64 bg-[#39A900] text-white flex flex-col p-4 fixed h-screen">
             <h1 class="text-2xl font-bold mb-6">Admin SENA</h1>
             <nav class="flex flex-col space-y-4">
-                <a href="Admin" class="p-2 bg-white text-[#39A900] rounded-md" onclick="cargarPagina('dashboard.php')">Dashboard</a>
-                <a href="GestiondeUsuarios" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md" onclick="cargarPagina('GestiondeUsuarios.php')">Gestión de Usuarios</a>
+                <a href="../" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Inicio</a>
+                <a href="" class="p-2 bg-white text-[#39A900] rounded-md">Dashboard</a>
+                <a href="GestiondeUsuarios" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md"s>Gestión de Usuarios</a>
+                <hr>
+                <?php if (isset($_SESSION["id"])): ?>
+                    <a href="../Perfi/perfil" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Bienvenido, <?php echo $_SESSION["nombres"]; ?></a>
+                <?php endif; ?>
+                <a href="../Login/LogoutAction" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Cerrar Sesión</a>
             </nav>
 
         </aside>
@@ -65,29 +65,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="p-2 border">02/03/2025</td>
-                            <td class="p-2 border">Laptop Dell</td>
-                            <td class="p-2 border">Laboratorio 3</td>
-                            <td class="p-2 border text-green-600">Operativo</td>
-                            <td class="p-2 border">Instructor</td>
-                        </tr>
-                        <tr>
-                            <td class="p-2 border">01/03/2025</td>
-                            <td class="p-2 border">Impresora HP</td>
-                            <td class="p-2 border">Sala TIC</td>
-                            <td class="p-2 border text-red-500">En Falla</td>
-                            <td class="p-2 border">Servicio Técnico</td>
-                        </tr>
+
+                        <?php foreach ($listadecasos as $caso): ?>
+                            <tr>
+                                <td class="p-2 border "><?=$caso['fecha_creacion'] ?></td>
+                                <td class="p-2 border"><?=$caso['producto_id'] ?></td>
+                                <td class="p-2 border"><?=$caso['ambiente_id'] ?></td>
+                                <td class="p-2 border text-green-600"><?=$caso['estado_id'] ?></td>
+                                <td class="p-2 border"><?=$caso['usuario_id'] ?></td>
+                            </tr>
+                        <?php endforeach ?>
                     </tbody>
                 </table>
-            </div>
-            
-            <main class="">
-            
-            
+            </div>  
+
             <div class="mt-6 bg-white p-4 shadow rounded-md">
-                <h3 class="text-xl text-gray-700 mb-4">Reportes Generales</h3>
+                <h3 class="text-xl text-gray-700 mb-4">Reportes Generados</h3>
                 <button onclick="exportToExcel()" class="mb-4 px-4 py-2 bg-[#39A900] text-white rounded hover:bg-[#2f8800]">Descargar Excel</button>
                 <div id="reportes" class="grid grid-cols-2 gap-6">
                     <div class="p-4 bg-gray-50 border-l-4 border-[#39A900] shadow rounded-md">

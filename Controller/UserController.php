@@ -52,12 +52,44 @@
            exit();
         }
 
-        public function Getuser($documento){
-            return $this->conn->getUser($documento);
+        public function Getuser( $id ){
+            return $this->conn->getUser( $id );
         }
 
         public function alluser(){
             return  $this->conn->allUser();
+        }
+
+        public function updateUserDatos($id,$nombres,$apellido,$correo,$password_ac,$password_nu){ {
+            $user = $this->conn->getUser($id);
+
+            if (!$user) {
+                header('Location: perfil?controller=UserController&action=usuarioNoEncontrado');
+                exit();
+            }
+        
+            if (!empty($password_ac) && !empty($password_nu)) {
+                if (!password_verify($password_ac, $user['contraseña'])) {
+                    header('Location: perfil?controller=UserController&action=contraseñaIncorrecta');
+                    exit();
+                }
+        
+                // Encripta la nueva contraseña
+                $password = password_hash($password_nu, PASSWORD_DEFAULT);
+            } else {
+                // Si no se proporciona una nueva contraseña, mantenemos la actual
+                $password = $user['contraseña'];
+            }
+                
+            $password = password_hash($password_nu, PASSWORD_DEFAULT);
+
+            if (!$this->conn->updateUserDatos($id,$nombres,$apellido,$correo,$password)){
+                header('Location: perfil?controller=UserController&action=usuarioNoActualizado');
+                exit();
+                }
+                header('Location: perfil?controller=UserController&action=usuarioActualizado');
+                exit();
+            }
         }
 
     }

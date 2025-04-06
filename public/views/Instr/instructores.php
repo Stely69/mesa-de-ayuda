@@ -2,6 +2,7 @@
     require_once __DIR__ . '../../../../Controller/CasoController.php';
     $casoController = new CasoController();
     $ambientes = $casoController->getAmbientes();
+    $roles = $casoController->allRoles();
     session_start();
     if (!isset($_SESSION['id'])) {
         echo "Error: No hay usuario en la sesión.";
@@ -18,25 +19,12 @@
 </head>
 <body class="bg-gray-100">
     <div class="flex h-screen">
+        <?php include __DIR__ . '/barra.php'; ?>
         <!-- Barra Lateral -->
-        <div class="w-64 bg-[#39A900] text-white p-5 flex flex-col justify-between">
-            <div>
-                <h1 class="text-2xl font-bold">Operaciones</h1>
-                <nav class="mt-4">
-                    <ul>
-                        <li class="mb-2"><a href="#" class="block py-2 px-4 bg-green-800 rounded">Inventario</a></li>
-                        <li class="mb-2"><a href="#" class="block py-2 px-4">Historial</a></li>
-                        <li class="mb-2"><a href="#" class="block py-2 px-4">Reportes</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <button class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Cerrar Sesión</button>
-        </div>
         
         <!-- Contenido Principal -->
         <div class="flex-1 p-10 relative">
             <!-- Botón Perfil -->
-            <a href="perfil.php" class="absolute top-0 right-0 mt-4 mr-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Mi Perfil</a>
             
             <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-xl font-bold text-gray-700 mb-4">Seleccionar un ambiente</h2>
@@ -67,8 +55,9 @@
                         <label class="block text-gray-700 font-bold">Selecciona tu rol:</label>
                         <select name="rol" class="w-full p-2 border border-gray-300 rounded">
                             <option value="">-- Seleccionar --</option>
-                            <option value="3">Tics</option>
-                            <option value="4">Almacen</option>
+                            <?php foreach ($roles as $rol) { ?>
+                                <option value="<?= $rol['id'] ?>"><?= $rol['nombre'] ?></option>
+                            <?php } ?>
                         </select>
                     </div>
 
@@ -82,7 +71,7 @@
                     <input type="hidden" name="estado" value="1">
 
                     <!-- Botón de envío -->
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Reportar Falla</button>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Reportar Falla</button>
                 </form>
 
                 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

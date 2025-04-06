@@ -72,93 +72,79 @@
 </div>
 
 
-            <!-- Buscar por Ambiente -->
-            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all mt-10">
-                <h3 class="text-xl font-bold text-[#39A900] mb-4">Buscar por Ambiente</h3>
-                <label for="ambiente" class="block text-gray-700 font-semibold mb-2">Selecciona un ambiente:</label>
-                <select id="ambiente" class="p-3 border rounded-md w-full bg-gray-100">
-                    <option value="">-- Seleccionar --</option>
-                    <option value="101">Ambiente 101</option>
-                    <option value="102">Ambiente 102</option>
-                    <option value="103">Ambiente 103</option>
-                    <option value="104">Ambiente 104</option>
-                    <option value="105">Ambiente 105</option>
-                    <option value="106">Ambiente 106</option>
-                    <option value="107">Ambiente 107</option>
-                    <option value="108">Ambiente 108</option>
-                    <option value="109">Ambiente 109</option>
-                    <option value="110">Ambiente 110</option>
-                </select>
-                <div id="casosAmbiente" class="mt-4 hidden">
-                    <table class="min-w-full bg-white border border-gray-300 rounded-md mt-4">
-                        <thead class="bg-gray-200 text-gray-700">
-                            <tr>
-                                <th class="py-2 px-4 border-b">Caso</th>
-                                <th class="py-2 px-4 border-b">Ubicación</th>
-                                <th class="py-2 px-4 border-b">Estado</th>
-                                <th class="py-2 px-4 border-b">Fecha recibido</th>
-                                <th class="py-2 px-4 border-b">Fecha resuelto</th>
-                            </tr>
-                        </thead>
-                        <tbody id="listaCasosAmbiente"></tbody>
-                    </table>
-                </div>
-                <div id="sinCasos" class="text-gray-500 mt-4 hidden">Sin casos para este ambiente.</div>
-            </div>
-
-        
-        </main>
+<div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all mt-10">
+    <h3 class="text-xl font-bold text-[#39A900] mb-4">Buscar por Ambiente</h3>
+    <label for="ambiente" class="block text-gray-700 font-semibold mb-2">Selecciona un ambiente:</label>
+    <select id="ambiente" class="p-3 border rounded-md w-full bg-gray-100">
+        <option value="">-- Seleccionar --</option>
+        <option value="101">Ambiente 101</option>
+        <option value="102">Ambiente 102</option>
+        <option value="103">Ambiente 103</option>
+        <option value="104">Ambiente 104</option>
+        <option value="105">Ambiente 105</option>
+        <option value="106">Ambiente 106</option>
+        <option value="107">Ambiente 107</option>
+        <option value="108">Ambiente 108</option>
+        <option value="109">Ambiente 109</option>
+        <option value="110">Ambiente 110</option>
+    </select>
+    <div id="casosAmbiente" class="mt-4 hidden overflow-x-auto rounded-xl">
+        <table class="min-w-full border border-gray-300 rounded-xl">
+            <thead class="bg-gray-100 text-gray-700">
+                <tr>
+                    <th class="py-3 px-5 text-left">Caso</th>
+                    <th class="py-3 px-5 text-left">Ubicación</th>
+                    <th class="py-3 px-5 text-left">Estado</th>
+                    <th class="py-3 px-5 text-left">Fecha recibido</th>
+                    <th class="py-3 px-5 text-left">Fecha resuelto</th>
+                </tr>
+            </thead>
+            <tbody id="listaCasosAmbiente"></tbody>
+        </table>
     </div>
-    <script>
-        const casosPorAmbiente = {
-            101: [
-                { caso: 'Cambio de monitor', estado: 'Pendiente', fechaRecibido: '2024-03-01', fechaResuelto: '-' },
-                { caso: 'Cambio de teclado', estado: 'Cerrado', fechaRecibido: '2024-02-25', fechaResuelto: '2024-02-28' }
-            ],
-            102: [
-                { caso: 'Cambio de CPU', estado: 'Cerrado', fechaRecibido: '2024-02-20', fechaResuelto: '2024-02-22' },
-                { caso: 'Cambio de mouse', estado: 'Pendiente', fechaRecibido: '2024-03-02', fechaResuelto: '-' }
-            ]
-        };
+    <div id="sinCasos" class="text-gray-500 mt-4 hidden">Sin casos para este ambiente.</div>
+</div>
 
-        document.getElementById('ambiente').addEventListener('change', function() {
-            const ambiente = this.value;
-            const contenedor = document.getElementById('casosAmbiente');
-            const lista = document.getElementById('listaCasosAmbiente');
-            const sinCasos = document.getElementById('sinCasos');
+<script>
+    const casosPorAmbiente = {
+        101: [
+            { caso: 'Cambio de monitor', estado: 'Pendiente', fechaRecibido: '2024-03-01', fechaResuelto: '-' },
+            { caso: 'Cambio de teclado', estado: 'Cerrado', fechaRecibido: '2024-02-25', fechaResuelto: '2024-02-28' }
+        ],
+        102: [
+            { caso: 'Cambio de CPU', estado: 'Cerrado', fechaRecibido: '2024-02-20', fechaResuelto: '2024-02-22' },
+            { caso: 'Cambio de mouse', estado: 'Pendiente', fechaRecibido: '2024-03-02', fechaResuelto: '-' }
+        ]
+    };
 
-            if (casosPorAmbiente[ambiente]) {
-                lista.innerHTML = '';
-                casosPorAmbiente[ambiente].forEach(caso => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="py-2 px-4 border-b">${caso.caso}</td>
-                        <td class="py-2 px-4 border-b">Ambiente ${ambiente}</td>
-                        <td class="py-2 px-4 border-b">${caso.estado}</td>
-                        <td class="py-2 px-4 border-b">${caso.fechaRecibido}</td>
-                        <td class="py-2 px-4 border-b">${caso.fechaResuelto}</td>
-                    `;
-                    lista.appendChild(row);
-                });
-                sinCasos.classList.add('hidden');
-                contenedor.classList.remove('hidden');
-            } else {
-                lista.innerHTML = '';
-                contenedor.classList.add('hidden');
-                sinCasos.classList.remove('hidden');
-            }
-        });
-        document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        document.getElementById('modalPendientes').classList.add('hidden');
-    }
-});
-document.getElementById('modalPendientes').addEventListener('click', (e) => {
-    if (e.target.id === 'modalPendientes') {
-        e.target.classList.add('hidden');
-    }
-});
+    document.getElementById('ambiente').addEventListener('change', function() {
+        const ambiente = this.value;
+        const contenedor = document.getElementById('casosAmbiente');
+        const lista = document.getElementById('listaCasosAmbiente');
+        const sinCasos = document.getElementById('sinCasos');
 
-    </script>
+        if (casosPorAmbiente[ambiente]) {
+            lista.innerHTML = '';
+            casosPorAmbiente[ambiente].forEach(caso => {
+                const row = document.createElement('tr');
+                row.className = caso.estado === 'Pendiente' ? 'bg-red-50 hover:bg-red-100 transition-all' : 'bg-green-50 hover:bg-green-100 transition-all';
+                row.innerHTML = `
+                    <td class="py-3 px-5">${caso.caso}</td>
+                    <td class="py-3 px-5">Ambiente ${ambiente}</td>
+                    <td class="py-3 px-5 ${caso.estado === 'Pendiente' ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'}">${caso.estado}</td>
+                    <td class="py-3 px-5">${caso.fechaRecibido}</td>
+                    <td class="py-3 px-5">${caso.fechaResuelto}</td>
+                `;
+                lista.appendChild(row);
+            });
+            sinCasos.classList.add('hidden');
+            contenedor.classList.remove('hidden');
+        } else {
+            lista.innerHTML = '';
+            contenedor.classList.add('hidden');
+            sinCasos.classList.remove('hidden');
+        }
+    });
+</script>
 </body>
 </html>

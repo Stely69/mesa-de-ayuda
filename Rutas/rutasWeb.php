@@ -16,6 +16,11 @@
     Enrutador::get("LogoutAction", [InicioControlador::class,"Logout"]);
     Enrutador::get("inicio_sesion", [InicioControlador::class, "Login"]);
     Enrutador::get("recuperar", [InicioControlador::class,"recuperar"]);
+    Enrutador::post("RecuperarAction", [InicioControlador::class,"recuperaraction"]);
+    Enrutador::get("RecuperarContrasena", [InicioControlador::class,"recuperarcontrasena"]);
+    Enrutador::post("RecuperarContraseñaAction", [InicioControlador::class,"recuperarcontraseñaction"]);
+    Enrutador::post("UpdatePasswordAction", [InicioControlador::class,"updatepassword"]);
+
     // Rutas de los instructores
     Enrutador::get("instructores", [InicioControlador::class, "instructor"]);
     Enrutador::post("GetAmbienteAction", [InicioControlador::class,"getambientes"]);
@@ -30,6 +35,9 @@
     // Rutas de Tics
     Enrutador::get("Tics", [InicioControlador::class,"tics"]);
     Enrutador::get("pendientes", [InicioControlador::class,"ticspendientes"]);
+    // ruta de perfil
+    Enrutador::get("perfil", [InicioControlador::class,"perfil"]);
+    Enrutador::post("UpdateUserAction", [InicioControlador::class,"updateUser"]);
 
 
     Enrutador::obtenerRuta();

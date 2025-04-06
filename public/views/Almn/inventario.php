@@ -1,3 +1,11 @@
+<?php
+    require_once __DIR__ . '../../../../Controller/CasoController.php';
+    require_once __DIR__ .'../../../../Controller/ProductoController.php';
+    $controller = new CasoController();
+    $controllerP = new ProductoController();
+    $ambientes = $controller->getAmbientes();
+    $marcas = $controllerP->getClase();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -72,9 +80,6 @@
                 <select id="ambiente" name="ambiente" required class="p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]">
                     <option value="">Seleccione un ambiente</option>
                     <?php
-                        require_once __DIR__ . '../../../../Controller/CasoController.php';
-                        $controller = new CasoController();
-                        $ambientes = $controller->allambientes();
                         foreach ($ambientes as $ambiente) {
                             echo "<option value='" . $ambiente['id'] . "'>" . $ambiente['nombre'] . "</option>";
                         }
@@ -83,13 +88,10 @@
             </div>
 
             <div>
-                <label for="clase" class="block text-base font-medium text-gray-700 mb-1">Marca:</label>
-                <select id="clase" name="clase" required class="p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]">
-                    <option value="">Seleccione un ambiente</option>
+                <label for="ambiente" class="block text-base font-medium text-gray-700 mb-1">Marca:</label>
+                <select id="clase_id" name="clase_id" required class="p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]">
+                    <option value="">Seleccione una marca</option>
                     <?php
-                        require_once __DIR__ . '../../../../Controller/CasoController.php';
-                        $controller = new CasoController();
-                        $marcas = $controller->allmarcas();
                         foreach ($marcas as $marca) {
                             echo "<option value='" . $marca['id'] . "'>" . $marca['nombre'] . "</option>";
                         }
@@ -169,23 +171,23 @@
             });
         });
     //MODAL AGREGAR BIENES
-function openModal() {
-        const modal = document.getElementById('modal');
-        const modalContent = document.getElementById('modal-content');
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modalContent.classList.remove('scale-95', 'opacity-0');
-            modalContent.classList.add('scale-100', 'opacity-100');
-        }, 50);
-    }
-    function closeModal() {
-        const modalContent = document.getElementById('modal-content');
-        modalContent.classList.remove('scale-100', 'opacity-100');
-        modalContent.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-            document.getElementById('modal').classList.add('hidden');
-        }, 200);
-    }
+        function openModal() {
+                const modal = document.getElementById('modal');
+                const modalContent = document.getElementById('modal-content');
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                }, 50);
+        }       
+        function closeModal() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                document.getElementById('modal').classList.add('hidden');
+            }, 200);
+        }
     </script>
 </body>
 </html>

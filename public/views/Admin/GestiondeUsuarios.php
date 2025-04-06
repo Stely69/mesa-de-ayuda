@@ -2,38 +2,20 @@
 require_once __DIR__ . '../../../../Controller/UserController.php';
 $userController = new UserController();
 $users = $userController->alluser();
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Usuarios - Admin</title>
+    <title>Gestión de Usuarios - SENA</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
-    <!-- Header -->
-    <header class="bg-white shadow-md p-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-[#39A900]">Panel de Administración</h1>
-        <div>
-            <a href="#" class="text-[#39A900] hover:underline mr-4">Volver a Inicio</a>
-            <?php session_start(); ?>
-            <?php if (isset($_SESSION["id"])): ?>
-                <span class="text-gray-500">Bienvenido, <?php echo $_SESSION["nombres"]; ?></span>
-            <?php endif; ?>
-            <a href="../Login/LogoutAction" class="text-red-500 hover:underline">Cerrar Sesión</a>
-        </div>
-    </header>
-    
+<body class="bg-gray-100">    
     <div class="flex">
-        <!-- Sidebar -->
-        <aside class="w-64 bg-[#39A900] text-white flex flex-col p-4 fixed h-screen">
-            <h1 class="text-2xl font-bold mb-6">Admin SENA</h1>
-            <nav class="flex flex-col space-y-4">
-                <a href="Admin" class="p-2 bg-white text-[#39A900] rounded-md">Dashboard</a>
-                <a href="GestiondeUsuarios" class="p-2 hover:bg-white hover:text-[#39A900] rounded-md">Gestión de Usuarios</a>
-            </nav>
-        </aside>
+
+        <!-- Barra lateral -->
         
         <!-- Contenido principal -->
         <main class="flex-1 p-6 ml-64 overflow-auto">
@@ -50,7 +32,7 @@ $users = $userController->alluser();
                         <option value="2">Instructor</option>
                         <option value="4">Almacen</option>
                     </select>
-                    <button onclick="mostrarFormulario()" class="bg-blue-500 text-white px-4 py-2 rounded-md">Agregar Usuario</button>
+                    <button onclick="mostrarFormulario()" class="bg-[#39A900] text-white px-4 py-2 rounded-md">Agregar Usuario</button>
                 </div>
             </div>
             
@@ -101,7 +83,7 @@ $users = $userController->alluser();
                         <div class="flex items-center space-x-2">
                             <input type="email" id="editCorreo" name="correo" class="w-full p-2 border rounded-md mb-2" disabled>
                             <input type="hidden" id="hiddenCorreo" name="hiddenCorreo">
-                            <button type="button" onclick="habilitarCorreo()" class="bg-blue-500 text-white px-2 py-1 rounded-md">Editar Correo</button>
+                            <button type="button" onclick="habilitarCorreo()" class="bg-[#39A900] text-white px-2 py-1 rounded-md">Editar Correo</button>
                         </div>
                         
                         <label class="block mb-2">Rol</label>
