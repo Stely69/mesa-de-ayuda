@@ -6,8 +6,6 @@
     require_once '../Models/UsersModel.php';
 
     use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\SMTP;
-    use PHPMailer\PHPMailer\Exception;
 
     session_start();
     class AuthController {
@@ -21,8 +19,7 @@
             $user = $this->conn->getDocumento($documento);
 
             if(!$user){
-                echo'Ese usuario no existe';
-                //header('');
+                header('Location: ../Login/inicio_sesion?mensaje=Usuario no registrado.');
                 exit();
             }
 
@@ -32,8 +29,7 @@
             }            
 
             if(!password_verify($password, $user['contraseña'])){
-                echo 'Contraseña incorrecta';
-                //header('');
+                header('Location: ../Login/inicio_sesion?mensaje=Contraseña incorrecta.');
                 exit();
             }
 
@@ -73,44 +69,148 @@
             $user = $this->conn->getEmail($email);
 
             if(!$user){
-                echo 'Ese usuario no existe';
-                //header('');
+                header("Location: ../Login/recuperar?mensaje=El correo no está registrado.");
                 exit();
             }
 
-            $usuarios = $user['nombre'];
-            $idusuarios = $user['id'];
-
-            $mail = new PHPMailer(true);
-
-            try {
-                $mail->isSMTP();                                            //Send using SMTP
-                $mail->Host       = 'smtp.example.com';                     //Set the SMTP server to send through
-                $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-                $mail->Username   = 'user@example.com';                     //SMTP username
-                $mail->Password   = 'secret';                               //SMTP password
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-                $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
-                //Recipients
-                $mail->setFrom('', 'Stock Control');
-                $mail->addAddress($email,$usuarios, );     //Add a recipient
-
-                //Content
-                $mail->isHTML(true);                                  //Set email format to HTML
-                $mail->Subject = 'Hola, Bienvenido a Stock Control';
-                $mail->Body    = 'Te enbiamos este correo para que puedas recuperar tu contraseña, si
-                no fuiste tu quien solicito este correo por favor ignoralo, si fuiste tu, por favor <a href="http://mesadeayuda.test/Login/recuperar_contraseña?id=$idusuario">clickea aqui</a> para recuperar tu contraseña';
-                $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
-                $mail->send();
-                header('Location: ../Login/inicio_sesion');
+            if ($user) {
+                // Crear token y fecha de expiración
+                $token = bin2hex(random_bytes(50));
+                $expires_at = date("Y-m-d H:i:s", strtotime("+1 hour"));
+        
+                // Guardar en la tabla password_reset
+                $stmt = $this->conn->password_reset($email, $token, $expires_at);
+                if (!$stmt) {
+                    echo "Error al guardar el token en la base de datos.";
+                    exit();
+                }                
+                // Enviar correo con el enlace de recuperación
+                $reset_link = "http://mesadeayuda.test/Login/RecuperarContrasena?token=" . $token;
+        
+                $mail = new PHPMailer();
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmass.co.'; 
+                $mail->SMTPAuth = true;
+                $mail->Username = 'soportetics876@gmail.coms';
+                $mail->Password = '';
+                $mail->SMTPSecure = 'tls';
+                $mail->Port = 587;
+                $mail->setLanguage('es', '../PHPMailer/language/');
+                $mail->CharSet = 'UTF-8';
+        
+                $mail->setFrom('soportetics876@gmail.com', 'Soporte');
+                $mail->addAddress($email);
+                $mail->Subject = "=?UTF-8?B?" . base64_encode("Recuperación de contraseña") . "?=";
+                
+                $mail->isHTML(true);
+                $mail->Body = $mail->isHTML(true);
+                $mail->Body = "
+                            <html>
+                                    <head>
+                                        <meta charset='UTF-8'>
+                                        <style>
+                                            body {
+                                                font-family: 'Arial', sans-serif;
+                                                background-color: #f4f4f4;
+                                                margin: 0;
+                                                padding: 0;
+                                                text-align: center;
+                                            }
+                                            .container {
+                                                width: 100%;
+                                                max-width: 500px;
+                                                background: white;
+                                                padding: 20px;
+                                                margin: 20px auto;
+                                                border-radius: 8px;
+                                                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                                            }
+                                            .header {
+                                                background-color: #3498db;
+                                                color: white;
+                                                padding: 15px;
+                                                font-size: 20px;
+                                                font-weight: bold;
+                                                border-radius: 8px 8px 0 0;
+                                            }
+                                            .message {
+                                                font-size: 16px;
+                                                color: #333;
+                                                margin-top: 15px;
+                                            }
+                                            .button {
+                                                display: inline-block;
+                                                background-color: #3498db;
+                                                color: white;
+                                                padding: 12px 20px;
+                                                font-size: 16px;
+                                                text-decoration: none;
+                                                border-radius: 5px;
+                                                font-weight: bold;
+                                                margin-top: 15px;
+                                            }
+                                            .button:hover {
+                                                background-color: #217dbb;
+                                            }
+                                            .footer {
+                                                margin-top: 20px;
+                                                font-size: 14px;
+                                                color: #777;
+                                            }
+                                        </style>
+                                    </head>
+                                    <body>
+                                        <div class='container'>
+                                            <div class='header'>Recuperación de Contraseña</div>
+                                            <p class='message'>Estimado usuario,</p>
+                                            <p class='message'>Hemos recibido una solicitud para restablecer su contraseña. Haga clic en el siguiente botón para proceder con la recuperación:</p>
+                                            <p>
+                                                <a href='" . $reset_link . "' class='button'>Restablecer Contraseña</a>
+                                            </p>
+                                            <p class='message'>Si no solicitó este cambio, ignore este mensaje.</p>
+                                            <p class='footer'>Atentamente,<br><strong>El equipo de soporte</strong></p>
+                                        </div>
+                                    </body>
+                            </html>";
+                                            
+                if (!$mail->send()) {
+                    echo "Error al enviar correo: " . $mail->ErrorInfo;
+                } else {
+                   header("Location: ../Login/inicio_sesion?mensaje=Correo enviado con éxito.");
+                    exit();
+                }
+                
+            } else {
+                header("Location: ../Login/recuperar?mensaje=El correo no está registrado.");
                 exit();
+            }
+        }
 
-            } catch (Exception $e) {
-                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        public function obtenertoken($token) {
+            $record = $this->conn->obtenerToken($token);
+    
+            if (!$record) {
+                die("El enlace ha expirado o es inválido.");
             }
 
         }
 
+        public function updatepassaword($new_password, $token) {
+            $record = $this->conn->obtenerToken($token);
+            // Validar si el token existe
+            if (!$record) {
+                die("Token inválido o expirado.");
+            }
+        
+            // Hash de la nueva contraseña
+            $hashedPassword = password_hash($new_password, PASSWORD_DEFAULT);
+        
+            // Actualizar la contraseña y eliminar el token si todo está bien
+            if ($this->conn->actualizarContraseña($record['email'], $hashedPassword)) {
+                $this->conn->eliminarToken($token);
+                echo "Contraseña actualizada con éxito.";
+            } else {
+                echo "Error al actualizar contraseña.";
+            }
+        }
     }
