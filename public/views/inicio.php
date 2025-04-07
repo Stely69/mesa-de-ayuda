@@ -74,28 +74,28 @@ include __DIR__ . '/../views/plantillas/header_inicio.php';
     <!-- How It Works Section -->
     <section id="how-it-works" class="bg-gray-50 px-6 py-12 md:px-16 text-center min-h-screen flex flex-col justify-center items-center">
         <h2 class="text-4xl font-extrabold text-[#39A900] mb-10">¿Cómo Funciona?</h2>
-        
+
         <div class="flex flex-col md:flex-row justify-center items-stretch gap-8 w-full max-w-7xl">
-            
+
             <!-- Paso 1 -->
-            <div class="flex flex-col items-center bg-white rounded-2xl shadow-lg p-8 w-full md:w-1/3 transition-transform hover:scale-105">
-                <img src="../pictures/registro.png" alt="Registro de activos" class="w-20 h-20 object-contain mb-4">
-                <h3 class="text-xl font-semibold text-[#39A900] mb-2">1. Registro de Activos</h3>
-                <p class="text-gray-600">Los responsables registran nuevos activos y actualizan datos como ubicación, estado y persona encargada.</p>
+            <div class="flex flex-col items-center bg-white rounded-2xl shadow-lg p-10 w-full md:w-1/3 transition-transform hover:scale-105">
+                <img src="../pictures/registro.png" alt="Registro de activos" class="w-28 h-28 object-contain mb-6">
+                <h3 class="text-2xl font-semibold text-[#39A900] mb-4">1. Registro de Activos</h3>
+                <p class="text-lg text-gray-600">Los responsables registran nuevos activos y actualizan datos como ubicación, estado y persona encargada.</p>
             </div>
 
             <!-- Paso 2 -->
-            <div class="flex flex-col items-center bg-white rounded-2xl shadow-lg p-6 w-full md:w-1/3 transition-transform hover:scale-105">
-                <img src="../pictures/reportes.png" alt="Reporte y gestión" class="w-20 h-20 object-contain mb-4">
-                <h3 class="text-xl font-semibold text-[#39A900] mb-2">2. Reporte y Gestión</h3>
-                <p class="text-gray-600">Los instructores reportan novedades y las áreas de TICS y Almacén las gestionan para brindar soluciones efectivas.</p>
+            <div class="flex flex-col items-center bg-white rounded-2xl shadow-lg p-10 w-full md:w-1/3 transition-transform hover:scale-105">
+                <img src="../pictures/reportes.png" alt="Reporte y gestión" class="w-28 h-28 object-contain mb-6">
+                <h3 class="text-2xl font-semibold text-[#39A900] mb-4">2. Reporte y Gestión</h3>
+                <p class="text-lg text-gray-600">Los instructores reportan novedades y las áreas de TICS y Almacén las gestionan para brindar soluciones efectivas.</p>
             </div>
 
             <!-- Paso 3 -->
-            <div class="flex flex-col items-center bg-white rounded-2xl shadow-lg p-6 w-full md:w-1/3 transition-transform hover:scale-105">
-                <img src="../pictures/seguimiento.png" alt="Control y trazabilidad" class="w-20 h-20 object-contain mb-4">
-                <h3 class="text-xl font-semibold text-[#39A900] mb-2">3. Control y Trazabilidad</h3>
-                <p class="text-gray-600">Cada acción queda registrada en el sistema, permitiendo trazabilidad, auditoría y una gestión administrativa más eficiente.</p>
+            <div class="flex flex-col items-center bg-white rounded-2xl shadow-lg p-10 w-full md:w-1/3 transition-transform hover:scale-105">
+                <img src="../pictures/seguimiento.png" alt="Control y trazabilidad" class="w-28 h-28 object-contain mb-6">
+                <h3 class="text-2xl font-semibold text-[#39A900] mb-4">3. Control y Trazabilidad</h3>
+                <p class="text-lg text-gray-600">Cada acción queda registrada en el sistema, permitiendo trazabilidad, auditoría y una gestión administrativa más eficiente.</p>
             </div>
 
         </div>
