@@ -38,7 +38,6 @@
             </form>
         </div>
     </div>
-
     <!-- Footer mejorado -->
     <footer class="bg-[#39A900] text-white py-6 mt-16">
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
@@ -56,7 +55,6 @@
             </div>
         </div>
     </footer>
-
     <!-- Script para ocultar alerta automáticamente -->
     <script>
         setTimeout(() => {
