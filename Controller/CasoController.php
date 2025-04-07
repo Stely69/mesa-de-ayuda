@@ -37,4 +37,8 @@
         public function allroles(){
             return $this->conn->allroles();
         }   
+
+        public function mostarcasos(){
+            return $this->conn->contarCasos();
+        }
     }
