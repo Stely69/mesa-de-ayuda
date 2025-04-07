@@ -9,7 +9,7 @@
 <body class="relative bg-cover bg-center bg-no-repeat" style="background-image: url('../../pictures/fondo.jpg');">
     <!-- Capa blanca semitransparente -->
     <div class="absolute inset-0 bg-white bg-opacity-40"></div>
-
+    <!-- Contenedor principal -->
     <div class="relative flex items-center justify-center min-h-screen  px-4">
 
         <div class="bg-white p-8 sm:p-10 rounded-xl shadow-2xl w-full max-w-md">
@@ -19,35 +19,35 @@
                     <img src="../../pictures/logoSena.png" alt="Logo de la entidad" class="h-16">
                 </a>
             </div>
-                    
             <!-- Título -->
             <h2 class="text-3xl font-bold text-center text-[#39A900]">Iniciar Sesión</h2>
-                    
             <!-- ALERTA (éxito o error) -->
             <!-- Puedes mostrar esto dinámicamente con PHP, JS, o un backend -->
             <!-- Ejemplo de error -->
             <?php if (isset($_GET['mensaje'])): ?>
-                <div id="alerta" class="bg-red-100 text-red-700 p-3 mt-4 rounded-lg text-sm">
+                <div class="bg-red-100 text-red-700 p-3 mt-4 rounded-lg text-sm">
                     ⚠️ <?= htmlspecialchars($_GET['mensaje']) ?>
                 </div>
-            <?php endif; ?>       
-                    <!-- Formulario -->
-            <form action="LoginAction" method="POST" class="mt-6 space-y-5" onsubmit="return validarFormulario();">
-                        
-                        <!-- Documento -->
+            <?php elseif (isset($_GET['success'])): ?>
+                <div class="bg-green-100 text-green-700 p-3 mt-4 rounded-lg text-sm">
+                    ✅ <?= htmlspecialchars($_GET['success']) ?>
+                </div>
+            <?php endif; ?>     
+            <!-- Formulario -->
+            <form action="LoginAction" method="POST" class="mt-6 space-y-5" onsubmit="return validarFormulario();">           
+                <!-- Documento -->
                 <div>
                     <label for="cedula" class="block text-sm font-medium text-gray-700">Documento</label>
                     <input type="text" id="cedula" name="cedula" required
                         class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#39A900]">
                 </div>   
-                        <!-- Contraseña -->
+                <!-- Contraseña -->
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
                     <input type="password" id="password" name="password" required
                         class="mt-1 p-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#39A900]">
-                </div>
-                        
-                        <!-- Enlace de recuperación -->
+                </div>  
+                <!-- Enlace de recuperación -->
                 <div class="text-right">
                     <a href="recuperar" class="text-sm text-[#39A900] hover:underline">Olvidé mi contraseña</a>
                 </div>
