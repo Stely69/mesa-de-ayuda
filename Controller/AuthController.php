@@ -92,7 +92,7 @@
                 $mail->Host = 'smtp.gmass.co.'; 
                 $mail->SMTPAuth = true;
                 $mail->Username = 'soportetics876@gmail.coms';
-                $mail->Password = '';
+                $mail->Password = 'e58b0fcc-8d33-4167-8307-713018e0f649';
                 $mail->SMTPSecure = 'tls';
                 $mail->Port = 587;
                 $mail->setLanguage('es', '../PHPMailer/language/');
@@ -176,7 +176,7 @@
                 if (!$mail->send()) {
                     echo "Error al enviar correo: " . $mail->ErrorInfo;
                 } else {
-                   header("Location: ../Login/inicio_sesion?mensaje=Correo enviado con éxito.");
+                   header("Location: ../Login/inicio_sesion?success=Correo enviado con éxito.");
                     exit();
                 }
                 
@@ -208,9 +208,11 @@
             // Actualizar la contraseña y eliminar el token si todo está bien
             if ($this->conn->actualizarContraseña($record['email'], $hashedPassword)) {
                 $this->conn->eliminarToken($token);
-                echo "Contraseña actualizada con éxito.";
+                header("Location: ../Login/inicio_sesion?success=Contraseña actualizada con éxito.");
+                exit();
             } else {
-                echo "Error al actualizar contraseña.";
+                header("Location: ../Login/recuperar?mensaje=Error al actualizar la contraseña.");
+                exit();
             }
         }
     }
