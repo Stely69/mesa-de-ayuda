@@ -92,7 +92,7 @@
                 $mail->Host = 'smtp.gmass.co.'; 
                 $mail->SMTPAuth = true;
                 $mail->Username = 'soportetics876@gmail.coms';
-                $mail->Password = 'e58b0fcc-8d33-4167-8307-713018e0f649';
+                $mail->Password = '';
                 $mail->SMTPSecure = 'tls';
                 $mail->Port = 587;
                 $mail->setLanguage('es', '../PHPMailer/language/');
