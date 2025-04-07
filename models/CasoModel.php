@@ -75,7 +75,12 @@
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
-
-
+        public function contarCasos() {
+            $stmt = $this->conn->prepare("SELECT COUNT(*) AS total FROM casos");
+            $stmt->execute();
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $resultado['total'];
+        }
+        
     }
 
