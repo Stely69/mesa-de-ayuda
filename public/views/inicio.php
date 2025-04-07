@@ -12,7 +12,7 @@ include __DIR__ . '/../views/plantillas/header_inicio.php';
     <link rel="stylesheet" href="../css/fontawesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <title><?php echo $titulo; ?></title>
+    <title></title>
 </head> 
 
 <body class="bg-white">
