@@ -42,5 +42,9 @@
         public function getClase() {
             return $this->conn->getClase();
         }
+
+        public function mostrarProductos() {
+            return $this->conn->contarProductos();
+        }
     }
 ?>
