@@ -14,41 +14,41 @@
         public function Createuser($documento, $nombres,$apellido ,$correo, $Contraseña, $rol){
             $password = password_hash($Contraseña, PASSWORD_DEFAULT);
             if (!$this->conn->createUser($documento, $nombres,$apellido, $correo, $password, $rol)){
-                header('Location: GestiondeUsuarios?controller=UserController&action=usuarioCreado');
+                header('Location: GestiondeUsuarios?alert=success&mensaje='. urlencode('Usuario Creado'));
                 exit();
             }
 
-            header('Location: GestiondeUsuarios?controller=UserController&action=usuarioNoCreado');
+            header('Location: GestiondeUsuarios?alert=error&mensaje='. urlencode('Usuario No Creado'));
             exit();
         }
 
         public function Updateuser($id, $nombres,$apellido, $correo, $rol_id){
            if (!$this->conn->updateUsuario($id, $nombres,$apellido,$correo,$rol_id)){
-                header('Location: GestiondaUsuarios?controller=UserController&action=usuario No Actualizado');
+                header('Location: GestiondaUsuarios?alert=error&mensaje='. urlencode('Usuario No Actualizado'));
                 exit();
             }
 
-            header('location: GestiondeUsuarios?controller=UserController&action=usuarioActualizado');
+            header('location: GestiondeUsuarios?alert=success&mensaje='. urlencode('Usuario Actualizado'));
             exit();
         }
 
         public function Updatestatus($id, $status) {
             $deid = openssl_decrypt($id, AES, key);
             if ($this->conn->updateStatus($deid, $status)) {
-                header('Location:  Gestión de Usuarios?controller=UserController&action=Estado No Actualizado');
+                header('Location:  Gestión de Usuarios?alert=error&mensaje='. urlencode("Estado No Actualizado"));
                 exit();
             }else {
-                header('location: GestiondeUsuarios?controller=UserController&action=Estado Actualizado');
+                header('location: GestiondeUsuarios?alert=success&mensaje='. urlencode('Estado Actualizado'));
                 exit();
             }
         }
 
         public function Deleteuser($id){
             if (!$this->conn->deleteUser($id)){
-                header('Location: GestiondeUsuarios?controller=UserController&action=usuarioNoEliminado');
+                header('Location: GestiondeUsuarios?alert=error&mensaje='. urlencode('Usuario No Eliminado'));
                 exit();
             }   
-           header('Location: GestiondeUsuarios?controller=UserController&action=Usuario Eliminado');
+           header('Location: GestiondeUsuarios?alert=success&mensaje='. urlencode('Usuario Eliminado'));
            exit();
         }
 
@@ -90,6 +90,10 @@
                 header('Location: perfil?controller=UserController&action=usuarioActualizado');
                 exit();
             }
+        }
+
+        public function mostarusuaruio(){
+            return $this->conn->contarUsuarios();
         }
 
     }
