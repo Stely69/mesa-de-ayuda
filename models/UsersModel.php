@@ -134,4 +134,12 @@
             $stmt = $this->conn->prepare("DELETE FROM password_reset WHERE token = ?");
             return $stmt->execute([$token]);
         }
+
+        public function contarUsuarios() {
+            $stmt = $this->conn->prepare("SELECT COUNT(*) AS total FROM usuarios");
+            $stmt->execute();
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $resultado['total'];
+        }
+        
     }
