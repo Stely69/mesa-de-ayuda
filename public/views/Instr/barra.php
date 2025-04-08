@@ -1,22 +1,51 @@
         <!-- Barra lateral fija -->
-        <aside class="w-64 bg-[#39A900] text-white flex flex-col p-4 fixed h-screen z-10">
-            <h1 class="text-2xl font-bold mb-6">Operaciones</h1>
-            <nav class="flex flex-col space-y-4">
-                <!-- Botón de inicio con ícono -->
-                <a href="#" class="nav-link p-2 bg-white text-[#39A900] rounded-md flex items-center space-x-2">
-                    <!-- Ícono de casa (inicio) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"></path>
-                    </svg>
-                    <span>Inicio</span>
-                </a>
-                <a href="#" class="nav-link p-2 hover:bg-white hover:text-[#39A900] rounded-md"></a>
-                <a href="#" class="nav-link p-2 hover:bg-white hover:text-[#39A900] rounded-md"></a>
-                <a href="#" class="nav-link p-2 hover:bg-white hover:text-[#39A900] rounded-md"></a>
-                <hr>
-                <?php if (isset($_SESSION["id"])): ?>
-                    <a href="../Perfi/perfil" class="nav-link p-2 hover:bg-white hover:text-[#39A900] rounded-md">Bienvenido, <?php echo $_SESSION["nombres"]; ?></a>
-                <?php endif; ?>
-                <a href="../Login/LogoutAction" class="nav-link p-2 hover:bg-white hover:text-[#39A900] rounded-md">Cerrar Session</a>
+        <aside id="sidebar" class="bg-senaGreen text-white w-64 p-6 space-y-4 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 md:relative md:block">
+            <div class="flex justify-end md:hidden -mt-4 -mr-4">
+            <button id="closeSidebar" class="text-white p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            </div>
+            <h1 class="text-2xl font-bold mb-6">Admin SENA</h1>
+            <nav class="flex flex-col space-y-3">
+            <a href="../" class="p-2 hover:bg-white hover:text-senaGreen rounded">Inicio</a>
+            <a href="#" class="p-2 bg-white text-senaGreen rounded">Dashboard</a>
+            <a href="GestiondeUsuarios" class="p-2 hover:bg-white hover:text-senaGreen rounded">Gestión de Usuarios</a>
+            <hr class="border-white opacity-30">
+            <?php if (isset($_SESSION["id"])): ?>
+                <a href="../Perfi/perfil" class="p-2 hover:bg-white hover:text-senaGreen rounded">Bienvenido, <?php echo $_SESSION["nombres"]; ?></a>
+            <?php endif; ?>
+            <a href="../Login/LogoutAction" class="p-2 hover:bg-white hover:text-senaGreen rounded">Cerrar Sesión</a>
             </nav>
         </aside>
+
+        <script>
+            // Mostrar barra lateral en pantallas pequeñas
+            const sidebar = document.getElementById('sidebar');
+            const closeSidebarButton = document.getElementById('closeSidebar');
+
+            closeSidebarButton.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+
+            // Mostrar barra lateral al hacer clic en el botón de menú (hamburguesa)
+            const menuButton = document.getElementById('menuButton');
+            menuButton.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+        </script>
+
+        <script>
+            <!--Colores personalizados-->
+            tailwind.config = {
+            theme: {
+                extend: {
+                colors: {
+                    senaGreen: '#39A900',
+                    senaGreenDark: '#2f8800',
+                }
+                }
+            }
+            }
+        </script>
