@@ -22,6 +22,12 @@
         <?php include __DIR__ . '/barra.php'; ?>
 
         <div class="flex-1 p-4 sm:p-10">
+            <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+                <div>
+                    <h2 class="text-3xl font-semibold text-[#39A900]">¡Bienvenido, <?php echo $_SESSION["nombres"]; ?>!</h2>
+                    <p class="text-gray-600" id="fechaHora"></p>
+                </div>
+            </div>
             <div class="max-w-3xl mx-auto bg-white p-6 sm:p-10 rounded-2xl shadow-lg">
                 <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">📋 Reportar Falla</h2>
 
@@ -139,6 +145,14 @@
                 });
             });
         });
+
+        function actualizarFechaHora() {
+            const ahora = new Date();
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+            document.getElementById('fechaHora').textContent = ahora.toLocaleDateString('es-ES', opciones);
+        }
+        setInterval(actualizarFechaHora, 1000);
+        actualizarFechaHora();
     </script>
 </body>
 </html>
