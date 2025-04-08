@@ -78,7 +78,7 @@
                 </div>
                 <div class="p-4 bg-white shadow rounded-md">
                     <h3 class="text-lg text-gray-700">Equipos en Falla</h3>
-                    <p class="text-2xl font-bold text-red-500"><?php echo $productos; ?></p>
+                    <p class="text-2xl font-bold text-red-500"><?php echo $contadorcasos; ?></p>
                 </div>
                 <div class="p-4 bg-white shadow rounded-md">
                     <h3 class="text-lg text-gray-700">Usuarios Activos</h3>
