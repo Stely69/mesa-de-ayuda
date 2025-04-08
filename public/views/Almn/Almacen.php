@@ -1,4 +1,10 @@
+<?php
+    require_once __DIR__ . '../../../../Controller/ProductoController.php';
 
+    $productos = new ProductoController();
+
+    $totalproductos = $productos->mostrarProductos();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -53,7 +59,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <div class="bg-white p-4 rounded-lg shadow">
                 <h3 class="text-gray-700 text-sm">Elementos en Inventario</h3>
-                <p class="text-2xl font-bold text-[#39A900]">1,250</p>
+                <p class="text-2xl font-bold text-[#39A900]"><?php echo $totalproductos; ?></p>
             </div>
             <div class="bg-white p-4 rounded-lg shadow">
                 <h3 class="text-gray-700 text-sm">Casos Pendientes</h3>
