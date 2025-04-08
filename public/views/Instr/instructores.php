@@ -14,125 +14,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Novedad</title>
+    <title>Registro de Novedad - GEDAC</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
-    <div class="flex h-screen">
+    <div class="flex flex-col lg:flex-row h-full min-h-screen">
         <?php include __DIR__ . '/barra.php'; ?>
-        <!-- Barra Lateral -->
-        
-        <!-- Contenido Principal -->
-        <div class="flex-1 p-10 relative">
-            <!-- Botón Perfil -->
-            
-            <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-bold text-gray-700 mb-4">Seleccionar un ambiente</h2>
-                <form id="formReporteFalla" method="POST">
+
+        <div class="flex-1 p-4 sm:p-10">
+            <div class="max-w-3xl mx-auto bg-white p-6 sm:p-10 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">📋 Reportar Falla</h2>
+
+                <form id="formReporteFalla" method="POST" class="space-y-6">
                     <input type="hidden" name="usuario_id" value="<?= $_SESSION['id'] ?>">
-                    
-                    <!-- Selección de ambiente -->
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-bold">Selecciona un ambiente:</label>
-                        <select id="selectAmbiente" name="ambiente_id" class="w-full p-2 border border-gray-300 rounded">
-                            <option value="">-- Seleccionar --</option>
-                            <?php foreach ($ambientes as $ambiente) { ?>
-                                <option value="<?= $ambiente['id'] ?>"><?= $ambiente['nombre'] ?></option>
-                            <?php } ?>
-                        </select>
+
+                    <div class="lg:grid lg:grid-cols-2 gap-6">
+                        <!-- Ambiente -->
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Ambiente</label>
+                            <select id="selectAmbiente" name="ambiente_id" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400">
+                                <option value="">-- Seleccionar --</option>
+                                <?php foreach ($ambientes as $ambiente): ?>
+                                    <option value="<?= $ambiente['id'] ?>"><?= $ambiente['nombre'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Producto -->
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Producto</label>
+                            <select id="selectProducto" name="producto_id" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400">
+                                <option value="">-- Seleccionar --</option>
+                            </select>
+                        </div>
+
+                        <!-- Rol -->
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Selecciona Area </label>
+                            <select name="rol" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400">
+                                <option value="">-- Seleccionar --</option>
+                                <?php foreach ($roles as $rol): ?>
+                                    <option value="<?= $rol['id'] ?>"><?= $rol['nombre'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Estado oculto -->
+                        <input type="hidden" name="estado" value="1">
                     </div>
 
-                    <!-- Selección de producto -->
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-bold">Selecciona un producto:</label>
-                        <select id="selectProducto" name="producto_id" class="w-full p-2 border border-gray-300 rounded">
-                            <option value="">-- Seleccionar --</option>
-                        </select>
+                    <!-- Descripción -->
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-1">Descripción de la falla</label>
+                        <textarea name="descripcion" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 resize-none" rows="4" placeholder="Describe la falla..."></textarea>
                     </div>
 
-                    <!-- Selección de rol -->
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-bold">Selecciona tu rol:</label>
-                        <select name="rol" class="w-full p-2 border border-gray-300 rounded">
-                            <option value="">-- Seleccionar --</option>
-                            <?php foreach ($roles as $rol) { ?>
-                                <option value="<?= $rol['id'] ?>"><?= $rol['nombre'] ?></option>
-                            <?php } ?>
-                        </select>
+                    <!-- Mensaje de éxito -->
+                    <div id="mensajeExito" class="hidden text-green-600 font-medium"></div>
+
+                    <!-- Botón -->
+                    <div class="text-center">
+                        <button type="submit" class="bg-[#39A900] hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow transition duration-300 ease-in-out">
+                            Reportar Falla
+                        </button>
                     </div>
-
-                    <!-- Descripción de la falla -->
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-bold">Descripción de la falla:</label>
-                        <textarea name="descripcion" class="w-full p-2 border border-gray-300 rounded" rows="4" placeholder="Describe la falla..."></textarea>
-                    </div>
-
-                    <!-- Estado de la falla -->
-                    <input type="hidden" name="estado" value="1">
-
-                    <!-- Botón de envío -->
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Reportar Falla</button>
                 </form>
-
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                <script>
-                    $(document).ready(function () {
-                        // Cargar productos cuando se selecciona un ambiente
-                        $("#selectAmbiente").change(function () {
-                            var ambiente_id = $(this).val();
-                            $("#selectProducto").html('<option value="">-- Seleccionar --</option>');
-
-                            if (ambiente_id !== "") {
-                                $.ajax({
-                                    url: "GetAmbienteAction",
-                                    type: "POST",
-                                    data: { ambiente_id: ambiente_id },
-                                    dataType: "json",
-                                    success: function (response) {
-                                        if (response.length > 0) {
-                                            $.each(response, function (index, producto) {
-                                                $("#selectProducto").append(
-                                                    `<option value="${producto.id}">${producto.nombre} (Placa: ${producto.numero_placa})</option>`
-                                                );
-                                            });
-                                        } else {
-                                            $("#selectProducto").html('<option value="">No hay productos disponibles</option>');
-                                        }
-                                    },
-                                    error: function () {
-                                        alert("Error al obtener los productos.");
-                                    }
-                                });
-                            }
-                        });
-
-                        // Enviar reporte de falla
-                        $("#formReporteFalla").submit(function (event) {
-                            event.preventDefault(); // Evita que la página se recargue
-
-                            $.ajax({
-                                url: "ReportarFallaAction",
-                                type: "POST",
-                                data: $(this).serialize(),
-                                dataType: "json",
-                                success: function (response) {
-                                    if (response.success) {
-                                        alert("Falla reportada con éxito.");
-                                        $("#formReporteFalla")[0].reset(); // Limpia el formulario
-                                    } else {
-                                        alert("Error al reportar la falla: " + response.message);
-                                    }
-                                },
-                                error: function () {
-                                    alert("Error en la conexión con el servidor.");
-                                }
-                            });
-                        });
-                    });
-                </script>
-
             </div>
         </div>
     </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Cambiar productos al seleccionar ambiente
+            $("#selectAmbiente").change(function () {
+                let ambiente_id = $(this).val();
+                $("#selectProducto").html('<option>Cargando...</option>');
+
+                if (ambiente_id !== "") {
+                    $.ajax({
+                        url: "GetAmbienteAction",
+                        type: "POST",
+                        data: { ambiente_id },
+                        dataType: "json",
+                        success: function (response) {
+                            let opciones = '<option value="">-- Seleccionar --</option>';
+                            if (response.length > 0) {
+                                response.forEach(producto => {
+                                    opciones += `<option value="${producto.id}">${producto.nombre} (Placa: ${producto.numero_placa})</option>`;
+                                });
+                            } else {
+                                opciones = '<option>No hay productos disponibles</option>';
+                            }
+                            $("#selectProducto").html(opciones);
+                        },
+                        error: function () {
+                            $("#selectProducto").html('<option>Error al cargar</option>');
+                        }
+                    });
+                }
+            });
+
+            // Enviar formulario
+            $("#formReporteFalla").submit(function (event) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: "ReportarFallaAction",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+                            $("#mensajeExito").removeClass("hidden").text("✅ Falla reportada con éxito.");
+                            $("#formReporteFalla")[0].reset();
+                        } else {
+                            $("#mensajeExito").removeClass("hidden").text("❌ Error: " + response.message).addClass("text-red-600").removeClass("text-green-600");
+                        }
+                    },
+                    error: function () {
+                        $("#mensajeExito").removeClass("hidden").text("❌ Error al conectar con el servidor.").addClass("text-red-600").removeClass("text-green-600");
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
