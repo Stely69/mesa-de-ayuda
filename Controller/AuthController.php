@@ -36,6 +36,7 @@
             $_SESSION['rol_id'] = $user['rol_id'];
             $_SESSION['id'] = $user['id'];
             $_SESSION['nombres'] = $user['nombres'];
+            $_SESSION['apellido'] = $user['apellido'];
 
 
             switch($_SESSION['rol_id']){
