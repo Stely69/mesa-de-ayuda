@@ -41,4 +41,8 @@
         public function mostarcasos(){
             return $this->conn->contarCasos();
         }
+
+        public function getCaso($id){
+            return $this->conn->getCaso($id);
+        }
     }
