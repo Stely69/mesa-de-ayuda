@@ -107,6 +107,10 @@
             $this->cargarVista("Tics/pendientes");
         }
 
+        public function ver_caso(){
+            $this->cargarVista("Tics/ver_caso");
+        }
+
         public function perfil(){
             $this->cargarVista("Perfi/perfil");
         }
