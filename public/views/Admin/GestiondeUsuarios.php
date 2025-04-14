@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '../../../../Controller/UserController.php';
-$userController = new UserController();
-$users = $userController->alluser();
-session_start();
+    require_once __DIR__ . '../../../../Controller/UserController.php';
+    $userController = new UserController();
+    $users = $userController->alluser();
+    session_start();
 ?>
 <!DOCTYPE html>
 <html lang="es">
