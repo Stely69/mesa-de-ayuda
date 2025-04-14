@@ -40,12 +40,12 @@
             }
         }
 
-        public function registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion) {
+        public function registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion,$nota_tecnica,$imagen) {
             try {
-                $sql = "INSERT INTO casos (ambiente_id, usuario_id, producto_id, estado_id, asignado_a, descripcion, fecha_creacion) 
-                        VALUES (?, ?, ?, ?, ?, ?, NOW())";
+                $sql = "INSERT INTO casos (ambiente_id, usuario_id, producto_id, estado_id, asignado_a, descripcion,nota_tecnica,imagen,fecha_creacion) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?,?,NOW())";
                 $stmt = $this->conn->prepare($sql);
-                $stmt->execute([$ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion]);
+                $stmt->execute([$ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion, $nota_tecnica,$imagen]);
                 
                 return ["success" => true, "message" => "Caso registrado correctamente"];
             } catch (PDOException $e) {
@@ -90,5 +90,18 @@
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
         
+
+        public function registrarCasoGeneral($ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion,$asunto,$imagen) {
+            try {
+                $sql = "INSERT INTO casos (ambiente_id, usuario_id, producto_id, estado_id, asignado_a, descripcion,asunto,imagen,fecha_creacion) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?,?,NOW())";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute([$ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion, $asunto,$imagen]);
+                
+                return ["success" => true, "message" => "Caso registrado correctamente"];
+            } catch (PDOException $e) {
+                return ["error" => true, "message" => $e->getMessage()];
+            }
+        }
     }
 
