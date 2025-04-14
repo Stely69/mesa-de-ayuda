@@ -25,6 +25,8 @@
     Enrutador::get("instructores", [InicioControlador::class, "instructor"]);
     Enrutador::post("GetAmbienteAction", [InicioControlador::class,"getambientes"]);
     Enrutador::post("ReportarFallaAction", [InicioControlador::class,"registrarCaso"]);
+    Enrutador::get("historialcasos", [InicioControlador::class,"historialcasos"]);
+    Enrutador::get("RegistarCasoGeneral", [InicioControlador::class,"registarcasogeneral"]);
     // Rutas del almacén
     Enrutador::get("Almacen", [InicioControlador::class, "alm"]);
     Enrutador::get("historial", [InicioControlador::class,"almacenhistrorial"]);
@@ -35,6 +37,7 @@
     // Rutas de Tics
     Enrutador::get("Tics", [InicioControlador::class,"tics"]);
     Enrutador::get("pendientes", [InicioControlador::class,"ticspendientes"]);
+    Enrutador::get("GestiondeAuxiliares",[InicioControlador::class, "gestiondeauxiliares"]);
     Enrutador::get("ver_caso", [InicioControlador::class,"ver_caso"]);
     // ruta de perfil
     Enrutador::get("perfil", [InicioControlador::class,"perfil"]);
