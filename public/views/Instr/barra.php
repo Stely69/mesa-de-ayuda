@@ -7,11 +7,12 @@
                 </svg>
             </button>
             </div>
-            <h1 class="text-2xl font-bold mb-6">Admin SENA</h1>
+            <h1 class="text-2xl font-bold mb-6">Instructor</h1>
             <nav class="flex flex-col space-y-3">
             <a href="../" class="p-2 hover:bg-white hover:text-senaGreen rounded">Inicio</a>
-            <a href="instructores" class="p-2 bg-white text-senaGreen rounded">a</a>
-            <a href="" class="p-2 hover:bg-white hover:text-senaGreen rounded">a</a>
+            <a href="RegistarCasoGeneral" class="p-2 hover:bg-white hover:text-senaGreen rounded">Registrar caso equipos</a>
+            <a href="instructores" class="p-2 bg-white text-senaGreen rounded">Registrar caso generar</a>
+            <a href="" class="p-2 hover:bg-white hover:text-senaGreen rounded">Historial de caso</a>
             <hr class="border-white opacity-30">
             <?php if (isset($_SESSION["id"])): ?>
                 <a href="../Perfi/perfil" class="p-2 hover:bg-white hover:text-senaGreen rounded">Bienvenido, <?php echo $_SESSION["nombres"]; ?></a>
