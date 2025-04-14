@@ -50,7 +50,7 @@
             <h1 class="text-2xl font-bold mb-6">Admin SENA</h1>
             <nav class="flex flex-col space-y-3">
                 <a href="../" class="p-2 hover:bg-white hover:text-senaGreen rounded">Inicio</a>
-                <a href="instructores" class="p-2 hover:bg-white hover:text-senaGreen rounded">Instructores</a>
+                <a href="GestiondeAuxiliares" class="p-2 hover:bg-white hover:text-senaGreen rounded">Gestion de Auxiliares</a>
                 <a href="pendientes" class="p-2 hover:bg-white hover:text-senaGreen rounded">Casos</a>
                 <hr class="border-white opacity-30">
                 <?php if (isset($_SESSION["id"])): ?>
@@ -70,11 +70,11 @@
                 <table class="min-w-full border border-gray-300 text-sm md:text-base">
                     <thead class="bg-gray-100 text-gray-700">
                         <tr>
-                            <th class="py-3 px-5 text-left">Equipo</th>
-                            <th class="py-3 px-5 text-left">Ubicación</th>
-                            <th class="py-3 px-5 text-left">Descripción</th>
-                            <th class="py-3 px-5 text-left">Estado</th>
-                            <th class="py-3 px-5 text-center">Fecha</th>
+                            <th class="py-3 px-5 text-left">Fecha</th>
+                            <th class="py-3 px-5 text-left">Ambiente</th>
+                            <th class="py-3 px-5 text-left">Asunto</th>
+                            <th class="py-3 px-5 text-left">Rol</th>
+                            <th class="py-3 px-5 text-center">Estado</th>
                             <th class="py-3 px-5 text-center">Acción</th>
                         </tr>
                     </thead>
@@ -85,15 +85,15 @@
                             } else {
                                 foreach ($listadecasos as $caso) {
                                     echo "<tr class='border-t'>";
-                                    echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['producto_id']) . "</td>";
+                                    echo "<td class='py-2 px-4'>" . htmlspecialchars($caso["fecha_creacion"]) ."</td>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['ambiente_id']) . "</td>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['descripcion']) . "</td>";
+                                    echo "<td class='py-2 px-4'>    ". htmlspecialchars($caso["usuario_id"]) . "</td>";
                                     if ($caso["estado_id"] == "1") {
                                         echo "<td class='text-[#39A900] py-2 px-4'>Pendiente</td>";
                                     } else {
                                         echo "<td class='text-red-600 py-2 px-4'>Resuelto</td>";
                                     }
-                                    echo "<td class='py-2 px-4 text-center'>" . htmlspecialchars($caso["fecha_creacion"]) . "</td>";
                                     echo "<td class='py-2 px-4 text-center'>";
                                     echo "<a href=\"ver_caso?id=" . htmlspecialchars($caso['id']) . "\" class=\"px-4 py-2 bg-[#39A900] text-white rounded-xl font-bold shadow hover:bg-green-600 transition-all\">Ver</a>";
                                     echo "</td>";
