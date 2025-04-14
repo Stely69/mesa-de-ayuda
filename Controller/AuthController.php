@@ -127,7 +127,7 @@
                                                 box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
                                             }
                                             .header {
-                                                background-color: #3498db;
+                                                background-color: #39A900;
                                                 color: white;
                                                 padding: 15px;
                                                 font-size: 20px;
@@ -141,7 +141,7 @@
                                             }
                                             .button {
                                                 display: inline-block;
-                                                background-color: #3498db;
+                                                background-color: #39A900;
                                                 color: white;
                                                 padding: 12px 20px;
                                                 font-size: 16px;
@@ -151,7 +151,7 @@
                                                 margin-top: 15px;
                                             }
                                             .button:hover {
-                                                background-color: #217dbb;
+                                                background-color: #2f8800;
                                             }
                                             .footer {
                                                 margin-top: 20px;
