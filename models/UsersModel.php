@@ -142,4 +142,12 @@
             return $resultado['total'];
         }
         
+        public function getticsauxiliar(){
+            $stmt = $this->conn->prepare('SELECT * FROM usuarios WHERE rol_id = 5');
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
+
+
+    
