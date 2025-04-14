@@ -29,9 +29,9 @@
                 </div>
             </div>
             <div class="max-w-3xl mx-auto bg-white p-6 sm:p-10 rounded-2xl shadow-lg">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">📋 Reportar Falla</h2>
+                <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">📋 Reportar Caso</h2>
 
-                <form id="formReporteFalla" method="POST" class="space-y-6">
+                <form id="formReporteFalla" method="POST" class="space-y-6" enctype="multipart/form-data">
                     <input type="hidden" name="usuario_id" value="<?= $_SESSION['id'] ?>">
 
                     <div class="lg:grid lg:grid-cols-2 gap-6">
@@ -73,6 +73,11 @@
                     <div>
                         <label class="block text-gray-700 font-medium mb-1">Descripción de la falla</label>
                         <textarea name="descripcion" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 resize-none" rows="4" placeholder="Describe la falla..."></textarea>
+                    </div>
+
+                    <div>
+                        <label for="imagen" class="block font-semibold">Subir imagen del problema:</label>
+                        <input type="file" name="imagen" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"/>
                     </div>
 
                     <!-- Mensaje de éxito -->
