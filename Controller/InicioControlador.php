@@ -35,6 +35,13 @@
             $this->cargarVista("Instr/ReportarFallaAction");
         }
 
+        public function historialcasos() {
+            $this->cargarVista("Instr/historialcasos");
+        }
+        
+        public function registarcasogeneral() {
+            $this->cargarVista("Instr/RegistarCasoGeneral");
+        }
 
         public function gestiondeusuarios() {
             $this->cargarVista("Admin/GestiondeUsuarios");
@@ -109,6 +116,10 @@
 
         public function ver_caso(){
             $this->cargarVista("Tics/ver_caso");
+        }
+
+        public function gestiondeauxiliares(){
+            $this->cargarVista("Tics/GestiondeAuxiliares");
         }
 
         public function perfil(){
