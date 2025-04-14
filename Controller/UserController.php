@@ -14,11 +14,22 @@
         public function Createuser($documento, $nombres,$apellido ,$correo, $Contraseña, $rol){
             $password = password_hash($Contraseña, PASSWORD_DEFAULT);
             if (!$this->conn->createUser($documento, $nombres,$apellido, $correo, $password, $rol)){
-                header('Location: GestiondeUsuarios?alert=success&mensaje='. urlencode('Usuario Creado'));
+                header('Location: GestiondeAuxiliares?alert=success&mensaje='. urlencode('Usuario Creado'));
                 exit();
             }
+            
+            header('Location: GestiondeAuxiliares?alert=error&mensaje='. urlencode('Usuario No Creado'));
+            exit();
+        }
 
-            header('Location: GestiondeUsuarios?alert=error&mensaje='. urlencode('Usuario No Creado'));
+        public function CreateuserAuxiliar($documento, $nombres,$apellido ,$correo, $Contraseña, $rol){
+            $password = password_hash($Contraseña, PASSWORD_DEFAULT);
+            if (!$this->conn->createUser($documento, $nombres,$apellido, $correo, $password, $rol)){
+                header('Location: GestiondeAuxiliares?alert=success&mensaje='. urlencode('Usuario Creado'));
+                exit();
+            }
+            
+            header('Location: GestiondeAuxiliares?alert=error&mensaje='. urlencode('Usuario No Creado'));
             exit();
         }
 
@@ -96,4 +107,18 @@
             return $this->conn->contarUsuarios();
         }
 
+        public function getUserAuxiliar(){
+            return $this->conn->getticsauxiliar() ;
+        }
+
+    }
+
+    Class UserRole{
+        private $conn;
+        public function __construct(){
+            $this->conn = new UserRole();
+        }
+       // public function getRolesDetalle(){
+        //return $this->conn->getRolesAuxiliar() ;
+        //}
     }
