@@ -6,7 +6,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 $casoController = new CasoController();
-$resultado = $casoController->createCaso($_POST['ambiente_id'],$_POST['usuario_id'] , $_POST['producto_id'],1, $_POST['rol'], $_POST['descripcion'] );
+$resultado = $casoController->createCaso($_POST['ambiente_id'],$_POST['usuario_id'] , $_POST['producto_id'],1, $_POST['rol'], $_POST['descripcion'] , $_FILES['imagen']);
+
 
 if ($resultado) {  // Si la inserción fue exitosa
     echo json_encode(["success" => true, "message" => "Caso registrado correctamente"]);
