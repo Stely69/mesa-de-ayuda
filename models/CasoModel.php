@@ -40,14 +40,14 @@
             }
         }
 
-        public function registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion,$nota_tecnica,$imagen) {
+        public function registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion,$imagen) {
             try {
-                $sql = "INSERT INTO casos (ambiente_id, usuario_id, producto_id, estado_id, asignado_a, descripcion,nota_tecnica,imagen,fecha_creacion) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?,?,NOW())";
+                $sql = "INSERT INTO casos (ambiente_id, usuario_id, producto_id, estado_id,asignado_a, descripcion,imagen,fecha_creacion) 
+                        VALUES (?, ?, ?, ?, ?, ?,?,NOW())";
                 $stmt = $this->conn->prepare($sql);
-                $stmt->execute([$ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion, $nota_tecnica,$imagen]);
+                $stmt->execute([$ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion,$imagen]);
                 
-                return ["success" => true, "message" => "Caso registrado correctamente"];
+                return ["success" => true, "message" => "Caso registrado correctamente en la base de datos"];
             } catch (PDOException $e) {
                 return ["error" => true, "message" => $e->getMessage()];
             }
@@ -91,17 +91,17 @@
         }
         
 
-        public function registrarCasoGeneral($ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion,$asunto,$imagen) {
-            try {
-                $sql = "INSERT INTO casos (ambiente_id, usuario_id, producto_id, estado_id, asignado_a, descripcion,asunto,imagen,fecha_creacion) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?,?,NOW())";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->execute([$ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion, $asunto,$imagen]);
+        public function CreateCasoGeneral($ambiente_id,$asunto,$descripcion,$estado_id,$instructor_id,$area_asignada,$asignado_a) {
+            try {   
+                $query = 'INSERT INTO casos_generales (ambiente_id, asunto, descripcion, estado_id, instructor_id, area_asignada, asignado_a, fecha_creacion)
+                VALUES (?, ?, ?, ?, ?, ?, ?,now())';
+                $stmt = $this->conn->prepare($query);
+                $stmt->execute([$ambiente_id, $asunto, $descripcion, $estado_id, $instructor_id, $area_asignada, $asignado_a]);
                 
-                return ["success" => true, "message" => "Caso registrado correctamente"];
             } catch (PDOException $e) {
-                return ["error" => true, "message" => $e->getMessage()];
+                return false; // Error al registrar el caso
             }
         }
+
     }
 
