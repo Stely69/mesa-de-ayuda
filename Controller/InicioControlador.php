@@ -43,6 +43,10 @@
             $this->cargarVista("Instr/RegistarCasoGeneral");
         }
 
+        public function registrarcasogeneralaction() {
+            $this->cargarVista("Instr/CasoGeneralAction");
+        }
+
         public function gestiondeusuarios() {
             $this->cargarVista("Admin/GestiondeUsuarios");
         }
