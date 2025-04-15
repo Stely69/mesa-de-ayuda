@@ -29,10 +29,19 @@
             <div class="max-w-3xl mx-auto bg-white p-6 sm:p-10 rounded-2xl shadow-lg">
                 <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">📋 Reportar Caso general</h2>
 
-                <form id="CasoGeneralAction" method="POST" class="space-y-6" enctype="multipart/form-data">
+                <form action="CasoGeneralAction" method="POST" class="space-y-6" ">
                     <input type="hidden" name="usuario_id" value="<?= $_SESSION['id'] ?>">
 
                     <div class="lg:grid lg:grid-cols-1 gap-6">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Ambiente: </label>
+                            <select name="ambiente_id" id="ambiente_id" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400">
+                                <option value="">Selecciona un ambiente</option>
+                                <?php foreach ($casoController->getAmbientes() as $ambiente): ?>
+                                    <option value="<?= $ambiente['id'] ?>"><?= $ambiente['nombre'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                         <!-- Ambiente -->
                         <div>
                             <label class="block text-gray-700 font-medium mb-1 ">Asunto: </label>
@@ -47,8 +56,12 @@
 
                         <!-- Rol -->
                         <div>
-                            <label class="block text-gray-700 font-medium mb-1">Imagen:(Opcional)</label>
-                            <input type="file" name="imagen" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"/>
+                            <label class="block text-gray-700 font-medium mb-1">Rol: </label>
+                            <select name="area_asignada" id="area_asignada" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400">
+                                <option value="">Selecciona un rol</option>
+                                <option value="3">Tics</option>
+                                <option value="4">Almacen</option>
+                            </select>
                         </div>
 
                         <!-- Estado oculto -->
@@ -56,7 +69,10 @@
                     </div>
 
                     <!-- Mensaje de éxito -->
-                    <div id="mensajeExito" class="hidden text-green-600 font-medium"></div>
+                    <div id="alerta" class="hidden text-green-600 font-medium">
+                        <span id="mensajeAlerta"></span>
+                        <button onclick="cerrarAlerta()" class="ml-4 font-bold text-lg leading-none focus:outline-none">&times;</button>
+                    </div>
 
                     <!-- Botón -->
                     <div class="text-center">
@@ -68,5 +84,44 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function mostrarAlerta(tipo, mensaje) {
+            const alerta = document.getElementById('alerta');
+            const mensajeAlerta = document.getElementById('mensajeAlerta');
+
+            alerta.className = 'p-4 mb-4 rounded-lg text-sm flex items-center justify-between';
+
+            if (tipo === 'success') {
+                alerta.classList.add('bg-green-100', 'text-green-700', 'border', 'border-green-300');
+            } else if (tipo === 'error') {
+                alerta.classList.add('bg-red-100', 'text-red-700', 'border', 'border-red-300');
+            }
+
+            mensajeAlerta.textContent = mensaje;
+            alerta.classList.remove('hidden');
+
+            setTimeout(() => {
+                alerta.classList.add('hidden');
+            }, 5000);
+        }
+
+        function cerrarAlerta() {
+            document.getElementById('alerta').classList.add('hidden');
+        }
+
+        // Mostrar alerta si viene por URL
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const tipo = params.get('alert');
+            const mensaje = params.get('mensaje');
+
+            if (tipo && mensaje) {
+                mostrarAlerta(tipo, decodeURIComponent(mensaje));
+                // Limpia los parámetros de la URL sin recargar
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+    </script>
 </body>
 </html>
