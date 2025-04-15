@@ -3,4 +3,4 @@
 
     $casoController = new CasoController();
     
-    $create = $casoController->createCasoGeneral($_POST['asunto'], $_POST['descripcion'], $_FILES['imagen'], $_POST['usuario_id'], $_POST['estado']);
+    $casoController->createCasoGeneral($_POST['ambiente_id'], $_POST['asunto'], $_POST['descripcion'], $_POST['estado'], $_POST['usuario_id'], $_POST['area_asignada']);
