@@ -93,7 +93,7 @@
                 $mail->Host = 'smtp.gmass.co.'; 
                 $mail->SMTPAuth = true;
                 $mail->Username = 'soportetics876@gmail.coms';
-                $mail->Password = '';
+                $mail->Password = $_ENV['password'];
                 $mail->SMTPSecure = 'tls';
                 $mail->Port = 587;
                 $mail->setLanguage('es', '../PHPMailer/language/');
@@ -104,7 +104,7 @@
                 $mail->Subject = "=?UTF-8?B?" . base64_encode("Recuperación de contraseña") . "?=";
                 
                 $mail->isHTML(true);
-                $mail->Body = $mail->isHTML(true);
+                // Removed redundant assignment of void return value
                 $mail->Body = "
                             <html>
                                     <head>
