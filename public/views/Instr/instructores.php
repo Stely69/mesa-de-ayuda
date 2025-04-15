@@ -113,7 +113,7 @@
                             let opciones = '<option value="">-- Seleccionar --</option>';
                             if (response.length > 0) {
                                 response.forEach(producto => {
-                                    opciones += `<option value="${producto.id}">${producto.nombre} (Placa: ${producto.numero_placa})</option>`;
+                                    opciones += `<option value="${producto.id}">${producto.clase_id} (Placa: ${producto.numero_placa})</option>`;
                                 });
                             } else {
                                 opciones = '<option>No hay productos disponibles</option>';
@@ -138,14 +138,14 @@
                     dataType: "json",
                     success: function (response) {
                         if (response.success) {
-                            $("#mensajeExito").removeClass("hidden").text("✅ Falla reportada con éxito.");
+                            $("#mensajeExito").removeClass("hidden").text("✅ Caso reportada con éxito.");
                             $("#formReporteFalla")[0].reset();
                         } else {
                             $("#mensajeExito").removeClass("hidden").text("❌ Error: " + response.message).addClass("text-red-600").removeClass("text-green-600");
                         }
                     },
                     error: function () {
-                        $("#mensajeExito").removeClass("hidden").text("❌ Error al conectar con el servidor.").addClass("text-red-600").removeClass("text-green-600");
+                        $("#mensajeExito").removeClass("hidden").text("❌ Error al conectar con el servidor. ").addClass("text-red-600").removeClass("text-green-600");
                     }
                 });
             });
