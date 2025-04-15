@@ -27,6 +27,7 @@
     Enrutador::post("ReportarFallaAction", [InicioControlador::class,"registrarCaso"]);
     Enrutador::get("historialcasos", [InicioControlador::class,"historialcasos"]);
     Enrutador::get("RegistarCasoGeneral", [InicioControlador::class,"registarcasogeneral"]);
+    Enrutador::post("CasoGeneralAction", [InicioControlador::class,"registrarcasogeneralaction"]);
     // Rutas del almacén
     Enrutador::get("Almacen", [InicioControlador::class, "alm"]);
     Enrutador::get("historial", [InicioControlador::class,"almacenhistrorial"]);
