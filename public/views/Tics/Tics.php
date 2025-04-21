@@ -3,6 +3,7 @@
     $casos = new CasoController();
     $listadecasos = $casos->getCasos();
     // var_dump($listadecasos);
+    $listadecasosgenerales = $casos->getCasosGeneral();
     session_start();
 ?>
 <!DOCTYPE html>
@@ -88,7 +89,45 @@
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso["fecha_creacion"]) ."</td>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['ambiente_id']) . "</td>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['descripcion']) . "</td>";
-                                    echo "<td class='py-2 px-4'>    ". htmlspecialchars($caso["usuario_id"]) . "</td>";
+                                    echo "<td class='py-2 px-4'>    ". htmlspecialchars($caso["instructor_id"]) . "</td>";
+                                    if ($caso["estado_id"] == "1") {
+                                        echo "<td class='text-[#39A900] py-2 px-4'>Pendiente</td>";
+                                    } else {
+                                        echo "<td class='text-red-600 py-2 px-4'>Resuelto</td>";
+                                    }
+                                    echo "<td class='py-2 px-4 text-center'>";
+                                    echo "<a href=\"ver_caso?id=" . htmlspecialchars($caso['id']) . "\" class=\"px-4 py-2 bg-[#39A900] text-white rounded-xl font-bold shadow hover:bg-green-600 transition-all\">Ver</a>";
+                                    echo "</td>";
+                                    echo "</tr>";
+                                }
+                            }
+                        ?>
+                    </tbody>
+                </table>
+
+                <h3 class="text-xl md:text-2xl font-bold text-[#39A900] mb-6 py-4">Listado de Casos Generales</h3>
+                <table class="min-w-full border border-gray-300 text-sm md:text-base">
+                    <thead class="bg-gray-100 text-gray-700">
+                        <tr>
+                            <th class="py-3 px-5 text-left">Fecha</th>
+                            <th class="py-3 px-5 text-left">Ambiente</th>
+                            <th class="py-3 px-5 text-left">Asunto</th>
+                            <th class="py-3 px-5 text-left">Rol</th>
+                            <th class="py-3 px-5 text-center">Estado</th>
+                            <th class="py-3 px-5 text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php    
+                            if (!is_array($listadecasosgenerales) || empty($listadecasosgenerales)) {
+                                echo "<tr><td colspan='6' class='text-center py-4'>No hay casos registrados</td></tr>";
+                            } else {
+                                foreach ($listadecasosgenerales as $caso) {
+                                    echo "<tr class='border-t'>";
+                                    echo "<td class='py-2 px-4'>" . htmlspecialchars($caso["fecha_creacion"]) ."</td>";
+                                    echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['ambiente_id']) . "</td>";
+                                    echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['asunto']) . "</td>";
+                                    echo "<td class='py-2 px-4'>    ". htmlspecialchars($caso["instructor_id"]) . "</td>";
                                     if ($caso["estado_id"] == "1") {
                                         echo "<td class='text-[#39A900] py-2 px-4'>Pendiente</td>";
                                     } else {
@@ -104,6 +143,8 @@
                     </tbody>
                 </table>
             </div>
+
+            
 
             <!-- Buscar por Ambiente -->
             <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all mt-10">
