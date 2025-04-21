@@ -103,5 +103,33 @@
             }
         }
 
+        public function getUser($id) {
+            $query = "SELECT * FROM usuarios WHERE id = :id";
+            $stmt = $this->conn->prepare($query);   
+            $stmt->bindParam(":id", $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        public function getCorreosTics() {
+            $query = "SELECT correo FROM users WHERE rol_id = (SELECT id FROM roles WHERE nombre = 'Tics')";
+            $stmt = $this->conn->query($query);
+            return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        }
+
+        public function getCasosGeneral(){
+            $query = 'SELECT * FROM casos_generales';
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function getCasoGeneral($id) {
+            $query = 'SELECT * FROM casos_generales WHERE id = :id';
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
     }
 
