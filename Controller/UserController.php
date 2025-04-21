@@ -111,14 +111,8 @@
             return $this->conn->getticsauxiliar() ;
         }
 
-    }
-
-    Class UserRole{
-        private $conn;
-        public function __construct(){
-            $this->conn = new UserRole();
+        public function gettics(){
+            return $this->conn->gettics() ;
         }
-       // public function getRolesDetalle(){
-        //return $this->conn->getRolesAuxiliar() ;
-        //}
+
     }
