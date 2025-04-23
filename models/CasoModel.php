@@ -97,12 +97,32 @@
         }
 
         public function getCaso($id) {
-            $query = 'SELECT * FROM casos WHERE id = :id';
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':id', $id);
+            $sql = "
+                SELECT  c.id,
+                        c.descripcion,
+                        c.fecha_creacion,
+                        a.nombre        AS ambiente,
+                        p.numero_placa  AS producto,
+                        e.estado AS estado,
+                        e.id            AS estado_id, 
+                        u.nombres       AS instructor,
+                        ua.nombres      AS asignado_a,
+                        c.imagen
+                FROM   casos c
+                JOIN   ambientes       a  ON c.ambiente_id = a.id
+                JOIN   productos       p  ON c.producto_id = p.id
+                JOIN   estados_casos   e  ON c.estado_id   = e.id
+                JOIN   usuarios        u  ON c.instructor_id  = u.id
+                LEFT  JOIN usuarios    ua ON c.asignado_a  = ua.id
+                WHERE  c.id = :id
+                LIMIT  1";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
+        
         
 
         public function CreateCasoGeneral($ambiente_id,$asunto,$descripcion,$estado_id,$instructor_id,$area_asignada,$asignado_a) {
@@ -154,11 +174,51 @@
         }
 
         public function getCasoGeneral($id) {
-            $query = 'SELECT * FROM casos_generales WHERE id = :id';
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':id', $id);
+            $sql = "
+                SELECT  cg.id,
+                        cg.asunto,
+                        cg.descripcion,
+                        cg.fecha_creacion,                              -- ajusta si tu columna se llama distinto
+                        a.nombre           AS ambiente,
+                        e.id               AS estado_id,       -- id del estado
+                        e.estado   AS estado,          -- nombre legible del estado
+                        iu.nombres         AS instructor,      -- quien reporta
+                        au.nombres         AS asignado_a       -- responsable (puede ser NULL)
+                FROM   casos_generales cg
+                JOIN   ambientes       a  ON cg.ambiente_id   = a.id
+                JOIN   estados_casos        e  ON cg.estado_id     = e.id
+                JOIN   usuarios          iu ON cg.instructor_id = iu.id
+                LEFT  JOIN usuarios       au ON cg.asignado_a    = au.id
+                WHERE  cg.id = :id
+                LIMIT  1";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        
+
+        public function updateCasoStatus($id, $estado_id) {
+            try {
+            $query = "UPDATE casos SET estado_id = ? WHERE id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([$estado_id, $id]);
+            return ["success" => true, "message" => "Estado del caso actualizado correctamente"];
+            } catch (PDOException $e) {
+            return ["error" => true, "message" => $e->getMessage()];
+            }
+        }
+
+        public function updateCasoGeneralStatus($id, $estado_id) {
+            try {
+            $query = "UPDATE casos_generales SET estado_id = ? WHERE id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([$estado_id, $id]);
+            return ["success" => true, "message" => "Estado del caso general actualizado correctamente"];
+            } catch (PDOException $e) {
+            return ["error" => true, "message" => $e->getMessage()];
+            }
         }
     }
 
