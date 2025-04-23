@@ -22,6 +22,7 @@ if (!$caso) {
   exit;
 }
 
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
