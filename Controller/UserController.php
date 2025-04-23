@@ -14,11 +14,11 @@
         public function Createuser($documento, $nombres,$apellido ,$correo, $Contraseña, $rol){
             $password = password_hash($Contraseña, PASSWORD_DEFAULT);
             if (!$this->conn->createUser($documento, $nombres,$apellido, $correo, $password, $rol)){
-                header('Location: GestiondeAuxiliares?alert=success&mensaje='. urlencode('Usuario Creado'));
+                header('Location: GestiondeUsuarios?alert=success&mensaje='. urlencode('Usuario Creado'));
                 exit();
             }
             
-            header('Location: GestiondeAuxiliares?alert=error&mensaje='. urlencode('Usuario No Creado'));
+            header('Location: GestiondeUsuarios?alert=error&mensaje='. urlencode('Usuario No Creado'));
             exit();
         }
 
@@ -46,7 +46,7 @@
         public function Updatestatus($id, $status) {
             $deid = openssl_decrypt($id, AES, key);
             if ($this->conn->updateStatus($deid, $status)) {
-                header('Location:  Gestión de Usuarios?alert=error&mensaje='. urlencode("Estado No Actualizado"));
+                header('Location:  GestióndeUsuarios?alert=error&mensaje='. urlencode("Estado No Actualizado"));
                 exit();
             }else {
                 header('location: GestiondeUsuarios?alert=success&mensaje='. urlencode('Estado Actualizado'));
@@ -56,10 +56,10 @@
 
         public function Deleteuser($id){
             if (!$this->conn->deleteUser($id)){
-                header('Location: GestiondeUsuarios?alert=error&mensaje='. urlencode('Usuario No Eliminado'));
+                header('Location: GestiondeUsuarios?alert=success&mensaje='. urlencode('Usuario Eliminado'));
                 exit();
             }   
-           header('Location: GestiondeUsuarios?alert=success&mensaje='. urlencode('Usuario Eliminado'));
+           header('Location: GestiondeUsuarios?alert=error&mensaje='. urlencode('Usuario No Eliminado'));
            exit();
         }
 
