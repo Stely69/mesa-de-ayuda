@@ -24,7 +24,7 @@
             <span>Inicio</span>
         </a>
         <a href="GestiondeAuxiliares" class="p-2 hover:bg-white hover:text-senaGreen rounded">Gestion de Auxiliares</a>
-        <a href="pendientes" class="p-2 hover:bg-white hover:text-senaGreen rounded">Casos</a>
+        <a href="#" class="p-2 hover:bg-white hover:text-senaGreen rounded">Casos</a>
         <hr class="border-white opacity-30">
         <?php if (isset($_SESSION["id"])): ?>
             <a href="../Perfi/perfil" class="p-2 hover:bg-white hover:text-senaGreen rounded">
