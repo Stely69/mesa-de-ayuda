@@ -24,7 +24,7 @@
                     <?php
                         require_once __DIR__ . '../../../../Controller/CasoController.php';
                         $controller = new CasoController();
-                        $ambientes = $controller->allambientes();
+                        //$ambientes = $controller->allambientes();
                         
                         foreach ($ambientes as $ambiente) {
                             echo "<option value='" . $ambiente['id'] . "'>" . $ambiente['nombre'] . "</option>";
