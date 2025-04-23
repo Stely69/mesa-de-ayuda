@@ -67,9 +67,23 @@
             return $stmt->fetchAll();
         }
 
-        public function getCasos(){
-            $query = 'SELECT * FROM casos';
-
+        public function getCasos() {
+            $query = '
+                SELECT  c.id,
+                        a.nombre          AS ambiente,
+                        u.nombres         AS usuario,
+                        p.numero_placa    AS producto,
+                        e.estado   AS estados_casos,
+                        c.asignado_a,
+                        c.descripcion,
+                        c.imagen,
+                        c.fecha_creacion
+                FROM   casos c
+                JOIN   ambientes      a ON c.ambiente_id = a.id
+                JOIN   usuarios       u ON c.instructor_id  = u.id
+                JOIN   productos      p ON c.producto_id = p.id
+                JOIN   estados_casos  e ON c.estado_id   = e.id';
+        
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -117,8 +131,23 @@
             return $stmt->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        public function getCasosGeneral(){
-            $query = 'SELECT * FROM casos_generales';
+        public function getCasosGeneral() {
+            $query = "
+                SELECT  cg.id,
+                        cg.asunto,
+                        cg.descripcion,
+                        cg.fecha_creacion,                         -- si tu campo se llama distinto, cámbialo
+                        a.nombre          AS ambiente,
+                        e.estado   AS estado,
+                        iu.nombres        AS instructor,
+                        au.nombres        AS asignado_a
+                FROM   casos_generales cg
+                JOIN   ambientes       a  ON cg.ambiente_id   = a.id
+                JOIN   estados_casos       e  ON cg.estado_id     = e.id
+                JOIN   usuarios          iu ON cg.instructor_id = iu.id
+                LEFT JOIN usuarios       au ON cg.asignado_a    = au.id
+                ORDER BY cg.fecha_creacion DESC";
+            
             $stmt = $this->conn->prepare($query);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
