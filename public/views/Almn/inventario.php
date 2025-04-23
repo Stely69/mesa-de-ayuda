@@ -1,10 +1,19 @@
 <?php
     require_once __DIR__ . '../../../../Controller/CasoController.php';
     require_once __DIR__ .'../../../../Controller/ProductoController.php';
+
+    $ambiente_id = isset($_GET['ambiente_id']) ? $_GET['ambiente_id'] : null;
+
     $controller = new CasoController();
     $controllerP = new ProductoController();
     $ambientes = $controller->getAmbientes();
     $marcas = $controllerP->getClase();
+    $productos = $controllerP->obtenerCategoria($ambiente_id);
+    $productos_agrupados = [];
+    foreach ($productos as $producto) {
+        $productos_agrupados[$producto['nombre_ambiente']][$producto['nombre_clase']][] = $producto;
+    }
+    //var_dump($productos_agrupados);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -28,18 +37,13 @@
                 <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all">
                     <h3 class="text-xl font-bold text-[#39A900] mb-4">Buscar por Ambiente</h3>
                     <label for="ambiente" class="block text-gray-700 font-semibold mb-2">Selecciona un ambiente:</label>
-                    <select id="ambiente" class="p-3 border rounded-md w-full bg-gray-100">
+                    <select id="filtroAmbiente" class="p-3 border rounded-md w-full bg-gray-100">
                         <option value="">-- Seleccionar --</option>
-                        <option value="101">Ambiente 101</option>
-                        <option value="102">Ambiente 102</option>
-                        <option value="103">Ambiente 103</option>
-                        <option value="104">Ambiente 104</option>
-                        <option value="105">Ambiente 105</option>
-                        <option value="106">Ambiente 106</option>
-                        <option value="107">Ambiente 107</option>
-                        <option value="108">Ambiente 108</option>
-                        <option value="109">Ambiente 109</option>
-                        <option value="110">Ambiente 110</option>
+                        <?php
+                            foreach ($ambientes as $ambiente) {
+                                echo "<option value='" . $ambiente['id'] . "'>" . $ambiente['nombre'] . "</option>";
+                            }
+                        ?>
                     </select>
                     <button class="mt-4 bg-[#39A900] text-white px-4 py-2 rounded-md w-full font-bold hover:bg-green-700">Buscar</button>
                 </div>
@@ -53,11 +57,25 @@
                 </div>
             </div>
 
-            <div id="inventario" class="bg-white p-6 rounded-md shadow hidden mt-6">
-                <h2 class="text-2xl font-semibold text-[#39A900] mb-4">Inventario del Ambiente <span id="num-ambiente"></span></h2>
-                <div id="lista-inventario" class="grid grid-cols-3 gap-4"></div>
-                <button class="mt-4 bg-[#39A900] text-white px-4 py-2 rounded-md w-full font-bold hover:bg-green-700">Inventario General del Ambiente</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto" id="productosContainer">
+                <h1></h1>
+                <?php foreach ($productos_agrupados as $ambiente => $clases): ?>
+                    <?php foreach ($clases as $clase => $productos): ?>
+                        <?php foreach ($productos as $producto): ?>
+                            <div class="bg-white p-4 rounded-lg shadow-md" data-ambiente="<?php echo $ambiente; ?>">
+                                <h3 class="text-lg font-bold text-gray-800"><?php echo $producto['nombre_clase']; ?></h3>
+                                <p class="text-gray-600">ID: <?php echo $producto['id']; ?></p>
+                                <p class="text-gray-600">Número de Placa: <?php echo $producto['numero_placa']; ?></p>
+                                <p class="text-gray-600">Serial: <?php echo $producto['serial']; ?></p>
+                                <p class="text-gray-600">Descripción: <?php echo $producto['descripcion']; ?></p>
+                                <p class="text-gray-600">Modelo: <?php echo $producto['modelo']; ?></p>
+                                <p class="text-gray-600 font-semibold">Cantidad: <?php //echo $producto['']; ?></p>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
             </div>
+
 
             <div class="flex justify-center mt-6">
                 <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all w-full max-w-md">
@@ -187,7 +205,14 @@
             setTimeout(() => {
                 document.getElementById('modal').classList.add('hidden');
             }, 200);
-        }
+        }  
+
+    </script>
+    <script>
+        document.getElementById("filtroAmbiente").addEventListener("change", function() {
+            let ambiente_id = this.value;
+            window.location.href = "?ambiente_id=" + ambiente_id;
+        });
     </script>
 </body>
 </html>
