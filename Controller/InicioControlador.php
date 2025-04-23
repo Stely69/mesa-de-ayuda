@@ -126,6 +126,10 @@
             $this->cargarVista("Tics/GestiondeAuxiliares");
         }
 
+        public function updatestatusa(){
+            $this->cargarVista("Tics/UpdatestatusAction");
+        }
+
         public function perfil(){
             $this->cargarVista("Perfi/perfil");
         }
