@@ -188,4 +188,14 @@
                 }
             }
         }
+
+        public function updateCasoStatus($id, $estado_id) {
+           if($this->conn->updateCasoStatus($id, $estado_id)){
+                header('Location: ../Inst/ver_caso?id='.$id.'&alert=success&mensaje='.urlencode('Estado actualizado correctamente'));
+                exit;
+            }else{
+                header('Location: ../Inst/ver_caso?id='.$id.'&alert=error&mensaje='.urlencode('Error al actualizar el estado'));
+                exit;
+           }
+        }
     }
