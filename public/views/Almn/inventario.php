@@ -8,7 +8,7 @@
     $controllerP = new ProductoController();
     $ambientes = $controller->getAmbientes();
     $marcas = $controllerP->getClase();
-    $productos = $controllerP->obtenerCategoria($ambiente_id);
+    //$productos = $controllerP->obtenerCategoria($ambiente_id);
     $productos_agrupados = [];
     foreach ($productos as $producto) {
         $productos_agrupados[$producto['nombre_ambiente']][$producto['nombre_clase']][] = $producto;
