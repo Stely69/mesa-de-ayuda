@@ -126,39 +126,47 @@
             <!-- Tabla de Usuarios -->
             <div class="bg-white p-4 shadow rounded-md overflow-x-auto">
                 <h3 class="text-xl font-semibold text-gray-700 mb-4">Usuarios Registrados</h3>
+                <?php
+                    // Paginación
+                    $totalUsuarios = count($users);
+                    $usuariosPorPagina = 10;
+                    $totalPaginas = ceil($totalUsuarios / $usuariosPorPagina);
+                    $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+                    $inicio = ($paginaActual - 1) * $usuariosPorPagina;
+                    $usuariosPaginados = array_slice($users, $inicio, $usuariosPorPagina);
+                ?>
                 <table class="min-w-full text-sm text-left border">
                     <thead class="bg-gray-200 text-xs sm:text-sm">
                         <tr>
-                            <th class="p-2 border">Documento</th>
-                            <th class="p-2 border">Nombre</th>
-                            <th class="p-2 border">Apellido</th>
-                            <th class="p-2 border">Correo</th>
-                            <th class="p-2 border">Rol</th>
-                            <th class="p-2 border text-center">Acciones</th>
+                            <th class="px-4 py-2 border">Documento</th>
+                            <th class="px-4 py-2 border">Nombre</th>
+                            <th class="px-4 py-2 border">Apellido</th>
+                            <th class="px-4 py-2 border">Correo</th>
+                            <th class="px-4 py-2 border">Rol</th>
+                            <th class="px-4 py-2 border text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tablaUsuarios">
-                        <?php foreach ($users as $usuario): ?>
+                        <?php foreach ($usuariosPaginados as $usuario): ?>
                             <tr class="bg-gray-100" data-rol="<?= htmlspecialchars($usuario['rol_id']) ?>">
-                                <td class="p-2 border"><?= htmlspecialchars($usuario['documento']) ?></td>
-                                <td class="p-2 border"><?= htmlspecialchars($usuario['nombres']) ?></td>
-                                <td class="p-2 border"><?= htmlspecialchars($usuario['apellido']) ?></td>
-                                <td class="p-2 border"><?= htmlspecialchars($usuario['correo']) ?></td>
-                                <td class="p-2 border"><?= htmlspecialchars($usuario['rol']) ?></td>
-                                <td class="p-2 border text-center">
+                                <td class="px-4 py-2 border"><?= htmlspecialchars($usuario['documento']) ?></td>
+                                <td class="px-4 py-2 border"><?= htmlspecialchars($usuario['nombres']) ?></td>
+                                <td class="px-4 py-2 border"><?= htmlspecialchars($usuario['apellido']) ?></td>
+                                <td class="px-4 py-2 border"><?= htmlspecialchars($usuario['correo']) ?></td>
+                                <td class="px-4 py-2 border"><?= htmlspecialchars($usuario['rol']) ?></td>
+                                <td class="px-4 py-2 border text-center">
                                     <div class="flex flex-col sm:flex-row gap-2 items-center justify-center">
                                         <button onclick="editarUsuario('<?= htmlspecialchars(openssl_encrypt($usuario['id'], AES, key)) ?>', '<?= htmlspecialchars($usuario['nombres']) ?>', '<?= htmlspecialchars($usuario['apellido']) ?>', '<?= htmlspecialchars($usuario['correo']) ?>', '<?= htmlspecialchars($usuario['rol_id']) ?>')" class="bg-blue-500 text-white px-2 py-1 rounded">Editar</button>
-                                        
                                         <form action="UpdateStatus" method="POST">
-                                            <input type="hidden" name="id" value="<?= openssl_encrypt($usuario['id'], AES, key) ?>">
+                                            <input type="hidden" name="id" value="<?= htmlspecialchars(openssl_encrypt($usuario['id'], AES, key)) ?>">
                                             <select name="status" class="border p-1 rounded text-sm" onchange="this.form.submit()">
-                                                <option value="activo" <?= $usuario['estado'] == 'activo' ? 'selected' : '' ?>>Activo</option>
-                                                <option value="inactivo" <?= $usuario['estado'] == 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
+                                                <option value="activo" <?= $usuario['estado'] === 'activo' ? 'selected' : '' ?>>Activo</option>
+                                                <option value="inactivo" <?= $usuario['estado'] === 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
                                             </select>
                                         </form>
 
                                         <form action="DeleteAction" method="GET" onsubmit="return confirm('¿Estás seguro de eliminar a este usuario?');">
-                                            <input type="hidden" name="id" value="<?= openssl_encrypt($usuario['id'], AES , key) ?>">
+                                            <input type="hidden" name="id" value="<?= openssl_encrypt($usuario['id'], AES, key) ?>">
                                             <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded">🗑</button>
                                         </form>
                                     </div>
@@ -167,6 +175,21 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+
+                <!-- Paginación -->
+                <div class="flex justify-center mt-4">
+                    <?php if ($paginaActual > 1): ?>
+                        <a href="?pagina=<?= $paginaActual - 1 ?>" class="px-3 py-1 bg-gray-300 text-gray-700 rounded-l">Anterior</a>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                        <a href="?pagina=<?= $i ?>" class="px-3 py-1 <?= $i == $paginaActual ? 'bg-[#39A900] text-white' : 'bg-gray-300 text-gray-700' ?>"><?= $i ?></a>
+                    <?php endfor; ?>
+
+                    <?php if ($paginaActual < $totalPaginas): ?>
+                        <a href="?pagina=<?= $paginaActual + 1 ?>" class="px-3 py-1 bg-gray-300 text-gray-700 rounded-r">Siguiente</a>
+                    <?php endif; ?>
+                </div>
             </div>
         </main>
     </div>
