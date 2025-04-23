@@ -2,7 +2,6 @@
     require_once __DIR__ . '../../../../Controller/CasoController.php';
     $casos = new CasoController();
     $listadecasos = $casos->getCasos();
-    // var_dump($listadecasos);
     $listadecasosgenerales = $casos->getCasosGeneral();
     session_start();
 ?>
@@ -13,57 +12,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Casos - SENA</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!--Colores personalizados-->
+    <!-- Colores personalizados -->
     <script>
         tailwind.config = {
-        theme: {
-            extend: {
-            colors: {
-                senaGreen: '#39A900',
-                senaGreenDark: '#2f8800',
+            theme: {
+                extend: {
+                    colors: {
+                        senaGreen: '#39A900',
+                        senaGreenDark: '#2f8800',
+                    }
+                }
             }
-            }
-        }
         }
     </script>
 </head>
 <body class="bg-gray-100">
-    <!-- Botón hamburguesa -->
-    <div class="md:hidden p-4 bg-senaGreen text-white flex justify-between items-center">
-        <span class="font-bold text-lg">Admin SENA</span>
-        <button id="menuButton" class="focus:outline-none">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-        </button>
-    </div>
 
     <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="bg-senaGreen text-white w-64 p-6 space-y-4 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 md:relative md:block">
-            <div class="flex justify-end md:hidden -mt-4 -mr-4">
-                <button id="closeSidebar" class="text-white p-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            <h1 class="text-2xl font-bold mb-6">Admin SENA</h1>
-            <nav class="flex flex-col space-y-3">
-                <a href="../" class="p-2 hover:bg-white hover:text-senaGreen rounded">Inicio</a>
-                <a href="GestiondeAuxiliares" class="p-2 hover:bg-white hover:text-senaGreen rounded">Gestion de Auxiliares</a>
-                <a href="pendientes" class="p-2 hover:bg-white hover:text-senaGreen rounded">Casos</a>
-                <hr class="border-white opacity-30">
-                <?php if (isset($_SESSION["id"])): ?>
-                    <a href="../Perfi/perfil" class="p-2 hover:bg-white hover:text-senaGreen rounded">Bienvenido, <?php echo $_SESSION["nombres"]; ?></a>
-                <?php endif; ?>
-                <a href="../Login/LogoutAction" class="p-2 hover:bg-white hover:text-senaGreen rounded">Cerrar Sesión</a>
-            </nav>
-        </aside>
+        <!-- Sidebar separado -->
+        <?php include 'barra.php'; ?>
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 md:p-6 md:ml-15 overflow-auto">
-            <h2 class="text-2xl md:text-3xl font-semibold text-[#39A900] mb-6">Panel de Casos</h2>
+        <main class="flex-1 p-6 md:ml-30 mt-16 md:mt-0 overflow-auto">
+            <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
+                <div>
+                    <h2 class="text-3xl font-semibold text-[#39A900]">¡Bienvenido, Area Tics!</h2>
+                    <p class="text-gray-600" id="fechaHora"></p>
+                </div>
+                <div>
+                    <button id="notifBtn" class="relative animate-pulse-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C8.67 6.165 8 7.388 8 8.75V14.16c0 .538-.214 1.055-.595 1.435L6 17h5m4 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span id="notifCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">3</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Notificaciones -->
+            <div id="notifModal" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50 z-50">
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                    <h3 class="text-xl font-bold text-[#39A900] mb-4">Notificaciones Recientes</h3>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li>Se ha creado un nuevo caso para el ambiente 101.</li>
+                        <li>Se ha resuelto un caso en el ambiente 104.</li>
+                        <li>Nuevo reporte de fallos en el ambiente 107.</li>
+                    </ul>
+                    <button onclick="closeNotif()" class="mt-4 px-4 py-2 bg-gray-600 text-white rounded-xl font-bold hover:bg-gray-700">Cerrar</button>
+                </div>
+            </div>
 
             <!-- Listado de Casos -->
             <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-gray-200 mb-10 overflow-x-auto">
@@ -81,20 +78,28 @@
                     </thead>
                     <tbody>
                         <?php    
-                            if (!is_array($listadecasos) || empty($listadecasos)) {
+                            $itemsPerPage = 10; // Número de casos por página
+                            $totalItems = count($listadecasos);
+                            $totalPages = ceil($totalItems / $itemsPerPage);
+                            $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                            $currentPage = max(1, min($currentPage, $totalPages));
+                            $startIndex = ($currentPage - 1) * $itemsPerPage;
+
+                            $paginatedCasos = array_slice($listadecasos, $startIndex, $itemsPerPage);
+
+                            if (empty($paginatedCasos)) {
                                 echo "<tr><td colspan='6' class='text-center py-4'>No hay casos registrados</td></tr>";
                             } else {
-                                foreach ($listadecasos as $caso) {
+                                foreach ($paginatedCasos as $caso) {
                                     echo "<tr class='border-t'>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso["fecha_creacion"]) ."</td>";
-                                    echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['ambiente_id']) . "</td>";
+                                    echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['ambiente']) . "</td>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['descripcion']) . "</td>";
-                                    echo "<td class='py-2 px-4'>    ". htmlspecialchars($caso["instructor_id"]) . "</td>";
-                                    if ($caso["estado_id"] == "1") {
-                                        echo "<td class='text-[#39A900] py-2 px-4'>Pendiente</td>";
-                                    } else {
-                                        echo "<td class='text-red-600 py-2 px-4'>Resuelto</td>";
-                                    }
+                                    echo "<td class='py-2 px-4'>". htmlspecialchars($caso["usuario"]) . "</td>";
+                                    echo "<td class='p-2 border font-semibold " . 
+                                        ($caso['estados_casos'] === 'Resuelto' ? 'text-green-600' : 'text-red-600') . "'>" . 
+                                        htmlspecialchars($caso['estados_casos']) . 
+                                    "</td>";
                                     echo "<td class='py-2 px-4 text-center'>";
                                     echo "<a href=\"ver_caso?id=" . htmlspecialchars($caso['id']) . "\" class=\"px-4 py-2 bg-[#39A900] text-white rounded-xl font-bold shadow hover:bg-green-600 transition-all\">Ver</a>";
                                     echo "</td>";
@@ -104,6 +109,21 @@
                         ?>
                     </tbody>
                 </table>
+
+                <!-- Paginación -->
+                <div class="mt-4 flex justify-center items-center space-x-2">
+                    <?php if ($currentPage > 1): ?>
+                        <a href="?page=<?= $currentPage - 1 ?>" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Anterior</a>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <a href="?page=<?= $i ?>" class="px-4 py-2 <?= $i === $currentPage ? 'bg-[#39A900] text-white' : 'bg-gray-300 text-gray-700' ?> rounded-md hover:bg-gray-400"><?= $i ?></a>
+                    <?php endfor; ?>
+
+                    <?php if ($currentPage < $totalPages): ?>
+                        <a href="?page=<?= $currentPage + 1 ?>" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Siguiente</a>
+                    <?php endif; ?>
+                </div>
 
                 <h3 class="text-xl md:text-2xl font-bold text-[#39A900] mb-6 py-4">Listado de Casos Generales</h3>
                 <table class="min-w-full border border-gray-300 text-sm md:text-base">
@@ -119,20 +139,28 @@
                     </thead>
                     <tbody>
                         <?php    
-                            if (!is_array($listadecasosgenerales) || empty($listadecasosgenerales)) {
+                            $itemsPerPageGeneral = 10; // Número de casos generales por página
+                            $totalItemsGeneral = count($listadecasosgenerales);
+                            $totalPagesGeneral = ceil($totalItemsGeneral / $itemsPerPageGeneral);
+                            $currentPageGeneral = isset($_GET['page_general']) ? (int)$_GET['page_general'] : 1;
+                            $currentPageGeneral = max(1, min($currentPageGeneral, $totalPagesGeneral));
+                            $startIndexGeneral = ($currentPageGeneral - 1) * $itemsPerPageGeneral;
+
+                            $paginatedCasosGenerales = array_slice($listadecasosgenerales, $startIndexGeneral, $itemsPerPageGeneral);
+
+                            if (empty($paginatedCasosGenerales)) {
                                 echo "<tr><td colspan='6' class='text-center py-4'>No hay casos registrados</td></tr>";
                             } else {
-                                foreach ($listadecasosgenerales as $caso) {
+                                foreach ($paginatedCasosGenerales as $caso) {
                                     echo "<tr class='border-t'>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso["fecha_creacion"]) ."</td>";
-                                    echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['ambiente_id']) . "</td>";
+                                    echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['ambiente']) . "</td>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['asunto']) . "</td>";
-                                    echo "<td class='py-2 px-4'>    ". htmlspecialchars($caso["instructor_id"]) . "</td>";
-                                    if ($caso["estado_id"] == "1") {
-                                        echo "<td class='text-[#39A900] py-2 px-4'>Pendiente</td>";
-                                    } else {
-                                        echo "<td class='text-red-600 py-2 px-4'>Resuelto</td>";
-                                    }
+                                    echo "<td class='py-2 px-4'>". htmlspecialchars($caso["instructor"]) . "</td>";
+                                    echo "<td class='p-2 border font-semibold " . 
+                                        ($caso['estado'] === 'Resuelto' ? 'text-green-600' : 'text-red-600') . "'>" . 
+                                        htmlspecialchars($caso['estado']) . 
+                                    "</td>";
                                     echo "<td class='py-2 px-4 text-center'>";
                                     echo "<a href=\"ver_caso?id=" . htmlspecialchars($caso['id']) . "\" class=\"px-4 py-2 bg-[#39A900] text-white rounded-xl font-bold shadow hover:bg-green-600 transition-all\">Ver</a>";
                                     echo "</td>";
@@ -142,70 +170,51 @@
                         ?>
                     </tbody>
                 </table>
-            </div>
 
-            
+                <!-- Paginación -->
+                <div class="mt-4 flex justify-center items-center space-x-2">
+                    <?php if ($currentPageGeneral > 1): ?>
+                        <a href="?page_general=<?= $currentPageGeneral - 1 ?>" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Anterior</a>
+                    <?php endif; ?>
 
-            <!-- Buscar por Ambiente -->
-            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 hover:shadow-2xl transition-all mt-10">
-                <h3 class="text-xl font-bold text-[#39A900] mb-4">Buscar por Ambiente</h3>
-                <label for="ambiente" class="block text-gray-700 font-semibold mb-2">Selecciona un ambiente:</label>
-                <select id="ambiente" class="p-3 border rounded-md w-full bg-gray-100">
-                    <option value="">-- Seleccionar --</option>
-                    <?php for ($i = 101; $i <= 110; $i++): ?>
-                        <option value="<?= $i ?>">Ambiente <?= $i ?></option>
+                    <?php for ($i = 1; $i <= $totalPagesGeneral; $i++): ?>
+                        <a href="?page_general=<?= $i ?>" class="px-4 py-2 <?= $i === $currentPageGeneral ? 'bg-[#39A900] text-white' : 'bg-gray-300 text-gray-700' ?> rounded-md hover:bg-gray-400"><?= $i ?></a>
                     <?php endfor; ?>
-                </select>
-                <div id="casosAmbiente" class="mt-4 hidden overflow-x-auto">
-                    <table class="min-w-full bg-white border border-gray-300 rounded-md mt-4 text-sm md:text-base">
-                        <thead class="bg-gray-200 text-gray-700">
-                            <tr>
-                                <th class="py-2 px-4 border-b">Caso</th>
-                                <th class="py-2 px-4 border-b">Ubicación</th>
-                                <th class="py-2 px-4 border-b">Estado</th>
-                                <th class="py-2 px-4 border-b">Fecha recibido</th>
-                                <th class="py-2 px-4 border-b">Fecha resuelto</th>
-                            </tr>
-                        </thead>
-                        <tbody id="listaCasosAmbiente"></tbody>
-                    </table>
+
+                    <?php if ($currentPageGeneral < $totalPagesGeneral): ?>
+                        <a href="?page_general=<?= $currentPageGeneral + 1 ?>" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Siguiente</a>
+                    <?php endif; ?>
                 </div>
-                <div id="sinCasos" class="text-gray-500 mt-4 hidden">Sin casos para este ambiente.</div>
             </div>
         </main>
     </div>
 
-    <!-- Modal procedimiento -->
-    <div id="modalProcedimiento" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50 z-50">
-        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md">
-            <h3 class="text-xl font-bold text-[#39A900] mb-4">Detalles de la Falla</h3>
-            <p id="procedimientoTexto" class="text-gray-700"></p>
-            <button onclick="cerrarProcedimiento()" class="mt-4 px-4 py-2 bg-gray-600 text-white rounded-xl font-bold hover:bg-gray-700">Cerrar</button>
-        </div>
-    </div>
-
     <script>
-        function mostrarProcedimiento(texto) {
-            document.getElementById('procedimientoTexto').innerText = texto;
-            document.getElementById('modalProcedimiento').classList.remove('hidden');
-        }
+    // Función para actualizar la fecha y hora
+    function actualizarFechaHora() {
+        const ahora = new Date();
+        const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+        const fechaFormateada = ahora.toLocaleDateString('es-ES', opciones);
+        document.getElementById('fechaHora').textContent = fechaFormateada;
+    }
 
-        function cerrarProcedimiento() {
-            document.getElementById('modalProcedimiento').classList.add('hidden');
-        }
+    // Llamar a la función al cargar la página
+    actualizarFechaHora();
 
-        // Sidebar control
-        const sidebar = document.getElementById('sidebar');
-        const closeSidebarButton = document.getElementById('closeSidebar');
-        const menuButton = document.getElementById('menuButton');
+    // Mostrar modal de notificaciones
+    const notifBtn = document.getElementById('notifBtn');
+    const notifModal = document.getElementById('notifModal');
 
-        closeSidebarButton.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-        });
+    notifBtn.addEventListener('click', () => {
+        notifModal.classList.remove('hidden');
+    });
 
-        menuButton.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-        });
+    function closeNotif() {
+        notifModal.classList.add('hidden');
+    }
+
+    // Aquí también puedes agregar otras funciones necesarias
     </script>
+
 </body>
 </html>
