@@ -92,12 +92,12 @@ if (!$caso) {
               </div>
               <div>
                 <dt class="font-semibold">Ambiente:</dt>
-                <dd><?= htmlspecialchars($caso['ambiente_id']) ?></dd>
+                <dd><?= htmlspecialchars($caso['ambiente']) ?></dd>
               </div>
-              <?php if ($caso['instructor_id']): ?>
+              <?php if ($caso['instructor']): ?>
                 <div>
                   <dt class="font-semibold">Instructor:</dt>
-                  <dd><?= htmlspecialchars($caso['instructor_id']) ?></dd>
+                  <dd><?= htmlspecialchars($caso['instructor']) ?></dd>
                 </div>  
               <?php elseif ($caso['usuario_id']): ?>
                 <div>
@@ -108,12 +108,12 @@ if (!$caso) {
               <div>
                 <dt class="font-semibold">Estado:</dt>
                 <dd>
-                <form action="">
-                  <select name="" id="">
-                    <option value="<?= htmlspecialchars($caso['estado_id']) ?>">Pendiente</option>
-                    <option value="2">En Proceso</option>
+                <form action="UpdatestatusAction" method="POST">
+                  <input type="hidden" name="caso_id" value="<?= htmlspecialchars($caso['id']) ?>">
+                  <select name="estado_id" class="border border-gray-300 rounded p-2" onchange="this.form.submit()">
+                        <option value="1" <?= $caso['estado_id'] == 1 ? 'selected' : '' ?>>Pendiente</option>
+                        <option value="2" <?= $caso['estado_id'] == 2 ? 'selected' : '' ?>>En Proceso</option>
                   </select>
-                  <!--Se muestra Los estados-->
                 </form>
                 </dd>
               </div>
