@@ -6,13 +6,9 @@ session_start();
 $casoController = new CasoController();
 $casoId = isset($_GET['id']) ? $_GET['id'] : null;
 
-// Intentar obtener el caso como caso general
-$caso = $casoController->getcasogeneral($casoId); // Este método debe existir
-
 // Si no se encuentra como caso general, intentar obtenerlo como caso por producto
-if (!$caso) {
-  $caso = $casoController->getCaso($casoId); // Este método debe existir
-}
+$caso = $casoController->getCaso($casoId); // Este método debe existir
+
 
 $user = new UserController();
 $usuarioId = $user->gettics(); // Este método debe existir
@@ -135,8 +131,9 @@ if (!$caso) {
               <div>
                 <dt class="font-semibold">Asignar:</dt>
                 <dd>
-                  <form action="">
-                    <select name="" id="">Selecciona un usuario
+                  <form action="AsignarCasoAction" method="POST">
+                    <input type="hidden" name="caso_id" value="<?= htmlspecialchars($caso['id']) ?>">
+                    <select name="usuario" id="" onchange="this.form.submit()">Selecciona un usuario
                       <option value="">-- Seleccionar --</option>
                       <!-- Aquí deberías cargar los usuarios desde la base de datos -->
                       <?php foreach ($usuarioId as $usuario): ?>
