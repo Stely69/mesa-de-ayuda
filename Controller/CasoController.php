@@ -198,4 +198,24 @@
                 exit;
            }
         }
+
+        public function asingarCaso($id, $asignado_a) {
+            if($this->conn->asignacionCaso($id, $asignado_a)){
+                header('Location: ../Inst/ver_caso?id='.$id.'&alert=success&mensaje='.urlencode('Caso asignado correctamente'));
+                exit;
+            }else{
+                header('Location: ../Inst/ver_caso?id='.$id.'&alert=error&mensaje='.urlencode('Error al asignar el caso'));
+                exit;
+            }
+        }
+
+        public function asingarcasoGeneral($id, $asignado_a) {
+            if($this->conn->asingacionCasoGeneral($id, $asignado_a)){
+                header('Location: ../Inst/ver_casoG?id='.$id.'&alert=success&mensaje='.urlencode('Caso asignado correctamente'));
+                exit;
+            }else{
+                header('Location: ../Inst/ver_casoG?id='.$id.'&alert=error&mensaje='.urlencode('Error al asignar el caso'));
+                exit;
+            }
+        }
     }
