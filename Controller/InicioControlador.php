@@ -122,12 +122,20 @@
             $this->cargarVista("Tics/ver_caso");
         }
 
+        public function ver_casog(){
+            $this->cargarVista("Tics/ver_casoG");
+        }
+
         public function gestiondeauxiliares(){
             $this->cargarVista("Tics/GestiondeAuxiliares");
         }
 
         public function updatestatusa(){
             $this->cargarVista("Tics/UpdatestatusAction");
+        }
+
+        public function asignarauxiliar(){
+            $this->cargarVista("Tics/AsignarCasoAction");
         }
 
         public function perfil(){
