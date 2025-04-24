@@ -40,7 +40,9 @@
     Enrutador::get("pendientes", [InicioControlador::class,"ticspendientes"]);
     Enrutador::get("GestiondeAuxiliares",[InicioControlador::class, "gestiondeauxiliares"]);
     Enrutador::get("ver_caso", [InicioControlador::class,"ver_caso"]);
+    Enrutador::get("ver_casoG", [InicioControlador::class,"ver_casog"]);
     Enrutador::post("UpdatestatusAction", [InicioControlador::class,"updatestatusa"]);
+    Enrutador::post("AsignarCasoAction", [InicioControlador::class,"asignarauxiliar"]);
     // ruta de perfil
     Enrutador::get("perfil", [InicioControlador::class,"perfil"]);
     Enrutador::post("UpdateUserAction", [InicioControlador::class,"updateUser"]);
