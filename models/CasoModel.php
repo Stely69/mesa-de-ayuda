@@ -220,5 +220,59 @@
             return ["error" => true, "message" => $e->getMessage()];
             }
         }
+
+        public function asignacionCaso($id, $asignado_a) {
+            try {
+                $query = "UPDATE casos SET asignado_a = ? WHERE id = ?";
+                $stmt = $this->conn->prepare($query);
+                $stmt->execute([$asignado_a, $id]);
+                return ["success" => true, "message" => "Caso asignado correctamente"];
+            } catch (PDOException $e) {
+                return ["error" => true, "message" => $e->getMessage()];
+            }
+        }
+
+        public function asingacionCasoGeneral($id, $asignado_a) {
+            try {
+                $query = "UPDATE casos_generales SET asignado_a = ? WHERE id = ?";
+                $stmt = $this->conn->prepare($query);
+                $stmt->execute([$asignado_a, $id]);
+                return ["success" => true, "message" => "Caso general asignado correctamente"];
+            } catch (PDOException $e) {
+                return ["error" => true, "message" => $e->getMessage()];
+            }
+        }
+
+        public function historialCaso($id) {
+            $query = "
+                SELECT  h.fecha_actualizacion,
+                        e.estado AS estado_anterior,
+                        e2.estado AS estado_nuevo,
+                        h.observaciones,
+                        u.nombres AS usuario_id
+                FROM   historial_casos h
+                JOIN   estados_casos e ON h.estado_anterior = e.id
+                JOIN   estados_casos e2 ON h.estado_nuevo = e2.id
+                JOIN   usuarios u ON h.usuario_id = u.id
+                WHERE  h.caso_id = :id
+                ORDER BY h.fecha_actualizacion DESC";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function Createhistorial($caso_id, $estado_anterior, $estado_nuevo, $observaciones, $usuario_id) {
+            try {
+                $query = 'INSERT INTO historial_casos (caso_id, estado_anterior, estado_nuevo, observaciones, usuario_id, fecha_actualizacion)
+                VALUES (?, ?, ?, ?, ?, now())';
+                $stmt = $this->conn->prepare($query);
+                $stmt->execute([$caso_id, $estado_anterior, $estado_nuevo, $observaciones, $usuario_id]);
+                
+            } catch (PDOException $e) {
+                return false; // Error al registrar el caso
+            }
+        }
     }
 
