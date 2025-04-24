@@ -162,7 +162,7 @@
                                         htmlspecialchars($caso['estado']) . 
                                     "</td>";
                                     echo "<td class='py-2 px-4 text-center'>";
-                                    echo "<a href=\"ver_caso?id=" . htmlspecialchars($caso['id']) . "\" class=\"px-4 py-2 bg-[#39A900] text-white rounded-xl font-bold shadow hover:bg-green-600 transition-all\">Ver</a>";
+                                    echo "<a href=\"ver_casoG?id=" . htmlspecialchars($caso['id']) . "\" class=\"px-4 py-2 bg-[#39A900] text-white rounded-xl font-bold shadow hover:bg-green-600 transition-all\">Ver</a>";
                                     echo "</td>";
                                     echo "</tr>";
                                 }
