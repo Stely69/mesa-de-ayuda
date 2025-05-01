@@ -53,85 +53,81 @@
     <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
         <div>
             <h2 class="text-3xl font-semibold text-[#39A900]">¡Bienvenido, Admin!</h2>
-            <p class="text-gray-600" id="fechaHora"></p>
         </div>
     </div>
     
     <!-- Tarjetas -->
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="p-4 bg-white shadow rounded-md">
-            <h3 class="text-lg text-gray-700">Equipos Registrados</h3>
-            <p class="text-2xl font-bold text-senaGreen"><?php echo $productos; ?></p>
-        </div>
-        <div class="p-4 bg-white shadow rounded-md">
-            <h3 class="text-lg text-gray-700">Equipos en Falla</h3>
-            <p class="text-2xl font-bold text-red-500"><?php echo $contadorcasos; ?></p>
-        </div>
-        <div class="p-4 bg-white shadow rounded-md">
-            <h3 class="text-lg text-gray-700">Usuarios Activos</h3>
-            <p class="text-2xl font-bold text-senaGreen"><?php echo $totaluser; ?></p>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"> 
+    <!-- Equipos Registrados -->
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#007832] animate-fade-in-up">
+        <div class="flex items-center gap-4">
+            <div class="bg-[#007832] p-3 rounded-full text-white">📦</div>
+            <div>
+                <h3 class="text-gray-700 text-base font-semibold">Equipos Registrados</h3>
+                <p class="text-3xl font-bold text-[#007832] mt-1"><?php echo $productos; ?></p>
+            </div>
         </div>
     </div>
-            <!-- Tabla de movimientos -->
-            <div class="mt-8 bg-white p-4 shadow rounded-md">
-                <h3 class="text-xl text-gray-700 mb-4">Últimos Movimientos</h3>
-                <div class="overflow-x-auto">
-                    <?php
-                    // Paginación
-                    $itemsPorPagina = 10;
-                    $totalItems = count($listadecasos);
-                    $totalPaginas = ceil($totalItems / $itemsPorPagina);
-                    $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-                    $inicio = ($paginaActual - 1) * $itemsPorPagina;
-                    $casosPaginados = array_slice($listadecasos, $inicio, $itemsPorPagina);
-                    ?>
-                    <table class="w-full border border-gray-300">
-                        <thead>
-                            <tr class="bg-gray-100 text-left">
-                                <th class="p-2 border">Fecha</th>
-                                <th class="p-2 border">Equipo</th>
-                                <th class="p-2 border">Ubicación</th>
-                                <th class="p-2 border">Estado</th>
-                                <th class="p-2 border">Reportado por</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($casosPaginados as $caso): ?>
-                                <tr>
-                                    <td class="p-2 border"><?= $caso['fecha_creacion'] ?></td>
-                                    <td class="p-2 border"><?= $caso['producto'] ?></td>
-                                    <td class="p-2 border"><?= $caso['ambiente'] ?></td>
-                                    <td class="p-2 border font-semibold 
-                                        <?= $caso['estados_casos'] === 'Resuelto' ? 'text-green-600' : 'text-red-600'; ?>">
-                                        <?= htmlspecialchars($caso['estados_casos']) ?>
-                                    </td>
-                                    <td class="p-2 border"><?= $caso['usuario'] ?></td>
-                                </tr>
-                            <?php endforeach ?>
-                        </tbody>
-                    </table>
 
-                    <!-- Paginación -->
-                    <div class="mt-4 flex justify-center">
-                        <?php if ($paginaActual > 1): ?>
-                            <a href="?pagina=<?= $paginaActual - 1 ?>" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Anterior</a>
-                        <?php endif; ?>
-                        <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                            <a href="?pagina=<?= $i ?>" class="px-4 py-2 mx-1 <?= $i === $paginaActual ? 'bg-senaGreen text-white' : 'bg-gray-200 text-gray-700' ?> rounded hover:bg-gray-300"><?= $i ?></a>
-                        <?php endfor; ?>
-                        <?php if ($paginaActual < $totalPaginas): ?>
-                            <a href="?pagina=<?= $paginaActual + 1 ?>" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Siguiente</a>
-                        <?php endif; ?>
-                    </div>
-                </div>
+    <!-- Equipos en Falla -->
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-red-500 animate-fade-in-up delay-100">
+        <div class="flex items-center gap-4">
+            <div class="bg-red-500 p-3 rounded-full text-white">⚠️</div>
+            <div>
+                <h3 class="text-gray-700 text-base font-semibold">Equipos en Falla</h3>
+                <p class="text-3xl font-bold text-red-500 mt-1"><?php echo $contadorcasos; ?></p>
             </div>
-            
+        </div>
+    </div>
+
+    <!-- Usuarios Activos -->
+    <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#39A900] animate-fade-in-up delay-200">
+        <div class="flex items-center gap-4">
+            <div class="bg-[#39A900] p-3 rounded-full text-white">👥</div>
+            <div>
+                <h3 class="text-gray-700 text-base font-semibold">Usuarios Activos</h3>
+                <p class="text-3xl font-bold text-[#39A900] mt-1"><?php echo $totaluser; ?></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de movimientos -->
+<div class="mt-8 bg-white p-4 shadow rounded-md">
+    <h3 class="text-xl text-gray-700 mb-4">Últimos Movimientos</h3>
+    <div class="overflow-x-auto">
+        <table class="w-full border border-gray-300">
+            <thead>
+                <tr class="bg-[#00304D] text-white">
+                    <th class="p-2 border">Fecha</th>
+                    <th class="p-2 border">Equipo</th>
+                    <th class="p-2 border">Ubicación</th>
+                    <th class="p-2 border">Estado</th>
+                    <th class="p-2 border">Reportado por</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($listadecasos as $caso): ?>
+                    <tr>
+                        <td class="p-2 border"><?= $caso['fecha_creacion'] ?></td>
+                        <td class="p-2 border"><?= $caso['producto'] ?></td>
+                        <td class="p-2 border"><?= $caso['ambiente'] ?></td>
+                        <td class="p-2 border text-green-600"><?= $caso['estados_casos'] ?></td>
+                        <td class="p-2 border"><?= $caso['usuario'] ?></td>
+                    </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
             <!-- Reportes -->
             <div class="mt-8 bg-white p-4 shadow rounded-md">
                 <h3 class="text-xl text-gray-700 mb-4">Reportes Generados</h3>
-                <button onclick="exportToExcel()" class="mb-4 px-4 py-2 bg-senaGreen text-white rounded hover:bg-senaGreenDark">
-                    Descargar Excel
-                </button>
+                <button onclick="exportToExcel()" class="mb-4 px-4 py-2 bg-[#007832] hover:bg-[#00304D] text-white rounded shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+    Descargar Excel
+</button>
+
                 <div class="grid gap-6 md:grid-cols-2">
                     <div class="p-4 bg-gray-50 border-l-4 border-senaGreen shadow rounded-md">
                         <h4 class="text-lg font-semibold">Reporte de Inventario</h4>
