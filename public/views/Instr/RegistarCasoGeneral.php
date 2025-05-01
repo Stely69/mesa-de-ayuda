@@ -2,10 +2,10 @@
     require_once __DIR__ . '../../../../Controller/CasoController.php';
     $casoController = new CasoController();
     session_start();
-    if (!isset($_SESSION['id'])) {
-        echo "Error: No hay usuario en la sesión.";
-        exit;
-    }
+    //if (!isset($_SESSION['id'])) {
+        //echo "Error: No hay usuario en la sesión.";
+        //exit;
+   // }
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -15,75 +15,72 @@
     <title>Registro de Novedad - GEDAC</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
-    <div class="flex flex-col lg:flex-row h-full min-h-screen">
+<body class="bg-gray-100 overflow-x-hidden">
+    <div class="flex flex-col lg:flex-row min-h-screen">
         <?php include __DIR__ . '/barra.php'; ?>
 
-        <div class="flex-1 p-4 sm:p-10">
-            <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
-                <div>
-                    <h2 class="text-3xl font-semibold text-[#39A900]">¡Bienvenido, <?php echo $_SESSION["nombres"]; ?>!</h2>
-                    <p class="text-gray-600" id="fechaHora"></p>
-                </div>
-            </div>
-            <div class="max-w-3xl mx-auto bg-white p-6 sm:p-10 rounded-2xl shadow-lg">
-                <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">📋 Reportar Caso general</h2>
+        <main class="flex-1 p-6 md:ml-64 min-h-screen bg-gradient-to-br from-white to-[#f9f9f9]">
+            <div class="max-w-3xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-gray-200">
+                <!-- Título -->
+                <h2 class="text-3xl font-bold text-[#00304D] mb-10 text-center">📋 Reportar Caso general</h2>
 
-                <form action="CasoGeneralAction" method="POST" class="space-y-6" ">
+                <form action="CasoGeneralAction" method="POST" class="space-y-8">
                     <input type="hidden" name="usuario_id" value="<?= $_SESSION['id'] ?>">
+                    <input type="hidden" name="estado" value="1">
 
-                    <div class="lg:grid lg:grid-cols-1 gap-6">
-                        <div>
-                            <label class="block text-gray-700 font-medium mb-1">Ambiente: </label>
-                            <select name="ambiente_id" id="ambiente_id" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Ambiente -->
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 font-semibold mb-2">Ambiente:</label>
+                            <select name="ambiente_id" id="ambiente_id" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007832]">
                                 <option value="">Selecciona un ambiente</option>
                                 <?php foreach ($casoController->getAmbientes() as $ambiente): ?>
                                     <option value="<?= $ambiente['id'] ?>"><?= $ambiente['nombre'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <!-- Ambiente -->
-                        <div>
-                            <label class="block text-gray-700 font-medium mb-1 ">Asunto: </label>
-                            <input type="text" name="asunto" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Escribe el asunto del caso...">
+
+                        <!-- Asunto -->
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 font-semibold mb-2">Asunto:</label>
+                            <input type="text" name="asunto" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007832]" placeholder="Escribe el asunto del caso...">
                         </div>
 
-                        <!-- Producto -->
-                        <div>
-                            <label class="block text-gray-700 font-medium mb-1">Descripción: </label>
-                            <input type="text" name="descripcion" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Escribe la descripción del caso...">
+                        <!-- Descripción -->
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 font-semibold mb-2">Descripción:</label>
+                            <input type="text" name="descripcion" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007832]" placeholder="Escribe la descripción del caso...">
                         </div>
 
                         <!-- Rol -->
-                        <div>
-                            <label class="block text-gray-700 font-medium mb-1">Rol: </label>
-                            <select name="area_asignada" id="area_asignada" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400">
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 font-semibold mb-2">Área Responsable:</label>
+                            <select name="area_asignada" id="area_asignada" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007832]">
                                 <option value="">Selecciona un rol</option>
                                 <option value="3">Tics</option>
-                                <option value="4">Almacen</option>
+                                <option value="4">Almacén</option>
                             </select>
                         </div>
-
-                        <!-- Estado oculto -->
-                        <input type="hidden" name="estado" value="1">
                     </div>
 
-                    <!-- Mensaje de éxito -->
+                    <!-- Alerta -->
                     <div id="alerta" class="hidden text-green-600 font-medium">
                         <span id="mensajeAlerta"></span>
                         <button onclick="cerrarAlerta()" class="ml-4 font-bold text-lg leading-none focus:outline-none">&times;</button>
                     </div>
 
                     <!-- Botón -->
-                    <div class="text-center">
-                        <button type="submit" class="bg-[#39A900] hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow transition duration-300 ease-in-out">
+                    <div class="text-center mt-8">
+                        <button type="submit" class="bg-[#007832] hover:bg-[#00304D] text-white px-6 py-3 rounded-2xl shadow-md hover:shadow-xl text-lg font-semibold transition-all duration-300 transform hover:-translate-y-1">
                             Reportar Caso
                         </button>
                     </div>
                 </form>
             </div>
-        </div>
+        </main>
     </div>
+
+
 
     <script>
         function mostrarAlerta(tipo, mensaje) {
