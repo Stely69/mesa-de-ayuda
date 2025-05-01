@@ -25,40 +25,23 @@
         }
     </script>
 </head>
-<body class="bg-gray-100">
-    <div class="flex min-h-screen">
+<body class="bg-gray-100 text-gray-900">
+    <!-- Contenedor principal -->
+    <div class="flex h-screen">
         <!-- Botón hamburguesa -->
-        <button id="menuBtn" class="md:hidden p-4 absolute z-20 text-senaGreen">
+        <button id="menuBtn" class="md:hidden p-4 absolute z-20 text-senaGreen ">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
         </button>
-
-        <!-- Sidebar -->
-        <aside id="sidebar" class="bg-[#39A900] text-white w-64 p-6 space-y-4 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 md:relative md:block">
-            <div class="flex justify-end md:hidden -mt-4 -mr-4">
-                <button id="closeSidebar" class="text-white p-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            <h1 class="text-2xl font-bold mb-6">Admin SENA</h1>
-            <nav class="flex flex-col space-y-3">
-                <a href="../" class="p-2 hover:bg-white hover:text-[#39A900] rounded">Inicio</a>
-                <a href="admin" class="p-2 text-white hover:bg-white hover:text-[#39A900] rounded">Dashboard</a>
-                <a href="GestiondeUsuarios" class="p-2 hover:bg-white bg-white text-[#39A900] rounded">Gestión de Usuarios</a>
-                <hr class="border-white opacity-30">
-                <?php if (isset($_SESSION["id"])): ?>
-                    <a href="../Perfi/perfil" class="p-2 hover:bg-white hover:text-[#39A900] rounded">Bienvenido, <?php echo $_SESSION["nombres"]; ?></a>
-                <?php endif; ?>
-                <a href="../Login/LogoutAction" class="p-2 hover:bg-white hover:text-[#39A900] rounded">Cerrar Sesión</a>
-            </nav>
-        </aside>
+        
+        <!-- Incluir el archivo barra.php -->
+        <?php include 'barra.php'; ?>
 
         <!-- Contenido principal -->
         <main class="flex-1 p-4 md:p-6 transition-all duration-300 md:ml-15 py-10">
-            <h2 class="text-2xl sm:text-3xl font-semibold text-[#39A900] mb-4">Gestión de Usuarios</h2>
+        <h2 class="text-3xl font-bold text-[#00304D] mb-8 text-center">👥 Gestión de Usuarios</h2>
+
 
             <!-- Alerta dinámica -->
             <div id="alerta" class="hidden p-4 mb-4 rounded-lg text-sm flex items-center justify-between" role="alert">
@@ -77,7 +60,10 @@
                         <option value="2">Instructor</option>
                         <option value="4">Almacen</option>
                     </select>
-                    <button onclick="mostrarFormulario()" class="bg-[#39A900] text-white px-4 py-2 rounded-md w-full sm:w-auto">Agregar Usuario</button>
+                    <button onclick="mostrarFormulario()" class="bg-[#007832] hover:bg-[#00304D] text-white px-4 py-2 rounded-2xl shadow-md hover:shadow-xl text-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 w-full sm:w-auto">
+    Agregar Usuario
+</button>
+
                 </div>
             </div>
 
@@ -126,70 +112,48 @@
             <!-- Tabla de Usuarios -->
             <div class="bg-white p-4 shadow rounded-md overflow-x-auto">
                 <h3 class="text-xl font-semibold text-gray-700 mb-4">Usuarios Registrados</h3>
-                <?php
-                    // Paginación
-                    $totalUsuarios = count($users);
-                    $usuariosPorPagina = 10;
-                    $totalPaginas = ceil($totalUsuarios / $usuariosPorPagina);
-                    $paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-                    $inicio = ($paginaActual - 1) * $usuariosPorPagina;
-                    $usuariosPaginados = array_slice($users, $inicio, $usuariosPorPagina);
-                ?>
-                <table class="min-w-full text-sm text-left border">
-                    <thead class="bg-gray-200 text-xs sm:text-sm">
-                        <tr>
-                            <th class="px-4 py-2 border">Documento</th>
-                            <th class="px-4 py-2 border">Nombre</th>
-                            <th class="px-4 py-2 border">Apellido</th>
-                            <th class="px-4 py-2 border">Correo</th>
-                            <th class="px-4 py-2 border">Rol</th>
-                            <th class="px-4 py-2 border text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaUsuarios">
-                        <?php foreach ($usuariosPaginados as $usuario): ?>
-                            <tr class="bg-gray-100" data-rol="<?= htmlspecialchars($usuario['rol_id']) ?>">
-                                <td class="px-4 py-2 border"><?= htmlspecialchars($usuario['documento']) ?></td>
-                                <td class="px-4 py-2 border"><?= htmlspecialchars($usuario['nombres']) ?></td>
-                                <td class="px-4 py-2 border"><?= htmlspecialchars($usuario['apellido']) ?></td>
-                                <td class="px-4 py-2 border"><?= htmlspecialchars($usuario['correo']) ?></td>
-                                <td class="px-4 py-2 border"><?= htmlspecialchars($usuario['rol']) ?></td>
-                                <td class="px-4 py-2 border text-center">
-                                    <div class="flex flex-col sm:flex-row gap-2 items-center justify-center">
-                                        <button onclick="editarUsuario('<?= htmlspecialchars(openssl_encrypt($usuario['id'], AES, key)) ?>', '<?= htmlspecialchars($usuario['nombres']) ?>', '<?= htmlspecialchars($usuario['apellido']) ?>', '<?= htmlspecialchars($usuario['correo']) ?>', '<?= htmlspecialchars($usuario['rol_id']) ?>')" class="bg-blue-500 text-white px-2 py-1 rounded">Editar</button>
-                                        <form action="UpdateStatus" method="POST">
-                                            <input type="hidden" name="id" value="<?= htmlspecialchars(openssl_encrypt($usuario['id'], AES, key)) ?>">
-                                            <select name="status" class="border p-1 rounded text-sm" onchange="this.form.submit()">
-                                                <option value="activo" <?= $usuario['estado'] === 'activo' ? 'selected' : '' ?>>Activo</option>
-                                                <option value="inactivo" <?= $usuario['estado'] === 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
-                                            </select>
-                                        </form>
+                <table class="min-w-full text-sm text-left border border-gray-200">
+    <thead class="bg-[#00304D] text-white">
+        <tr>
+            <th class="px-2 py-4">Documento</th>
+            <th class="px-2 py-4">Nombre</th>
+            <th class="px-2 py-4">Apellido</th>
+            <th class="px-2 py-4">Correo</th>
+            <th class="px-2 py-4">Rol</th>
+            <th class="px-2 py-4 text-center">Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="tablaUsuarios" class="divide-y divide-gray-100 bg-white">
+        <?php foreach ($users as $usuario): ?>
+            <tr class="hover:bg-gray-50 transition bg-gray-100" data-rol="<?= htmlspecialchars($usuario['rol_id']) ?>">
+                <td class="px-2 py-4 font-medium text-gray-800"><?= htmlspecialchars($usuario['documento']) ?></td>
+                <td class="px-2 py-4 text-gray-600"><?= htmlspecialchars($usuario['nombres']) ?></td>
+                <td class="px-2 py-4 text-gray-600"><?= htmlspecialchars($usuario['apellido']) ?></td>
+                <td class="px-2 py-4 text-gray-600"><?= htmlspecialchars($usuario['correo']) ?></td>
+                <td class="px-2 py-4 text-gray-600"><?= htmlspecialchars($usuario['rol']) ?></td>
+                <td class="px-2 py-4 text-center">
+                    <div class="flex flex-col sm:flex-row gap-2 items-center justify-center">
+                        <button onclick="editarUsuario('<?= htmlspecialchars(openssl_encrypt($usuario['id'], AES, key)) ?>', '<?= htmlspecialchars($usuario['nombres']) ?>', '<?= htmlspecialchars($usuario['apellido']) ?>', '<?= htmlspecialchars($usuario['correo']) ?>', '<?= htmlspecialchars($usuario['rol_id']) ?>')" class="bg-blue-500 text-white px-2 py-1 rounded">Editar</button>
+                        
+                        <form action="UpdateStatus" method="POST">
+                            <input type="hidden" name="id" value="<?= openssl_encrypt($usuario['id'], AES, key) ?>">
+                            <select name="status" class="border p-1 rounded text-sm" onchange="this.form.submit()">
+                                <option value="activo" <?= $usuario['estado'] == 'activo' ? 'selected' : '' ?>>Activo</option>
+                                <option value="inactivo" <?= $usuario['estado'] == 'inactivo' ? 'selected' : '' ?>>Inactivo</option>
+                            </select>
+                        </form>
 
-                                        <form action="DeleteAction" method="GET" onsubmit="return confirm('¿Estás seguro de eliminar a este usuario?');">
-                                            <input type="hidden" name="id" value="<?= openssl_encrypt($usuario['id'], AES, key) ?>">
-                                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded">🗑</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        <form action="DeleteAction" method="GET" onsubmit="return confirm('¿Estás seguro de eliminar a este usuario?');">
+                            <input type="hidden" name="id" value="<?= openssl_encrypt($usuario['id'], AES , key) ?>">
+                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded">🗑</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
 
-                <!-- Paginación -->
-                <div class="flex justify-center mt-4">
-                    <?php if ($paginaActual > 1): ?>
-                        <a href="?pagina=<?= $paginaActual - 1 ?>" class="px-3 py-1 bg-gray-300 text-gray-700 rounded-l">Anterior</a>
-                    <?php endif; ?>
-
-                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                        <a href="?pagina=<?= $i ?>" class="px-3 py-1 <?= $i == $paginaActual ? 'bg-[#39A900] text-white' : 'bg-gray-300 text-gray-700' ?>"><?= $i ?></a>
-                    <?php endfor; ?>
-
-                    <?php if ($paginaActual < $totalPaginas): ?>
-                        <a href="?pagina=<?= $paginaActual + 1 ?>" class="px-3 py-1 bg-gray-300 text-gray-700 rounded-r">Siguiente</a>
-                    <?php endif; ?>
-                </div>
             </div>
         </main>
     </div>
