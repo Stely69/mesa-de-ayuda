@@ -71,7 +71,7 @@
                             <th class="py-3 px-5 text-left">Fecha</th>
                             <th class="py-3 px-5 text-left">Ambiente</th>
                             <th class="py-3 px-5 text-left">Asunto</th>
-                            <th class="py-3 px-5 text-left">Rol</th>
+                            <th class="py-3 px-5 text-left">Instructor</th>
                             <th class="py-3 px-5 text-center">Estado</th>
                             <th class="py-3 px-5 text-center">Acción</th>
                         </tr>
@@ -132,7 +132,7 @@
                             <th class="py-3 px-5 text-left">Fecha</th>
                             <th class="py-3 px-5 text-left">Ambiente</th>
                             <th class="py-3 px-5 text-left">Asunto</th>
-                            <th class="py-3 px-5 text-left">Rol</th>
+                            <th class="py-3 px-5 text-left">Instructor</th>
                             <th class="py-3 px-5 text-center">Estado</th>
                             <th class="py-3 px-5 text-center">Acción</th>
                         </tr>
