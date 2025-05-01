@@ -32,32 +32,35 @@
                     if (!in_array($extension, $extensionesPermitidas)) {
                         return ["error" => true, "message" => "Extensión no permitida"]; // Extensión no permitida
                     }
-            
+
                     // Generar un nombre único para la imagen
                     $nombreImagen = uniqid('img_') . '.' . $extension;
-                    $rutaImagen = 'public/uploads/' . $nombreImagen;
-            
+                    $directorio = __DIR__ . '/../public/uploads/';
+                    if (!file_exists($directorio)) {
+                        mkdir($directorio, 0777, true);
+                    }
+                    $rutaImagen = $directorio . $nombreImagen;
+
                     // Mover imagen
                     if (move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
-                        $this->conn->registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado, $rol, $descripcion, $nombreImagen);
-                        return  ["success" => true, "message" => "Caso registrado correctamente con imagen"];
+                        return $this->conn->registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado, $rol, $descripcion, $nombreImagen);
+                        //return  ["success" => true, "message" => "Caso registrado correctamente con imagen"];
                     } else {
                         return ["error" => true, "message" => "Error al mover la imagen" ]; // Error al mover la imagen
                     }
+
                 } else {
                     // Si no se subió imagen, puedes mandar NULL o una imagen por defecto
-                   $resultado =  $this->conn->registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado, $rol, $descripcion, null);
-
-                    if($resultado){
-
+                    $resultado = $this->conn->registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado, $rol, $descripcion, null);
+                    if ($resultado) {
                         $usuario = $this->conn->getUser($usuario_id);
-                        $this->enviarCorreo( $usuario['nombre'], $descripcion);
-                    }else{
-                        return ["error" => true, "message" => "Error al registrar el caso"]; // Error al registrar el caso 
+                        $this->enviarCorreo($usuario['nombres'], $descripcion);
+                        return ["success" => true, "message" => "Caso registrado correctamente sin imagen"];
+                    } else {
+                        return ["error" => true, "message" => "Error al registrar el caso"];
                     }
-                    
                 }
-            }catch (Exception $e) {
+            } catch (Exception $e) {
                 // Manejo de errores
                 return ["error" => true, "message" => $e->getMessage() ]; // Error al registrar el caso
             }
@@ -67,19 +70,20 @@
             // Obtener los correos de los TICS desde la base de datos
             $correosTics = $this->conn->getCorreosTics(); // Método que obtiene los correos de los TICS
             foreach ($correosTics as $correo) {
+                // Configuración del correo
                 $mail = new PHPMailer(true);
                 try {
                     // Configuración del servidor SMTP
                     $mail->isSMTP();
-                    $mail->Host = 'smtp.gmail.com';
+                    $mail->Host = 'smtp.gmass.co.';
                     $mail->SMTPAuth = true;
-                    $mail->Username = '';
-                    $mail->Password = '';
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Username = 'soportetics876@gmail.com';
+                    $mail->Password = 'e58b0fcc-8d33-4167-8307-713018e0f649';
+                    $mail->SMTPSecure = 'tls';
                     $mail->Port = 587;
             
                     // Remitente y destinatario
-                    $mail->setFrom('', '');
+                    $mail->setFrom('soportetics876@gmail.com', 'Soporte TICS');
                     $mail->addAddress($correo);
             
                     // Contenido
@@ -92,10 +96,9 @@
                         <p><strong>Registrado por:</strong> {$nombreUsuario}</p>
                         <p>Por favor, ingrese a la plataforma para más detalles.</p>
                     ";
-            
                     $mail->send();
                 } catch (Exception $e) {
-                    error_log("No se pudo enviar el correo: {$mail->ErrorInfo}");
+                    return error_log("No se pudo enviar el correo: {$mail->ErrorInfo}");
                 }
             }
         }
@@ -189,14 +192,23 @@
             }
         }
 
-        public function updateCasoStatus($id, $estado_id) {
-           if($this->conn->updateCasoStatus($id, $estado_id)){
+        public function updateCasoStatus($id, $estado_id,$usuario_id,$observaciones) {
+           if($this->conn->updateCasoStatus($id, $estado_id, $usuario_id)){    
+                $estado_anterior_id = $this->conn-> getcasoestado($id);
+                if($estado_anterior_id == null){
+                    $estado_anterior_id = 0;
+                }else{
+                    $estado_anterior_id = $estado_anterior_id['estado_id'];
+                }
+                // Registrar el historial del caso   
+                $this->conn->registrarHistorial($id, $estado_anterior_id,$estado_id, $observaciones, $usuario_id,'caso');
                 header('Location: ../Inst/ver_caso?id='.$id.'&alert=success&mensaje='.urlencode('Estado actualizado correctamente'));
                 exit;
-            }else{
-                header('Location: ../Inst/ver_caso?id='.$id.'&alert=error&mensaje='.urlencode('Error al actualizar el estado'));
+           }else{
+                header('Location: ../Inst/ver_caso?id='.$id.'&alert=error&mensaje='.urlencode('Error al actualizar el estado del caso'));
                 exit;
            }
+
         }
 
         public function asingarCaso($id, $asignado_a) {
