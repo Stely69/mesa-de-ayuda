@@ -28,6 +28,8 @@
     Enrutador::get("historialcasos", [InicioControlador::class,"historialcasos"]);
     Enrutador::get("RegistarCasoGeneral", [InicioControlador::class,"registarcasogeneral"]);
     Enrutador::post("CasoGeneralAction", [InicioControlador::class,"registrarcasogeneralaction"]);
+    Enrutador::get("Historialinstructores", [InicioControlador::class,"historialinstructores"]);
+    Enrutador::get("InicioInst", [InicioControlador::class,"InicioInstr"]);
     // Rutas del almacén
     Enrutador::get("Almacen", [InicioControlador::class, "alm"]);
     Enrutador::get("historial", [InicioControlador::class,"almacenhistrorial"]);
