@@ -47,6 +47,14 @@
             $this->cargarVista("Instr/CasoGeneralAction");
         }
 
+        public function historialinstructores() {
+            $this->cargarVista("Instr/Historialinstructores");
+        }
+
+        public function InicioInstr() {
+            $this->cargarVista("Instr/InicioInst");
+        }
+
         public function gestiondeusuarios() {
             $this->cargarVista("Admin/GestiondeUsuarios");
         }
