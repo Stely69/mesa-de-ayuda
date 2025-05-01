@@ -9,14 +9,13 @@ $casoId = isset($_GET['id']) ? $_GET['id'] : null;
 // Si no se encuentra como caso general, intentar obtenerlo como caso por producto
 $caso = $casoController->getCaso($casoId); // Este método debe existir
 
-
 $user = new UserController();
 $usuarioId = $user->gettics(); // Este método debe existir
 
-if (!$caso) {
-  echo "Caso no encontrado.";
-  exit;
-}
+//if (!$caso) {
+  //echo "Caso no encontrado.";
+  //exit;
+//}
 
 
 ?>
@@ -82,7 +81,7 @@ if (!$caso) {
             <h1 class="text-2xl font-bold text-[#39A900] mb-4 s">Detalle del Caso</h1>
             
             <dl class="space-y-3 text-gray-700 lg:grid lg:grid-cols-2 gap-6">
-              <div>
+              <div class="col-span-2">
                 <dt class="font-semibold">Fecha de creación:</dt>
                 <dd><?= htmlspecialchars($caso['fecha_creacion']) ?></dd>
               </div>
@@ -101,47 +100,74 @@ if (!$caso) {
                   <dd><?= htmlspecialchars($caso['usuario_id']) ?></dd>
                 </div>
               <?php endif; ?>
-              <div>
-                <dt class="font-semibold">Estado:</dt>
-                <dd>
-                <form action="UpdatestatusAction" method="POST">
-                  <input type="hidden" name="caso_id" value="<?= htmlspecialchars($caso['id']) ?>">
-                  <select name="estado_id" class="border border-gray-300 rounded p-2" onchange="this.form.submit()">
-                        <option value="1" <?= $caso['estado_id'] == 1 ? 'selected' : '' ?>>Pendiente</option>
-                        <option value="2" <?= $caso['estado_id'] == 2 ? 'selected' : '' ?>>En Proceso</option>
-                  </select>
-                </form>
-                </dd>
-              </div>
-              <?php if (isset($caso['asunto']) && !empty($caso['asunto'])): ?>
+              <?php if (isset($caso['producto']) && !empty($caso['producto'])): ?>
                 <div class="col-span-2">
-                  <dt class="font-semibold">Asunto:</dt>
-                  <dd><?= htmlspecialchars($caso['asunto']) ?></dd>
+                  <dt class="font-semibold">Producto:</dt>
+                  <dd><?= htmlspecialchars($caso['producto']) ?></dd>
                 </div>
               <?php endif; ?>
-              <div>
+              <div class="col-span-2">
                 <dt class="font-semibold">Descripcion:</dt>
                 <dd><?= htmlspecialchars($caso['descripcion'])?></dd>
               </div>
               <div>
                 <dt class="font-semibold">Imagen:</dt>
-                <dd><?= !empty($caso['imagen']) ? htmlspecialchars($caso['imagen']) : 'No se cargo imagen' ?></dd>
+                <dd>
+                  <?php if (!empty($caso['imagen'])): ?>
+                    <img src="../../uploads/<?= htmlspecialchars($caso['imagen'])?>" alt="Imagen del caso" class="max-w-xs mt-2 rounded-lg shadow" />
+                  <?php else: ?>
+                    <span>No se cargó imagen</span>
+                  <?php endif; ?>
+                </dd>
+              </div>
+              <div>
+                <dt class="font-semibold">Se le Asigno a</dt>
+                <dd>
+                  <?php if ($caso['auxiliar']): ?>
+                    <?= htmlspecialchars($caso['auxiliar']) ?>
+                  <?php else: ?>
+                    <span>No asignado</span>
+                  <?php endif; ?>
+                </dd>
               </div>
               <!-- Puedes añadir más campos aquí -->
-              <div>
-                <dt class="font-semibold">Asignar:</dt>
-                <dd>
-                  <form action="AsignarCasoAction" method="POST">
-                    <input type="hidden" name="caso_id" value="<?= htmlspecialchars($caso['id']) ?>">
-                    <select name="usuario" id="" onchange="this.form.submit()">Selecciona un usuario
-                      <option value="">-- Seleccionar --</option>
-                      <!-- Aquí deberías cargar los usuarios desde la base de datos -->
-                      <?php foreach ($usuarioId as $usuario): ?>
-                        <option value="<?= htmlspecialchars($usuario['id']) ?>"><?= htmlspecialchars($usuario['nombres']) ?></option>
-                      <?php endforeach; ?>
-                    </select>
-                  </form>
-                </dd>
+              <div class="col-span-2">
+                <form action="UpdatestatusAction" method="POST" class="space-y-4">
+                  <input type="hidden" name="caso_id" value="<?= htmlspecialchars($caso['id']) ?>">
+                  <!-- Fila de Asignar a y Estado -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label for="usuario_id" class="block font-semibold">Asignar a:</label>
+                      <select name="usuario_id" id="usuario_id" class="w-full border border-gray-300 rounded p-2" required>
+                        <option value="">-- Seleccionar --</option>
+                        <?php foreach ($usuarioId as $usuario): ?>
+                          <option value="<?= $usuario['id'] ?>" <?= $caso['asignado_a'] == $usuario['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($usuario['nombres']) ?>
+                          </option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label for="estado_id" class="block font-semibold">Estado:</label>
+                      <select name="estado_id" id="estado_id" class="w-full border border-gray-300 rounded p-2" required>
+                        <option value="1" <?= $caso['estado_id'] == 1 ? 'selected' : '' ?>>Pendiente</option>
+                        <option value="2" <?= $caso['estado_id'] == 2 ? 'selected' : '' ?>>En Proceso</option>
+                        <option value="3" <?= $caso['estado_id'] == 3 ? 'selected' : '' ?>>Resuelto</option>
+                        <!-- Agrega más estados si tienes -->
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Observaciones -->
+                  <div>
+                    <label for="observaciones" class="block font-semibold">Observaciones:</label>
+                    <textarea name="observaciones" id="observaciones" class="w-full border border-gray-300 rounded p-2" rows="3" placeholder="Escribe una nota..."></textarea>
+                  </div>
+
+                  <!-- Botón de Actualizar -->
+                  <button type="submit" class="bg-senaGreen text-white px-4 py-2 rounded mt-2 hover:bg-senaGreenDark">Actualizar</button>
+                </form>
               </div>
             </dl>
             <a href="Tics" class="inline-block mt-6 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Volver</a>
