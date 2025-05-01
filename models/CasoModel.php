@@ -42,7 +42,7 @@
 
         public function registrarCaso($ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion,$imagen) {
             try {
-                $sql = "INSERT INTO casos (ambiente_id, usuario_id, producto_id, estado_id,asignado_a, descripcion,imagen,fecha_creacion) 
+                $sql = "INSERT INTO casos (ambiente_id,instructor_id, producto_id, estado_id,asignado_a, descripcion,imagen,fecha_creacion) 
                         VALUES (?, ?, ?, ?, ?, ?,?,NOW())";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->execute([$ambiente_id, $usuario_id, $producto_id, $estado_id, $asignado_a, $descripcion,$imagen]);
@@ -103,32 +103,31 @@
                         c.fecha_creacion,
                         a.nombre        AS ambiente,
                         p.numero_placa  AS producto,
-                        e.estado AS estado,
+                        e.estado        AS estado,
                         e.id            AS estado_id, 
-                        u.nombres       AS instructor,
+                        ui.nombres      AS instructor,
                         ua.nombres      AS asignado_a,
-                        c.imagen
+                        c.imagen,
+                        COALESCE(ux.nombres, 'No asignado') AS auxiliar
                 FROM   casos c
                 JOIN   ambientes       a  ON c.ambiente_id = a.id
                 JOIN   productos       p  ON c.producto_id = p.id
                 JOIN   estados_casos   e  ON c.estado_id   = e.id
-                JOIN   usuarios        u  ON c.instructor_id  = u.id
-                LEFT  JOIN usuarios    ua ON c.asignado_a  = ua.id
+                JOIN   usuarios        ui  ON c.instructor_id  = ui.id
+                LEFT  JOIN usuarios    ux  ON c.auxiliar_id = ux.id
+                LEFT  JOIN usuarios    ua  ON c.asignado_a  = ua.id
                 WHERE  c.id = :id
                 LIMIT  1";
-            
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
-        
-        
 
         public function CreateCasoGeneral($ambiente_id,$asunto,$descripcion,$estado_id,$instructor_id,$area_asignada,$asignado_a) {
             try {   
                 $query = 'INSERT INTO casos_generales (ambiente_id, asunto, descripcion, estado_id, instructor_id, area_asignada, asignado_a, fecha_creacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?,now())';
+                VALUES (?, ?, ?, ?, ?, ?, ?,now(),null)';
                 $stmt = $this->conn->prepare($query);
                 $stmt->execute([$ambiente_id, $asunto, $descripcion, $estado_id, $instructor_id, $area_asignada, $asignado_a]);
                 
@@ -146,7 +145,7 @@
         }
 
         public function getCorreosTics() {
-            $query = "SELECT correo FROM users WHERE rol_id = (SELECT id FROM roles WHERE nombre = 'Tics')";
+            $query = "SELECT correo FROM usuarios WHERE rol_id = (SELECT id FROM roles WHERE nombre = 'Tics')";
             $stmt = $this->conn->query($query);
             return $stmt->fetchAll(PDO::FETCH_COLUMN);
         }
@@ -199,15 +198,13 @@
         }
         
 
-        public function updateCasoStatus($id, $estado_id) {
-            try {
-            $query = "UPDATE casos SET estado_id = ? WHERE id = ?";
+        public function updateCasoStatus($id, $estado_id, $asignado_a) {
+            $query = "UPDATE casos SET estado_id = :estado_id, auxiliar_id = :auxiliar_id WHERE id = :id";
             $stmt = $this->conn->prepare($query);
-            $stmt->execute([$estado_id, $id]);
-            return ["success" => true, "message" => "Estado del caso actualizado correctamente"];
-            } catch (PDOException $e) {
-            return ["error" => true, "message" => $e->getMessage()];
-            }
+            $stmt->bindParam(':estado_id', $estado_id);
+            $stmt->bindParam(':auxiliar_id', $asignado_a);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
         }
 
         public function updateCasoGeneralStatus($id, $estado_id) {
@@ -274,5 +271,29 @@
                 return false; // Error al registrar el caso
             }
         }
+
+        public function registrarHistorial($caso_id, $estado_anterior_id, $estado_nuevo_id, $observaciones, $usuario_id, $tipo_caso = 'caso_general') {
+            $query = 'INSERT INTO historial_casos (caso_id, estado_anterior_id, estado_nuevo_id, observaciones, usuario_id, tipo_caso) 
+                      VALUES (:caso_id, :estado_anterior_id, :estado_nuevo_id, :observaciones, :usuario_id, :tipo_caso)';
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':caso_id', $caso_id, PDO::PARAM_INT);
+            $stmt->bindParam(':estado_anterior_id', $estado_anterior_id, PDO::PARAM_INT);
+            $stmt->bindParam(':estado_nuevo_id', $estado_nuevo_id, PDO::PARAM_INT);
+            $stmt->bindParam(':observaciones', $observaciones, PDO::PARAM_STR);
+            $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
+            $stmt->bindParam(':tipo_caso', $tipo_caso, PDO::PARAM_STR);
+        
+            return $stmt->execute();
+        }
+
+        public function getcasoestado($id){
+            $query = 'SELECT estado_id FROM casos WHERE id = :id';
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id) ;
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        
     }
 
