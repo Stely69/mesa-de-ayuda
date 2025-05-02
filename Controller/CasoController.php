@@ -211,23 +211,30 @@
 
         }
 
-        public function asingarCaso($id, $asignado_a) {
-            if($this->conn->asignacionCaso($id, $asignado_a)){
-                header('Location: ../Inst/ver_caso?id='.$id.'&alert=success&mensaje='.urlencode('Caso asignado correctamente'));
+        public function upadateasinstate($id, $estado_id,$usuario_id,$observaciones) {
+            if($this->conn->updateCasoGeneralStatus($id, $estado_id, $usuario_id)){    
+                $estado_anterior_id = $this->conn-> getcasoestadog($id);
+                if($estado_anterior_id == null){
+                    $estado_anterior_id = 0;
+                }else{
+                    $estado_anterior_id = $estado_anterior_id['estado_id'];
+                }
+                // Registrar el historial del caso   
+                $this->conn->registrarHistorialGeneral($id, $estado_anterior_id,$estado_id, $observaciones, $usuario_id,'asignar');
+                header('Location: ../Inst/ver_casoG?id='.$id.'&alert=success&mensaje='.urlencode('Estado actualizado correctamente'));
                 exit;
-            }else{
-                header('Location: ../Inst/ver_caso?id='.$id.'&alert=error&mensaje='.urlencode('Error al asignar el caso'));
+           }else{
+                header('Location: ../Inst/ver_casoG?id='.$id.'&alert=error&mensaje='.urlencode('Error al actualizar el estado del caso'));
                 exit;
+           }
+        }
+
+        public function getUserCaso($id){
+            try {
+                return $this->conn->obtenerCasos($id);
+            } catch (PDOException $e) {
+                return  $e->getMessage(); // Manejo de errores
             }
         }
 
-        public function asingarcasoGeneral($id, $asignado_a) {
-            if($this->conn->asingacionCasoGeneral($id, $asignado_a)){
-                header('Location: ../Inst/ver_casoG?id='.$id.'&alert=success&mensaje='.urlencode('Caso asignado correctamente'));
-                exit;
-            }else{
-                header('Location: ../Inst/ver_casoG?id='.$id.'&alert=error&mensaje='.urlencode('Error al asignar el caso'));
-                exit;
-            }
-        }
     }
