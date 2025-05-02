@@ -207,11 +207,14 @@
             return $stmt->execute();
         }
 
-        public function updateCasoGeneralStatus($id, $estado_id) {
+        public function updateCasoGeneralStatus($id, $estado_id, $asignado_a) {
             try {
-            $query = "UPDATE casos_generales SET estado_id = ? WHERE id = ?";
+            $query = "UPDATE casos_generales SET estado_id = :estado_id, asignado_a = :asignado_a WHERE id = :id";
             $stmt = $this->conn->prepare($query);
-            $stmt->execute([$estado_id, $id]);
+            $stmt->bindParam(':estado_id', $estado_id);
+            $stmt->bindParam(':asignado_a', $asignado_a);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
             return ["success" => true, "message" => "Estado del caso general actualizado correctamente"];
             } catch (PDOException $e) {
             return ["error" => true, "message" => $e->getMessage()];
@@ -260,19 +263,23 @@
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        public function Createhistorial($caso_id, $estado_anterior, $estado_nuevo, $observaciones, $usuario_id) {
-            try {
-                $query = 'INSERT INTO historial_casos (caso_id, estado_anterior, estado_nuevo, observaciones, usuario_id, fecha_actualizacion)
-                VALUES (?, ?, ?, ?, ?, now())';
-                $stmt = $this->conn->prepare($query);
-                $stmt->execute([$caso_id, $estado_anterior, $estado_nuevo, $observaciones, $usuario_id]);
-                
-            } catch (PDOException $e) {
-                return false; // Error al registrar el caso
-            }
+        public function registrarHistorial($caso_id, $estado_anterior_id, $estado_nuevo_id, $observaciones, $usuario_id, $tipo_caso = 'caso') {
+            $query = 'INSERT INTO historial_casos (caso_id, estado_anterior_id, estado_nuevo_id, observaciones, usuario_id, tipo_caso) 
+                      VALUES (:caso_id, :estado_anterior_id, :estado_nuevo_id, :observaciones, :usuario_id, :tipo_caso)';
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':caso_id', $caso_id, PDO::PARAM_INT);
+            $stmt->bindParam(':estado_anterior_id', $estado_anterior_id, PDO::PARAM_INT);
+            $stmt->bindParam(':estado_nuevo_id', $estado_nuevo_id, PDO::PARAM_INT);
+            $stmt->bindParam(':observaciones', $observaciones, PDO::PARAM_STR);
+            $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
+            $stmt->bindParam(':tipo_caso', $tipo_caso, PDO::PARAM_STR);
+        
+            return $stmt->execute();
         }
 
-        public function registrarHistorial($caso_id, $estado_anterior_id, $estado_nuevo_id, $observaciones, $usuario_id, $tipo_caso = 'caso_general') {
+        
+        public function registrarHistorialGeneral($caso_id, $estado_anterior_id, $estado_nuevo_id, $observaciones, $usuario_id, $tipo_caso = 'caso_general') {
             $query = 'INSERT INTO historial_casos (caso_id, estado_anterior_id, estado_nuevo_id, observaciones, usuario_id, tipo_caso) 
                       VALUES (:caso_id, :estado_anterior_id, :estado_nuevo_id, :observaciones, :usuario_id, :tipo_caso)';
             
@@ -294,6 +301,68 @@
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
+
+        public function getcasoestadog($id){
+            $query = 'SELECT estado_id FROM casos_generales WHERE id = :id';
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id', $id) ;
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        public function obtenerHistorialCompleto($casoId) {
+            $sql = "SELECT 
+                        c.titulo,
+                        c.descripcion AS descripcion_caso,
+                        c.estado,
+                        u.nombres AS creado_por,
+                        h.observaciones,
+                        h.fecha,
+                        aux.nombres AS asignado_a
+                    FROM casos c
+                    LEFT JOIN historial_casos h ON c.id = h.caso_id
+                    LEFT JOIN usuarios u ON c.usuario_id = u.id
+                    LEFT JOIN usuarios aux ON c.auxiliar_id = aux.id
+                    WHERE c.id = ?
+                    ORDER BY h.fecha DESC";
         
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([$casoId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        public function obtenerCasos($instructor_id) {
+            try {
+                $sql = "SELECT 
+                c.id             AS id_caso,
+                p.numero_placa   AS producto,
+                a.nombre         AS ambiente,
+                c.descripcion    AS descripcion_caso,
+                e.estado         AS estado,
+                u.nombres        AS creado_por,
+                h.observaciones,
+                h.fecha_actualizacion AS fecha,
+                COALESCE(ux.nombres, 'No asignado')   AS asignado_a
+                FROM casos c
+                LEFT JOIN historial_casos h ON c.id = h.caso_id
+                LEFT JOIN ambientes a ON c.ambiente_id = a.id
+                LEFT JOIN productos p ON c.producto_id = p.id
+                LEFT JOIN usuarios u ON c.instructor_id = u.id
+                LEFT JOIN usuarios aux ON c.auxiliar_id = aux.id
+                LEFT JOIN estados_casos e ON c.estado_id = e.id
+                WHERE c.instructor_id = :id
+                ORDER BY c.id DESC, h.fecha_actualizacion DESC";
+        
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':id', $instructorId, PDO::PARAM_INT);
+                $stmt->execute();
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                // Manejo de excepciones en caso de error en la consulta
+                echo "Error en la consulta: " . $e->getMessage();
+                return [];  // En caso de error, devolver un arreglo vacío
+            }
+        }
+     
+     
     }
 
