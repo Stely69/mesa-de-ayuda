@@ -1,3 +1,11 @@
+<?php
+require_once __DIR__ . '../../../../Controller/CasoController.php';
+session_start();
+$UserCasoController = new CasoController();
+$userId = isset($_GET['id']) ? $_GET['id'] : null;
+
+$HistorialUser = $UserCasoController->getCaso($userId);
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -37,7 +45,7 @@
 
         <!-- Tabla -->
         <div class="overflow-x-auto">
-    <table class="min-w-full text-sm text-left border border-gray-200 rounded-xl overflow-hidden">
+            <table class="min-w-full text-sm text-left border border-gray-200 rounded-xl overflow-hidden">
 
                 <thead class="bg-[#00304D] text-white">
                     <tr>
@@ -75,6 +83,17 @@
                         <td class="px-6 py-4">
                             <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Cerrado</span>
                         </td>
+                    </tr>
+                    <tr>
+                        <?php 
+                            foreach ($HistorialUser as $caso) {
+                                // Procesar cada caso
+                                $imagen = $caso['imagen'] ?? 'Imagen no disponible';
+                                $auxiliar_id = $caso['auxiliar_id'] ?? 'No asignado';
+                            
+                                echo "<p>ID: {$caso['id']}, Imagen: {$imagen}, Auxiliar: {$auxiliar_id}</p>";
+                            }
+                        ?>
                     </tr>
                 </tbody>
             </table>
