@@ -143,7 +143,7 @@
         }
 
         public function asignarauxiliar(){
-            $this->cargarVista("Tics/AsignarCasoAction");
+            $this->cargarVista("Tics/AsignarCasoActionG");
         }
 
         public function perfil(){
