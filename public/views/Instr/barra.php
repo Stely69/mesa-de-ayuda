@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <a href="Historialinstructores" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#00304D] hover:text-white text-sm font-medium transition duration-300">
+            <a href="Historialinstructores?id=<?php echo $_SESSION['id']; ?>" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#00304D] hover:text-white text-sm font-medium transition duration-300">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path d="M5 13l4 4L19 7" />
                 </svg>
