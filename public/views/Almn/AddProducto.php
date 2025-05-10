@@ -1,3 +1,13 @@
+<?php
+$base_path = 'almacen';
+require_once __DIR__ . '/../../../Controller/CasoController.php';
+require_once __DIR__ . '/../../../Controller/ProductoController.php';
+
+$controller = new CasoController();
+$controllerP = new ProductoController();
+$ambientes = $controller->getAmbientes();
+$marcas = $controllerP->getClase();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,21 +25,25 @@
     <main class="flex-1 p-6 ml-64">
         <h2 class="text-3xl font-semibold text-[#39A900] mb-6 text-left">Agregar Producto</h2>
 
-        <form action="AddAction" method="POST" class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow space-y-6">
+        <form action="AddAction.php" method="POST" class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow space-y-6">
             
             <div>
                 <label for="ambiente" class="block text-sm font-medium text-gray-700 mb-1">Ambiente:</label>
                 <select id="ambiente" name="ambiente" required class="mt-1 p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]">
                     <option value="">Seleccione un ambiente</option>
-                    <?php
-                        require_once __DIR__ . '../../../../Controller/CasoController.php';
-                        $controller = new CasoController();
-                        //$ambientes = $controller->allambientes();
-                        
-                        foreach ($ambientes as $ambiente) {
-                            echo "<option value='" . $ambiente['id'] . "'>" . $ambiente['nombre'] . "</option>";
-                        }
-                    ?>
+                    <?php foreach ($ambientes as $ambiente): ?>
+                        <option value="<?php echo $ambiente['id']; ?>"><?php echo htmlspecialchars($ambiente['nombre']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div>
+                <label for="clase_id" class="block text-sm font-medium text-gray-700 mb-1">Clase/Marca:</label>
+                <select id="clase_id" name="clase_id" required class="mt-1 p-3 w-full border border-gray-300 rounded-md focus:ring-[#39A900] focus:border-[#39A900]">
+                    <option value="">Seleccione una clase/marca</option>
+                    <?php foreach ($marcas as $marca): ?>
+                        <option value="<?php echo $marca['id']; ?>"><?php echo htmlspecialchars($marca['nombre']); ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 

@@ -1,3 +1,8 @@
+<?php
+if (!isset($base_path)) {
+    $base_path = 'instr';
+}
+?>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap" rel="stylesheet">
 
 <button id="hamburger" class="lg:hidden text-[#00304D] p-2 focus:outline-none">
@@ -12,16 +17,14 @@
     <!-- Parte superior: logo y navegación -->
     <div>
         <div class="flex items-center space-x-2 mb-4">
-            <img src="ruta/a/tu/logo.svg" alt="Logo" class="w-6 h-6">
+            <img src="../pictures/logoSena.png" alt="Logo" class="w-6 h-6">
             <span class="text-lg" style="font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #39A900;">
              GEDAC
             </span>
         </div>
 
-
-        
         <nav class="flex flex-col space-y-2">
-            <a href="InicioInst" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#007832] hover:text-white text-sm font-medium transition duration-300">
+            <a href="/<?php echo $base_path; ?>/InicioInst" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#007832] hover:text-white text-sm font-medium transition duration-300">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3" />
                 </svg>
@@ -43,12 +46,12 @@
                     </svg>
                 </button>
                 <div id="submenu-caso" class="ml-6 space-y-1 hidden">
-                    <a href="instructores" class="block p-2 rounded-lg hover:bg-[#007832] hover:text-white text-sm transition duration-300">Registrar por equipos</a>
-                    <a href="RegistarCasoGeneral" class="block p-2 rounded-lg hover:bg-[#007832] hover:text-white text-sm transition duration-300">Registrar general</a>
+                    <a href="/<?php echo $base_path; ?>/instructores" class="block p-2 rounded-lg hover:bg-[#007832] hover:text-white text-sm transition duration-300">Registrar por equipos</a>
+                    <a href="/<?php echo $base_path; ?>/RegistarCasoGeneral" class="block p-2 rounded-lg hover:bg-[#007832] hover:text-white text-sm transition duration-300">Registrar general</a>
                 </div>
             </div>
 
-            <a href="Historialinstructores?id=<?php echo $_SESSION['id']; ?>" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#00304D] hover:text-white text-sm font-medium transition duration-300">
+            <a href="/<?php echo $base_path; ?>/Historialinstructores?id=<?php echo $_SESSION['id']; ?>" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#00304D] hover:text-white text-sm font-medium transition duration-300">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path d="M5 13l4 4L19 7" />
                 </svg>

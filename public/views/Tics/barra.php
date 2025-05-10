@@ -1,51 +1,118 @@
-<!-- Botón hamburguesa solo visible en móvil -->
-<button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-50 bg-senaGreen text-white p-2 rounded-full shadow-lg">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap" rel="stylesheet">
+
+<button id="hamburger" class="lg:hidden text-[#00304D] p-2 focus:outline-none">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
     </svg>
 </button>
+<aside id="sidebar" class="fixed inset-y-0 left-0 w-64 z-40 bg-white text-gray-800 p-6 space-y-6 shadow-md flex flex-col transform transition-transform -translate-x-full lg:translate-x-0">
+    <!-- Este botón debería estar en tu encabezado o navbar -->
 
-<!-- barra.php -->
-<aside id="sidebar" class="bg-senaGreen text-white w-64 p-6 space-y-4 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 md:relative md:block md:rounded-r-2xl shadow-2xl pt-20 md:pt-6">
-    <div class="flex justify-end md:hidden -mt-4 -mr-4">
-        <button id="closeSidebar" class="text-white p-2">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+
+    <!-- Parte superior: logo y navegación -->
+    <div>
+        <div class="flex items-center space-x-2 mb-4">
+            <img src="../pictures/logoSena.png" alt="Logo" class="w-6 h-6">
+            <span class="text-lg" style="font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #39A900;">
+             GEDAC
+            </span>
+        </div>
+
+        <nav class="flex flex-col space-y-2">
+            <a href="Tics" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#007832] hover:text-white text-sm font-medium transition duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3" />
+                </svg>
+                <span>Inicio</span>
+            </a>
+
+<!-- Gestión de Auxiliares (icono de usuarios o engranaje) -->
+            <a href="GestiondeAuxiliares" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#00304D] hover:text-white text-sm font-medium transition duration-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M17 20h5v-2a4 4 0 00-5-4M9 20H4v-2a4 4 0 015-4m3-4a4 4 0 100-8 4 4 0 000 8zm6 4a4 4 0 10-8 0 4 4 0 008 0z" />
             </svg>
-        </button>
+                <span>Gestión Auxiliares</span>
+            </a>
+
+            <!-- Historial de Casos (icono de reloj) -->
+            
+
+
+        </nav>
     </div>
-    <h1 class="text-2xl font-bold mb-6 pl-1">Operaciones</h1>
-    <nav class="flex flex-col space-y-3">
-        <!-- Icono de la casita agregado aquí -->
-        <a href="Tics" class="p-2 hover:bg-white hover:text-senaGreen rounded flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/>
-            </svg>
-            <span>Inicio</span>
-        </a>
-        <a href="GestiondeAuxiliares" class="p-2 hover:bg-white hover:text-senaGreen rounded">Gestion de Auxiliares</a>
-        <a href="#" class="p-2 hover:bg-white hover:text-senaGreen rounded">Casos</a>
-        <hr class="border-white opacity-30">
+
+    <hr class="border-[#00304D] my-4">
+
+    <div>
+        <p class="text-xs font-semibold text-[#00304D] uppercase px-2 mb-1">Cuenta</p>
+
         <?php if (isset($_SESSION["id"])): ?>
-            <a href="../Perfi/perfil" class="p-2 hover:bg-white hover:text-senaGreen rounded">
-                Bienvenido, <?php echo $_SESSION["nombres"]; ?>
+            <a href="../Perfi/perfil" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#00304D] hover:text-white text-sm font-medium transition duration-300">
+                <svg class="w-5 h-5 text-[#00304D]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A4.992 4.992 0 0110 15h4a4.992 4.992 0 014.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Perfil</span>
             </a>
         <?php endif; ?>
-        <a href="../Login/LogoutAction" class="p-2 hover:bg-white hover:text-senaGreen rounded">Cerrar Sesión</a>
-    </nav>
-</aside>
 
-<!-- Script para controlar apertura/cierre del menú lateral -->
-<script>
-    const menuToggle = document.getElementById('menu-toggle');
+        <a href="../Login/LogoutAction" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#00304D] hover:text-white text-sm font-medium text-red-600 transition duration-300">
+            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H4a3 3 0 01-3-3V7a3 3 0 013-3h6a3 3 0 013 3v1" />
+            </svg>
+            <span>Cerrar sesión</span>
+        </a>
+    </div>
+
+    <!-- Parte inferior: fecha y logo -->
+    <div class="pt-6 border-t border-gray-200 mt-auto">
+        <div class="text-xs text-gray-500 text-center mb-2" id="fecha-hora"></div>
+        <div class="flex items-center justify-center space-x-2 text-gray-500 text-xs">
+            <img src="../../pictures/logoSena.png" alt="Logo" class="w-4 h-4">
+            <span>&copy; <?php echo date("Y"); ?> SENA</span>
+        </div>
+    </div>
+  <script>
+    function toggleDropdown() {
+        const submenu = document.getElementById('submenu');
+        const icon = document.getElementById('dropdown-icon');
+        submenu.classList.toggle('hidden');
+        submenu.classList.toggle('block');
+        icon.classList.toggle('rotate-180');
+    }
+
+        function actualizarFechaHora() {
+            const ahora = new Date();
+            const opciones = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('fecha-hora').textContent = ahora.toLocaleDateString('es-CO', opciones);
+        }
+
+        actualizarFechaHora();
+        setInterval(actualizarFechaHora, 60000);
+
+        document.addEventListener('DOMContentLoaded', () => {
+    const hamburger = document.getElementById('hamburger');
     const sidebar = document.getElementById('sidebar');
-    const closeSidebar = document.getElementById('closeSidebar');
 
-    menuToggle.addEventListener('click', () => {
+    // Alternar el sidebar al hacer clic en el botón hamburguesa
+    hamburger.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evita que se dispare el clic del documento
         sidebar.classList.toggle('-translate-x-full');
+        sidebar.classList.toggle('translate-x-0');
     });
 
-    closeSidebar?.addEventListener('click', () => {
-        sidebar.classList.add('-translate-x-full');
+    // Cerrar el sidebar al hacer clic fuera de él
+    document.addEventListener('click', (e) => {
+        if (
+            !sidebar.contains(e.target) &&
+            !hamburger.contains(e.target) &&
+            sidebar.classList.contains('translate-x-0')
+        ) {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+        }
     });
-</script>
+});
+
+
+    </script>
+</aside>

@@ -1,4 +1,5 @@
 <?php
+$base_path = 'tics';
 require_once __DIR__ . '../../../../Controller/CasoController.php';
 require_once __DIR__ . '../../../../Controller/UserController.php';
 session_start();
@@ -40,105 +41,80 @@ $usuarioId = $user->gettics(); // Este método debe existir
   </script>
 </head>
 <body class="bg-gray-100 ">
-    <!-- Botón hamburguesa -->
-    <div class="md:hidden p-4 bg-senaGreen text-white flex justify-between items-center">
-        <span class="font-bold text-lg">Admin SENA</span>
-        <button id="menuButton" class="focus:outline-none">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-        </button>
-    </div>
+<div class="flex min-h-screen">
+<!-- Sidebar separado -->
+    <?php include 'barra.php'; ?>
 
-    <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="bg-senaGreen text-white w-64 p-6 space-y-4 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 md:relative md:block">
-            <div class="flex justify-end md:hidden -mt-4 -mr-4">
-                <button id="closeSidebar" class="text-white p-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            <h1 class="text-2xl font-bold mb-6">Admin SENA</h1>
-            <nav class="flex flex-col space-y-3">
-                <a href="../" class="p-2 hover:bg-white hover:text-senaGreen rounded">Inicio</a>
-                <a href="GestiondeAuxiliares" class="p-2 hover:bg-white hover:text-senaGreen rounded">Gestion de Auxiliares</a>
-                <a href="pendientes" class="p-2 hover:bg-white hover:text-senaGreen rounded">Casos</a>
-                <hr class="border-white opacity-30">
-                <?php if (isset($_SESSION["id"])): ?>
-                    <a href="../Perfi/perfil" class="p-2 hover:bg-white hover:text-senaGreen rounded">Bienvenido, <?php echo $_SESSION["nombres"]; ?></a>
-                <?php endif; ?>
-                <a href="../Login/LogoutAction" class="p-2 hover:bg-white hover:text-senaGreen rounded">Cerrar Sesión</a>
-            </nav>
-        </aside>
-
-        <main class="flex-1 p-4 md:p-6 md:ml-15 overflow-auto">
+<!-- Main Content -->
+    <main class="flex-1 p-6 ml-64 overflow-auto">
           <h2 class="text-2xl md:text-3xl font-semibold text-[#39A900] mb-6">Panel de Casos</h2>
 
 
-          <div class="max-w-3xl mx-auto bg-white shadow-xl rounded-xl p-6 ">
-            <h1 class="text-2xl font-bold text-[#39A900] mb-4 s">Detalle del Caso</h1>
+          <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-8">
+            <h1 class="text-2xl font-bold text-senaGreen mb-6">Detalle del Caso</h1>
             
-            <dl class="space-y-3 text-gray-700 lg:grid lg:grid-cols-2 gap-6">
-              <div class="col-span-2">
-                <dt class="font-semibold">Fecha de creación:</dt>
-                <dd><?= htmlspecialchars($caso['fecha_creacion']) ?></dd>
+            <dl class="space-y-6 text-gray-700">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <dt class="font-semibold text-gray-600 mb-1">Fecha de creación:</dt>
+                  <dd class="text-gray-800"><?= htmlspecialchars($caso['fecha_creacion']) ?></dd>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <dt class="font-semibold text-gray-600 mb-1">Ambiente:</dt>
+                  <dd class="text-gray-800"><?= htmlspecialchars($caso['ambiente']) ?></dd>
+                </div>
+                <?php if ($caso['instructor']): ?>
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <dt class="font-semibold text-gray-600 mb-1">Instructor:</dt>
+                    <dd class="text-gray-800"><?= htmlspecialchars($caso['instructor']) ?></dd>
+                  </div>  
+                <?php elseif ($caso['usuario_id']): ?>
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <dt class="font-semibold text-gray-600 mb-1">Usuario:</dt>
+                    <dd class="text-gray-800"><?= htmlspecialchars($caso['usuario_id']) ?></dd>
+                  </div>
+                <?php endif; ?>
+                <?php if (isset($caso['producto']) && !empty($caso['producto'])): ?>
+                  <div class="bg-gray-50 p-4 rounded-lg">
+                    <dt class="font-semibold text-gray-600 mb-1">Producto:</dt>
+                    <dd class="text-gray-800"><?= htmlspecialchars($caso['producto']) ?></dd>
+                  </div>
+                <?php endif; ?>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <dt class="font-semibold text-gray-600 mb-1">Se le Asigno a:</dt>
+                  <dd class="text-gray-800">
+                    <?php if ($caso['auxiliar']): ?>
+                      <?= htmlspecialchars($caso['auxiliar']) ?>
+                    <?php else: ?>
+                      <span class="text-gray-500">No asignado</span>
+                    <?php endif; ?>
+                  </dd>
+                </div>
               </div>
-              <div>
-                <dt class="font-semibold">Ambiente:</dt>
-                <dd><?= htmlspecialchars($caso['ambiente']) ?></dd>
+
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <dt class="font-semibold text-gray-600 mb-1">Descripción:</dt>
+                <dd class="text-gray-800"><?= htmlspecialchars($caso['descripcion'])?></dd>
               </div>
-              <?php if ($caso['instructor']): ?>
-                <div>
-                  <dt class="font-semibold">Instructor:</dt>
-                  <dd><?= htmlspecialchars($caso['instructor']) ?></dd>
-                </div>  
-              <?php elseif ($caso['usuario_id']): ?>
-                <div>
-                  <dt class="font-semibold">Usuario:</dt>
-                  <dd><?= htmlspecialchars($caso['usuario_id']) ?></dd>
+
+              <?php if (!empty($caso['imagen'])): ?>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                  <dt class="font-semibold text-gray-600 mb-1">Imagen:</dt>
+                  <dd>
+                    <img src="../../uploads/<?= htmlspecialchars($caso['imagen'])?>" alt="Imagen del caso" class="max-w-xs mt-2 rounded-lg shadow-md" />
+                  </dd>
                 </div>
               <?php endif; ?>
-              <?php if (isset($caso['producto']) && !empty($caso['producto'])): ?>
-                <div class="col-span-2">
-                  <dt class="font-semibold">Producto:</dt>
-                  <dd><?= htmlspecialchars($caso['producto']) ?></dd>
-                </div>
-              <?php endif; ?>
-              <div class="col-span-2">
-                <dt class="font-semibold">Descripcion:</dt>
-                <dd><?= htmlspecialchars($caso['descripcion'])?></dd>
-              </div>
-              <div>
-                <dt class="font-semibold">Imagen:</dt>
-                <dd>
-                  <?php if (!empty($caso['imagen'])): ?>
-                    <img src="../../uploads/<?= htmlspecialchars($caso['imagen'])?>" alt="Imagen del caso" class="max-w-xs mt-2 rounded-lg shadow" />
-                  <?php else: ?>
-                    <span>No se cargó imagen</span>
-                  <?php endif; ?>
-                </dd>
-              </div>
-              <div>
-                <dt class="font-semibold">Se le Asigno a</dt>
-                <dd>
-                  <?php if ($caso['auxiliar']): ?>
-                    <?= htmlspecialchars($caso['auxiliar']) ?>
-                  <?php else: ?>
-                    <span>No asignado</span>
-                  <?php endif; ?>
-                </dd>
-              </div>
-              <!-- Puedes añadir más campos aquí -->
-              <div class="col-span-2">
+
+              <div class="bg-gray-50 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold text-senaGreen mb-4">Actualizar Estado y Asignación</h3>
                 <form action="UpdatestatusAction" method="POST" class="space-y-4">
                   <input type="hidden" name="caso_id" value="<?= htmlspecialchars($caso['id']) ?>">
-                  <!-- Fila de Asignar a y Estado -->
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label for="usuario_id" class="block font-semibold">Asignar a:</label>
-                      <select name="usuario_id" id="usuario_id" class="w-full border border-gray-300 rounded p-2" required>
+                      <label for="usuario_id" class="block font-medium text-gray-700 mb-2">Asignar a:</label>
+                      <select name="usuario_id" id="usuario_id" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-senaGreen focus:border-senaGreen" required>
                         <option value="">-- Seleccionar --</option>
                         <?php foreach ($usuarioId as $usuario): ?>
                           <option value="<?= $usuario['id'] ?>" <?= $caso['asignado_a'] == $usuario['id'] ? 'selected' : '' ?>>
@@ -149,28 +125,27 @@ $usuarioId = $user->gettics(); // Este método debe existir
                     </div>
 
                     <div>
-                      <label for="estado_id" class="block font-semibold">Estado:</label>
-                      <select name="estado_id" id="estado_id" class="w-full border border-gray-300 rounded p-2" required>
+                      <label for="estado_id" class="block font-medium text-gray-700 mb-2">Estado:</label>
+                      <select name="estado_id" id="estado_id" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-senaGreen focus:border-senaGreen" required>
                         <option value="1" <?= $caso['estado_id'] == 1 ? 'selected' : '' ?>>Pendiente</option>
                         <option value="2" <?= $caso['estado_id'] == 2 ? 'selected' : '' ?>>En Proceso</option>
                         <option value="3" <?= $caso['estado_id'] == 3 ? 'selected' : '' ?>>Resuelto</option>
-                        <!-- Agrega más estados si tienes -->
                       </select>
                     </div>
                   </div>
 
-                  <!-- Observaciones -->
                   <div>
-                    <label for="observaciones" class="block font-semibold">Observaciones:</label>
-                    <textarea name="observaciones" id="observaciones" class="w-full border border-gray-300 rounded p-2" rows="3" placeholder="Escribe una nota..."></textarea>
+                    <label for="observaciones" class="block font-medium text-gray-700 mb-2">Observaciones:</label>
+                    <textarea name="observaciones" id="observaciones" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-senaGreen focus:border-senaGreen" rows="3" placeholder="Escribe una nota..."></textarea>
                   </div>
 
-                  <!-- Botón de Actualizar -->
-                  <button type="submit" class="bg-senaGreen text-white px-4 py-2 rounded mt-2 hover:bg-senaGreenDark">Actualizar</button>
+                  <button type="submit" class="bg-senaGreen text-white px-6 py-2 rounded-lg hover:bg-senaGreenDark transition-colors duration-300 shadow-md hover:shadow-lg">
+                    Actualizar
+                  </button>
                 </form>
               </div>
             </dl>
-            <a href="Tics" class="inline-block mt-6 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Volver</a>
+            <a href="Tics" class="inline-block mt-6 px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300 shadow-md hover:shadow-lg">Volver</a>
           </div>
         </div>
       </main>

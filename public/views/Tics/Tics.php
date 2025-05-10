@@ -3,7 +3,22 @@
     $casos = new CasoController();
     $listadecasos = $casos->getCasos();
     $listadecasosgenerales = $casos->getCasosGeneral();
+    $ambientes = $casos->getAmbientes();
     session_start();
+
+    // Estados de los casos para código de colores
+    $estados = [
+        1 => ['nombre' => 'Pendiente', 'color' => 'bg-blue-100 text-blue-800'],
+        2 => ['nombre' => 'En proceso', 'color' => 'bg-yellow-100 text-yellow-800'],
+        3 => ['nombre' => 'Resuelto', 'color' => 'bg-green-100 text-green-800']
+    ];
+
+    $colorEstado = function($estado) {
+        if (strtolower($estado) === 'resuelto') return 'text-green-600';
+        if (strtolower($estado) === 'pendiente') return 'text-red-600';
+        if (strtolower($estado) === 'en proceso') return 'text-orange-500';
+        return 'text-gray-600';
+    };
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -33,38 +48,39 @@
         <?php include 'barra.php'; ?>
 
         <!-- Main Content -->
-        <main class="flex-1 p-6 md:ml-30 mt-16 md:mt-0 overflow-auto">
+        <main class="flex-1 p-6 ml-64 overflow-auto">
             <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
                 <div>
                     <h2 class="text-3xl font-semibold text-[#39A900]">¡Bienvenido, Area Tics!</h2>
-                    <p class="text-gray-600" id="fechaHora"></p>
-                </div>
-                <div>
-                    <button id="notifBtn" class="relative animate-pulse-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C8.67 6.165 8 7.388 8 8.75V14.16c0 .538-.214 1.055-.595 1.435L6 17h5m4 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        <span id="notifCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">3</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Modal Notificaciones -->
-            <div id="notifModal" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50 z-50">
-                <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                    <h3 class="text-xl font-bold text-[#39A900] mb-4">Notificaciones Recientes</h3>
-                    <ul class="space-y-2 text-sm text-gray-700">
-                        <li>Se ha creado un nuevo caso para el ambiente 101.</li>
-                        <li>Se ha resuelto un caso en el ambiente 104.</li>
-                        <li>Nuevo reporte de fallos en el ambiente 107.</li>
-                    </ul>
-                    <button onclick="closeNotif()" class="mt-4 px-4 py-2 bg-gray-600 text-white rounded-xl font-bold hover:bg-gray-700">Cerrar</button>
                 </div>
             </div>
 
             <!-- Listado de Casos -->
             <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-gray-200 mb-10 overflow-x-auto">
-                <h3 class="text-xl md:text-2xl font-bold text-[#39A900] mb-6">Listado de Casos</h3>
+                <h3 class="text-xl md:text-2xl font-bold text-[#00304D] mb-6">Listado de Casos</h3>
+                
+                <!-- Filtros para Casos Normales -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="filtro_ambiente" class="block text-sm font-medium text-gray-700 mb-1">Filtrar por Ambiente:</label>
+                        <select id="filtro_ambiente" class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-senaGreen">
+                            <option value="">Todos los ambientes</option>
+                            <?php foreach ($ambientes as $ambiente): ?>
+                                <option value="<?= htmlspecialchars($ambiente['nombre']) ?>"><?= htmlspecialchars($ambiente['nombre']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filtro_estado" class="block text-sm font-medium text-gray-700 mb-1">Filtrar por Estado:</label>
+                        <select id="filtro_estado" class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-senaGreen">
+                            <option value="">Todos los estados</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Resuelto">Resuelto</option>
+                        </select>
+                    </div>
+                </div>
+
                 <table class="min-w-full border border-gray-300 text-sm md:text-base">
                     <thead class="bg-gray-100 text-gray-700">
                         <tr>
@@ -72,13 +88,14 @@
                             <th class="py-3 px-5 text-left">Ambiente</th>
                             <th class="py-3 px-5 text-left">Asunto</th>
                             <th class="py-3 px-5 text-left">Instructor</th>
+                            <th class="py-3 px-5 text-left">Asignado a</th>
                             <th class="py-3 px-5 text-center">Estado</th>
                             <th class="py-3 px-5 text-center">Acción</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tabla_casos">
                         <?php    
-                            $itemsPerPage = 10; // Número de casos por página
+                            $itemsPerPage = 10;
                             $totalItems = count($listadecasos);
                             $totalPages = ceil($totalItems / $itemsPerPage);
                             $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -88,20 +105,20 @@
                             $paginatedCasos = array_slice($listadecasos, $startIndex, $itemsPerPage);
 
                             if (empty($paginatedCasos)) {
-                                echo "<tr><td colspan='6' class='text-center py-4'>No hay casos registrados</td></tr>";
+                                echo "<tr><td colspan='7' class='text-center py-4'>No hay casos registrados</td></tr>";
                             } else {
                                 foreach ($paginatedCasos as $caso) {
-                                    echo "<tr class='border-t'>";
+                                    echo "<tr class='border-t caso-fila' data-ambiente='" . htmlspecialchars($caso['ambiente']) . "' data-estado='" . htmlspecialchars($caso['estados_casos']) . "'>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso["fecha_creacion"]) ."</td>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['ambiente']) . "</td>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['descripcion']) . "</td>";
-                                    echo "<td class='py-2 px-4'>". htmlspecialchars($caso["usuario"]) . "</td>";
-                                    echo "<td class='p-2 border font-semibold " . 
-                                        ($caso['estados_casos'] === 'Resuelto' ? 'text-green-600' : 'text-red-600') . "'>" . 
+                                    echo "<td class='py-2 px-4'>". htmlspecialchars($caso["instructor"] ?? 'No asignado') . "</td>";
+                                    echo "<td class='py-2 px-4'>". htmlspecialchars($caso["nombre_asignado"]) . "</td>";
+                                    echo "<td class='p-2 border font-semibold " . $colorEstado($caso['estados_casos']) . "'>" . 
                                         htmlspecialchars($caso['estados_casos']) . 
                                     "</td>";
                                     echo "<td class='py-2 px-4 text-center'>";
-                                    echo "<a href=\"ver_caso?id=" . htmlspecialchars($caso['id']) . "\" class=\"px-4 py-2 bg-[#39A900] text-white rounded-xl font-bold shadow hover:bg-green-600 transition-all\">Ver</a>";
+                                    echo "<a href=\"ver_caso?id=" . htmlspecialchars($caso['id']) . "\" class=\"bg-[#007832] hover:bg-[#00304D] text-white px-4 py-2 rounded-xl shadow-md hover:shadow-xl text-sm font-semibold transition-all duration-300 transform hover:-translate-y-1\">Ver</a>";
                                     echo "</td>";
                                     echo "</tr>";
                                 }
@@ -117,7 +134,7 @@
                     <?php endif; ?>
 
                     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <a href="?page=<?= $i ?>" class="px-4 py-2 <?= $i === $currentPage ? 'bg-[#39A900] text-white' : 'bg-gray-300 text-gray-700' ?> rounded-md hover:bg-gray-400"><?= $i ?></a>
+                        <a href="?page=<?= $i ?>" class="px-4 py-2 <?= $i === $currentPage ? 'bg-[#00304D] text-white' : 'bg-gray-300 text-gray-700' ?> rounded-md hover:bg-gray-400"><?= $i ?></a>
                     <?php endfor; ?>
 
                     <?php if ($currentPage < $totalPages): ?>
@@ -125,7 +142,30 @@
                     <?php endif; ?>
                 </div>
 
-                <h3 class="text-xl md:text-2xl font-bold text-[#39A900] mb-6 py-4">Listado de Casos Generales</h3>
+                <h3 class="text-xl md:text-2xl font-bold text-[#00304D] mb-6 py-4">Listado de Casos Generales</h3>
+                
+                <!-- Filtros para Casos Generales -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="filtro_ambiente_general" class="block text-sm font-medium text-gray-700 mb-1">Filtrar por Ambiente:</label>
+                        <select id="filtro_ambiente_general" class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-senaGreen">
+                            <option value="">Todos los ambientes</option>
+                            <?php foreach ($ambientes as $ambiente): ?>
+                                <option value="<?= htmlspecialchars($ambiente['nombre']) ?>"><?= htmlspecialchars($ambiente['nombre']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filtro_estado_general" class="block text-sm font-medium text-gray-700 mb-1">Filtrar por Estado:</label>
+                        <select id="filtro_estado_general" class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-senaGreen">
+                            <option value="">Todos los estados</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Resuelto">Resuelto</option>
+                        </select>
+                    </div>
+                </div>
+
                 <table class="min-w-full border border-gray-300 text-sm md:text-base">
                     <thead class="bg-gray-100 text-gray-700">
                         <tr>
@@ -133,13 +173,14 @@
                             <th class="py-3 px-5 text-left">Ambiente</th>
                             <th class="py-3 px-5 text-left">Asunto</th>
                             <th class="py-3 px-5 text-left">Instructor</th>
+                            <th class="py-3 px-5 text-left">Asignado a</th>
                             <th class="py-3 px-5 text-center">Estado</th>
                             <th class="py-3 px-5 text-center">Acción</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tabla_casos_generales">
                         <?php    
-                            $itemsPerPageGeneral = 10; // Número de casos generales por página
+                            $itemsPerPageGeneral = 10;
                             $totalItemsGeneral = count($listadecasosgenerales);
                             $totalPagesGeneral = ceil($totalItemsGeneral / $itemsPerPageGeneral);
                             $currentPageGeneral = isset($_GET['page_general']) ? (int)$_GET['page_general'] : 1;
@@ -149,20 +190,20 @@
                             $paginatedCasosGenerales = array_slice($listadecasosgenerales, $startIndexGeneral, $itemsPerPageGeneral);
 
                             if (empty($paginatedCasosGenerales)) {
-                                echo "<tr><td colspan='6' class='text-center py-4'>No hay casos registrados</td></tr>";
+                                echo "<tr><td colspan='7' class='text-center py-4'>No hay casos registrados</td></tr>";
                             } else {
                                 foreach ($paginatedCasosGenerales as $caso) {
-                                    echo "<tr class='border-t'>";
+                                    echo "<tr class='border-t caso-general-fila' data-ambiente='" . htmlspecialchars($caso['ambiente']) . "' data-estado='" . htmlspecialchars($caso['estado']) . "'>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso["fecha_creacion"]) ."</td>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['ambiente']) . "</td>";
                                     echo "<td class='py-2 px-4'>" . htmlspecialchars($caso['asunto']) . "</td>";
-                                    echo "<td class='py-2 px-4'>". htmlspecialchars($caso["instructor"]) . "</td>";
-                                    echo "<td class='p-2 border font-semibold " . 
-                                        ($caso['estado'] === 'Resuelto' ? 'text-green-600' : 'text-red-600') . "'>" . 
+                                    echo "<td class='py-2 px-4'>". htmlspecialchars($caso["instructor"] ?? 'No asignado') . "</td>";
+                                    echo "<td class='py-2 px-4'>". htmlspecialchars($caso["nombre_asignado"]) . "</td>";
+                                    echo "<td class='p-2 border font-semibold " . $colorEstado($caso['estado']) . "'>" . 
                                         htmlspecialchars($caso['estado']) . 
                                     "</td>";
                                     echo "<td class='py-2 px-4 text-center'>";
-                                    echo "<a href=\"ver_casoG?id=" . htmlspecialchars($caso['id']) . "\" class=\"px-4 py-2 bg-[#39A900] text-white rounded-xl font-bold shadow hover:bg-green-600 transition-all\">Ver</a>";
+                                    echo "<a href=\"ver_casoG?id=" . htmlspecialchars($caso['id']) . "\" class=\"bg-[#007832] hover:bg-[#00304D] text-white px-4 py-2 rounded-xl shadow-md hover:shadow-xl text-sm font-semibold transition-all duration-300 transform hover:-translate-y-1\">Ver</a>";
                                     echo "</td>";
                                     echo "</tr>";
                                 }
@@ -178,7 +219,7 @@
                     <?php endif; ?>
 
                     <?php for ($i = 1; $i <= $totalPagesGeneral; $i++): ?>
-                        <a href="?page_general=<?= $i ?>" class="px-4 py-2 <?= $i === $currentPageGeneral ? 'bg-[#39A900] text-white' : 'bg-gray-300 text-gray-700' ?> rounded-md hover:bg-gray-400"><?= $i ?></a>
+                        <a href="?page_general=<?= $i ?>" class="px-4 py-2 <?= $i === $currentPageGeneral ? 'bg-[#00304D] text-white' : 'bg-gray-300 text-gray-700' ?> rounded-md hover:bg-gray-400"><?= $i ?></a>
                     <?php endfor; ?>
 
                     <?php if ($currentPageGeneral < $totalPagesGeneral): ?>
@@ -190,31 +231,47 @@
     </div>
 
     <script>
-    // Función para actualizar la fecha y hora
-    function actualizarFechaHora() {
-        const ahora = new Date();
-        const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-        const fechaFormateada = ahora.toLocaleDateString('es-ES', opciones);
-        document.getElementById('fechaHora').textContent = fechaFormateada;
-    }
+        // Función para filtrar casos normales
+        function filtrarCasos() {
+            const filtroAmbiente = document.getElementById('filtro_ambiente').value.toLowerCase();
+            const filtroEstado = document.getElementById('filtro_estado').value.toLowerCase();
+            const filas = document.querySelectorAll('#tabla_casos .caso-fila');
 
-    // Llamar a la función al cargar la página
-    actualizarFechaHora();
+            filas.forEach(fila => {
+                const ambiente = fila.dataset.ambiente.toLowerCase();
+                const estado = fila.dataset.estado.toLowerCase();
+                const mostrar = 
+                    (filtroAmbiente === '' || ambiente.includes(filtroAmbiente)) &&
+                    (filtroEstado === '' || estado.includes(filtroEstado));
+                
+                fila.style.display = mostrar ? '' : 'none';
+            });
+        }
 
-    // Mostrar modal de notificaciones
-    const notifBtn = document.getElementById('notifBtn');
-    const notifModal = document.getElementById('notifModal');
+        // Función para filtrar casos generales
+        function filtrarCasosGenerales() {
+            const filtroAmbiente = document.getElementById('filtro_ambiente_general').value.toLowerCase();
+            const filtroEstado = document.getElementById('filtro_estado_general').value.toLowerCase();
+            const filas = document.querySelectorAll('#tabla_casos_generales .caso-general-fila');
 
-    notifBtn.addEventListener('click', () => {
-        notifModal.classList.remove('hidden');
-    });
+            filas.forEach(fila => {
+                const ambiente = fila.dataset.ambiente.toLowerCase();
+                const estado = fila.dataset.estado.toLowerCase();
+                const mostrar = 
+                    (filtroAmbiente === '' || ambiente.includes(filtroAmbiente)) &&
+                    (filtroEstado === '' || estado.includes(filtroEstado));
+                
+                fila.style.display = mostrar ? '' : 'none';
+            });
+        }
 
-    function closeNotif() {
-        notifModal.classList.add('hidden');
-    }
+        // Event listeners para los filtros de casos normales
+        document.getElementById('filtro_ambiente').addEventListener('change', filtrarCasos);
+        document.getElementById('filtro_estado').addEventListener('change', filtrarCasos);
 
-    // Aquí también puedes agregar otras funciones necesarias
+        // Event listeners para los filtros de casos generales
+        document.getElementById('filtro_ambiente_general').addEventListener('change', filtrarCasosGenerales);
+        document.getElementById('filtro_estado_general').addEventListener('change', filtrarCasosGenerales);
     </script>
-
 </body>
 </html>

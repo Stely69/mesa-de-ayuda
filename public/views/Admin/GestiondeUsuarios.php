@@ -61,8 +61,8 @@
                         <option value="4">Almacen</option>
                     </select>
                     <button onclick="mostrarFormulario()" class="bg-[#007832] hover:bg-[#00304D] text-white px-4 py-2 rounded-2xl shadow-md hover:shadow-xl text-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 w-full sm:w-auto">
-    Agregar Usuario
-</button>
+                        Agregar Usuario
+            </button>
 
                 </div>
             </div>
@@ -109,6 +109,44 @@
                     </form>
                 </div>
             </div>
+<!-- Modal Editar Usuario -->
+<div id="modalEditar" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden px-4">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h3 class="text-xl font-semibold mb-4">Editar Usuario</h3>
+        <form action="UpdateAction" method="POST" class="space-y-3">
+            <input type="hidden" name="id" id="editId">
+            <input type="hidden" name="hiddenCorreo" id="hiddenCorreo">
+
+            <div>
+                <label class="block mb-1 font-medium">Nombre</label>
+                <input type="text" name="nombres" id="editNombres" class="w-full p-2 border rounded-md" required>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Apellido</label>
+                <input type="text" name="apellido" id="editApellido" class="w-full p-2 border rounded-md" required>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Correo</label>
+                <input type="email" name="correo" id="editCorreo" class="w-full p-2 border rounded-md" required>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Rol</label>
+                <select name="rol_id" id="editRol" class="w-full p-2 border rounded-md" required>
+                    <option value="3">TICS</option>
+                    <option value="4">Almacen</option>
+                    <option value="2">Instructor</option>
+                    <option value="1">Administrador</option>
+                </select>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="cerrarFormularioEdicion()" class="bg-gray-500 text-white px-4 py-1 rounded-md">Cancelar</button>
+                <button type="submit" class="bg-[#39A900] text-white px-4 py-1 rounded-md">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
             <!-- Tabla de Usuarios -->
             <div class="bg-white p-4 shadow rounded-md overflow-x-auto">
                 <h3 class="text-xl font-semibold text-gray-700 mb-4">Usuarios Registrados</h3>
@@ -161,6 +199,7 @@
     <script>
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('sidebar');
+
         const closeSidebar = document.getElementById('closeSidebar');
         const modalAgregar = document.getElementById('modalAgregar');
 
@@ -192,7 +231,7 @@
         function editarUsuario(id, nombre, apellido, correo, rol_id) {
             const modalEditar = document.getElementById('modalEditar');
             document.getElementById('editId').value = id;
-            document.getElementById('editNombre').value = nombre;
+            document.getElementById('editNombres').value = nombre;
             document.getElementById('editApellido').value = apellido;
             document.getElementById('editCorreo').value = correo;
             document.getElementById('hiddenCorreo').value = correo;

@@ -11,6 +11,7 @@
     Enrutador::post("UpdateAction", [InicioControlador::class,"updateaction"]);
     Enrutador::post("UpdateStatus", [InicioControlador::class,"statusaction"]);
     Enrutador::get("DeleteAction", [InicioControlador::class,"deleteaction"]);
+    Enrutador::get("HistorialAdmin",[InicioControlador::class,"historialadmin"]);
     // Rutas de Login
     Enrutador::post("LoginAction", [InicioControlador::class, "Loginaction"]);
     Enrutador::get("LogoutAction", [InicioControlador::class,"Logout"]);
@@ -41,13 +42,24 @@
     Enrutador::get("Tics", [InicioControlador::class,"tics"]);
     Enrutador::get("pendientes", [InicioControlador::class,"ticspendientes"]);
     Enrutador::get("GestiondeAuxiliares",[InicioControlador::class, "gestiondeauxiliares"]);
+    Enrutador::post("RegistroActionG", [InicioControlador::class,"createactionG"]);
+    Enrutador::get("DeleteActionA", [InicioControlador::class,"deleteactionA"]);
+    Enrutador::post("UpdateStatusA", [InicioControlador::class,"updateactionA"]);
     Enrutador::get("ver_caso", [InicioControlador::class,"ver_caso"]);
     Enrutador::get("ver_casoG", [InicioControlador::class,"ver_casog"]);
     Enrutador::post("UpdatestatusAction", [InicioControlador::class,"updatestatusa"]);
     Enrutador::post("AsignarCasoActionG", [InicioControlador::class,"asignarauxiliar"]);
+    Enrutador::post("EditarUsuarioAuxiliar", [InicioControlador::class,"editarauxiliar"]);
     // ruta de perfil
     Enrutador::get("perfil", [InicioControlador::class,"perfil"]);
+    Enrutador::post("UpdateUserActionPerfil", [InicioControlador::class,"updateUserPerfil"]);
     Enrutador::post("UpdateUserAction", [InicioControlador::class,"updateUser"]);
-
+    Enrutador::post("ActualizarEstadoCasoAlmacen", [InicioControlador::class,"actualizarEstadoCasoAlmacen"]);
+    Enrutador::post("EliminarCasoAlmacen", [InicioControlador::class, "eliminarCasoAlmacen"]);
+    Enrutador::post("EliminarBienAction", [InicioControlador::class, "eliminarBienAction"]);
+    Enrutador::post("EditarBienAction", [InicioControlador::class, "editarBienAction"]);
+    Enrutador::post("CargarBienesExcel", [InicioControlador::class, "cargarBienesExcelAction"]);
+    Enrutador::get("consulta_caso", [InicioControlador::class, "consultaCasoAjax"]);
+    Enrutador::get("Ver_Casos_Almn", [InicioControlador::class, "verCasoAlmacen"]);
 
     Enrutador::obtenerRuta();

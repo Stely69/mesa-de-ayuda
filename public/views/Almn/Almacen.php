@@ -1,4 +1,40 @@
+<?php
+$base_path = 'almacen';
+require_once __DIR__ . '/../../../Controller/ProductoController.php';
+require_once __DIR__ . '/../../../Controller/CasoController.php';
+session_start();
 
+// Instanciar controladores
+$productoController = new ProductoController();
+$casoController = new CasoController();
+
+// Contador: Elementos en Inventario
+$totalInventario = $productoController->mostrarProductos();
+
+// Contador: Casos Pendientes (estado_id = 1)
+$casos = $casoController->getCasos();
+$casosPendientes = 0;
+$casosRevision = 0;
+$casosReposiciones = 0;
+$ultimosCasos = [];
+foreach ($casos as $caso) {
+    // Ajusta los nombres de estado según tu base de datos
+    if (isset($caso['estados_casos'])) {
+        if (strtolower($caso['estados_casos']) === 'pendiente' || strtolower($caso['estados_casos']) === 'nuevo') {
+            $casosPendientes++;
+        } elseif (strtolower($caso['estados_casos']) === 'en revisión' || strtolower($caso['estados_casos']) === 'en revision') {
+            $casosRevision++;
+        } elseif (strtolower($caso['estados_casos']) === 'resuelto' || strtolower($caso['estados_casos']) === 'reposición' || strtolower($caso['estados_casos']) === 'repuesto') {
+            $casosReposiciones++;
+        }
+    }
+}
+// Obtener los últimos 3 casos por fecha de creación descendente
+usort($casos, function($a, $b) {
+    return strtotime($b['fecha_creacion']) - strtotime($a['fecha_creacion']);
+});
+$ultimosCasos = array_slice($casos, 0, 3);
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -38,75 +74,103 @@
         <div class="flex justify-between items-center mb-6 flex-wrap gap-4">
             <div>
                 <h2 class="text-3xl font-semibold text-[#39A900]">¡Bienvenido, Almacén!</h2>
-                <p class="text-gray-600" id="fechaHora"></p>
-            </div>
-            <div>
-                <button id="notifBtn" class="relative animate-pulse-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C8.67 6.165 8 7.388 8 8.75V14.16c0 .538-.214 1.055-.595 1.435L6 17h5m4 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                    <span id="notifCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">3</span>
-                </button>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white p-4 rounded-lg shadow">
-                <h3 class="text-gray-700 text-sm">Elementos en Inventario</h3>
-                <p class="text-2xl font-bold text-[#39A900]">1,250</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow">
-                <h3 class="text-gray-700 text-sm">Casos Pendientes</h3>
-                <p class="text-2xl font-bold text-yellow-500">5</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow">
-                <h3 class="text-gray-700 text-sm">Elementos en Revisión</h3>
-                <p class="text-2xl font-bold text-orange-400">8</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow">
-                <h3 class="text-gray-700 text-sm">Reposiciones Realizadas</h3>
-                <p class="text-2xl font-bold text-blue-500">12</p>
-            </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-    <a href="inventario" class="bg-[#39A900] text-white p-6 rounded-lg shadow hover:bg-green-700 text-center block">
+            <!-- Elementos en Inventario -->
+            <div class="bg-white p-4 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-[#007832] animate-fade-in-up">
+                <div class="flex items-center gap-4">
+                    <div class="bg-[#007832] p-2 rounded-full text-white flex items-center justify-center">📦</div>
+                    <div class="flex flex-col justify-center">
+                        <h3 class="text-gray-700 text-sm font-semibold">Bienes Inventario</h3>
+                        <p class="text-2xl font-bold text-[#007832] mt-1"><?php echo $totalInventario; ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Casos Pendientes -->
+            <div class="bg-white p-4 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-yellow-500 animate-fade-in-up delay-100">
+                <div class="flex items-center gap-4">
+                    <div class="bg-yellow-500 p-2 rounded-full text-white flex items-center justify-center">⏳</div>
+                    <div class="flex flex-col justify-center">
+                        <h3 class="text-gray-700 text-sm font-semibold">Casos Pendientes</h3>
+                        <p class="text-2xl font-bold text-yellow-500 mt-1"><?php echo $casosPendientes; ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Elementos en Revisión -->
+            <div class="bg-white p-4 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-orange-400 animate-fade-in-up delay-200">
+                <div class="flex items-center gap-4">
+                    <div class="bg-orange-400 p-2 rounded-full text-white flex items-center justify-center">🔍</div>
+                    <div class="flex flex-col justify-center">
+                        <h3 class="text-gray-700 text-sm font-semibold">Elementos en Revisión</h3>
+                        <p class="text-2xl font-bold text-orange-400 mt-1"><?php echo $casosRevision; ?></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reposiciones Realizadas -->
+            <div class="bg-white p-4 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border-l-4 border-blue-500 animate-fade-in-up delay-300">
+                <div class="flex items-center gap-4">
+                    <div class="bg-blue-500 p-2 rounded-full text-white flex items-center justify-center">✅</div>
+                    <div class="flex flex-col justify-center">
+                        <h3 class="text-gray-700 text-sm font-semibold">Reposiciones Realizadas</h3>
+                        <p class="text-2xl font-bold text-blue-500 mt-1"><?php echo $casosReposiciones; ?></p>
+                    </div>
+                </div>
+            </div>
+
+
+</div>
+
+
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"> 
+    <!-- Inventario (Caja) -->
+    <a href="inventario" class="bg-[#007832] hover:bg-[#00304D] text-white py-5 px-6 rounded-2xl shadow-md hover:shadow-xl text-center text-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20 12V7a2 2 0 00-2-2H6a2 2 0 00-2 2v5m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4" />
+        </svg>
         Cambio en el inventario
     </a>
-    <a href="historial" class="bg-[#39A900] text-white p-6 rounded-lg shadow hover:bg-green-700 text-center block">
+
+    <!-- Historial (Reloj) -->
+    <a href="historial" class="bg-[#007832] hover:bg-[#00304D] text-white py-5 px-6 rounded-2xl shadow-md hover:shadow-xl text-center text-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
         Consultar Historial
     </a>
-    <a href="reporte_pdf.php" class="bg-[#39A900] text-white p-6 rounded-lg shadow hover:bg-green-700 text-center block">
-        Generar Reporte PDF
+
+    <!-- Casos (Panel/Tablero) -->
+    <a href="casos" class="bg-[#007832] hover:bg-[#00304D] text-white py-5 px-6 rounded-2xl shadow-md hover:shadow-xl text-center text-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M10 14h10M10 18h10" />
+        </svg>
+        Panel de Casos
     </a>
 </div>
+
+
+
 
 
         <div class="bg-white p-6 shadow rounded-md">
             <h3 class="text-xl font-semibold mb-4 text-gray-700">Reemplazos Recientes</h3>
             <div class="grid gap-4">
-            <div class="flex items-center bg-gray-100 p-4 rounded-lg shadow hover:bg-[#f3eaff] transition animate-fade-in-up">
-                    <div class="w-12 h-12 bg-[#71277A] text-white flex items-center justify-center rounded-full mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm2 2h12v12H6V6z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <p class="font-semibold text-gray-800">Reemplazo de monitor en Ambiente 104</p>
-                        <p class="text-sm text-gray-500">19/03/2025 - por Felipe M.</p>
-                    </div>
-                </div>
-                <div class="flex items-center bg-gray-100 p-4 rounded-lg shadow hover:bg-[#e0f7ff] transition animate-fade-in-up">
-                    <div class="w-12 h-12 bg-[#00304D] text-white flex items-center justify-center rounded-full mr-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm2 2h12v12H6V6z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <p class="font-semibold text-gray-800">Reemplazo de CPU en Ambiente 301</p>
-                        <p class="text-sm text-gray-500">20/03/2025 - por Kevin C.</p>
-                    </div>
-                </div>
+            <?php 
+            $reemplazos = array_filter($casos, function($caso) {
+                return isset($caso['estados_casos']) && (strtolower($caso['estados_casos']) === 'resuelto' || strtolower($caso['estados_casos']) === 'reposición' || strtolower($caso['estados_casos']) === 'repuesto');
+            });
+            usort($reemplazos, function($a, $b) {
+                return strtotime($b['fecha_creacion']) - strtotime($a['fecha_creacion']);
+            });
+            $reemplazos = array_slice($reemplazos, 0, 3);
+            ?>
+            <?php foreach ($reemplazos as $caso): ?>
                 <div class="flex items-center bg-gray-100 p-4 rounded-lg shadow hover:bg-[#f3eaff] transition animate-fade-in-up">
                     <div class="w-12 h-12 bg-[#71277A] text-white flex items-center justify-center rounded-full mr-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,10 +178,23 @@
                         </svg>
                     </div>
                     <div class="flex-1">
-                        <p class="font-semibold text-gray-800">Reemplazo de impresora en Ambiente 205</p>
-                        <p class="text-sm text-gray-500">18/03/2025 - por Steven V.</p>
+                        <p class="font-semibold text-gray-800">
+                            <?php echo htmlspecialchars($caso['descripcion']); ?> en <?php echo htmlspecialchars($caso['ambiente']); ?>
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            <?php echo date('d/m/Y', strtotime($caso['fecha_creacion'])); ?> - por <?php echo isset($caso['instructor']) ? htmlspecialchars($caso['instructor']) : 'No asignado'; ?>
+                        </p>
+                        <?php if (!empty($caso['imagen'])): ?>
+                            <a href="/uploads/<?php echo htmlspecialchars($caso['imagen']); ?>" target="_blank">
+                                <img src="/uploads/<?php echo htmlspecialchars($caso['imagen']); ?>" alt="Evidencia" style="max-width: 80px; max-height: 80px; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; margin-top: 8px;" title="Haz clic para ver en grande">
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
+            <?php endforeach; ?>
+            <?php if (count($reemplazos) === 0): ?>
+                <div class="text-gray-500">No hay reemplazos recientes.</div>
+            <?php endif; ?>
             </div>
         </div>
 
@@ -132,27 +209,18 @@
             </button>
         </div>
         <ul class="space-y-4 max-h-60 overflow-y-auto">
-            <li class="bg-gray-100 p-3 rounded-lg shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-gray-700 font-medium">Ambiente 104:</p>
-                    <span class="text-gray-600 text-sm">Solicitud cambio de monitor — <span class="text-yellow-500 font-semibold">Pendiente</span></span>
-                </div>
-                <button class="bg-[#00304D] text-white px-3 py-1 rounded hover:opacity-90 text-sm">Ir</button>
-            </li>
-            <li class="bg-gray-100 p-3 rounded-lg shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-gray-700 font-medium">Ambiente 205:</p>
-                    <span class="text-gray-600 text-sm">Ajuste de impresora — <span class="text-yellow-500 font-semibold">Pendiente</span></span>
-                </div>
-                <button class="bg-[#00304D] text-white px-3 py-1 rounded hover:opacity-90 text-sm">Ir</button>
-            </li>
-            <li class="bg-gray-100 p-3 rounded-lg shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-gray-700 font-medium">Ambiente 301:</p>
-                    <span class="text-gray-600 text-sm">Cambio de CPU — <span class="text-yellow-500 font-semibold">Pendiente</span></span>
-                </div>
-                <button class="bg-[#00304D] text-white px-3 py-1 rounded hover:opacity-90 text-sm">Ir</button>
-            </li>
+            <?php foreach ($ultimosCasos as $caso): ?>
+                <li class="bg-gray-100 p-3 rounded-lg shadow-sm flex justify-between items-center">
+                    <div>
+                        <p class="text-gray-700 font-medium">Ambiente <?php echo htmlspecialchars($caso['ambiente']); ?>:</p>
+                        <span class="text-gray-600 text-sm">
+                            <?php echo htmlspecialchars($caso['descripcion']); ?> —
+                            <span class="text-yellow-500 font-semibold"><?php echo htmlspecialchars($caso['estados_casos']); ?></span>
+                        </span>
+                    </div>
+                    <button class="bg-[#00304D] text-white px-3 py-1 rounded hover:opacity-90 text-sm">Ir</button>
+                </li>
+            <?php endforeach; ?>
         </ul>
         <button onclick="closeNotif()" class="mt-6 bg-[#39A900] text-white px-4 py-2 rounded-lg hover:bg-green-700 w-full transition">Cerrar</button>
     </div>
@@ -161,23 +229,6 @@
     </main>
 </div>
 
-<script>
-function actualizarFechaHora() {
-    const ahora = new Date();
-    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-    document.getElementById('fechaHora').textContent = ahora.toLocaleDateString('es-ES', opciones);
-}
-setInterval(actualizarFechaHora, 1000);
-actualizarFechaHora();
 
-const notifBtn = document.getElementById('notifBtn');
-const notifModal = document.getElementById('notifModal');
-notifBtn.addEventListener('click', () => {
-    notifModal.classList.remove('hidden');
-});
-function closeNotif() {
-    notifModal.classList.add('hidden');
-}
-</script>
 </body>
 </html>

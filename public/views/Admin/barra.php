@@ -1,3 +1,8 @@
+<?php
+if (!isset($base_path)) {
+    $base_path = 'admin';
+}
+?>
 <!-- Fuente personalizada -->
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap" rel="stylesheet">
 
@@ -22,7 +27,7 @@
 
     <!-- Logo y título -->
     <div class="flex items-center space-x-2 mb-4 mt-6">
-        <img src="ruta/a/tu/logo.svg" alt="Logo" class="w-6 h-6">
+        <img src="../pictures/logoSena.png" alt="Logo" class="w-6 h-6">
         <span class="text-lg" style="font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #39A900;">
             GEDAC
         </span>
@@ -54,7 +59,6 @@
         <span>Historial</span>
     </a>
 </nav>
-
 
     <hr class="border-[#00304D] my-4">
 

@@ -13,6 +13,13 @@
     $contadorcasos = $casos->mostarcasos();
     $totaluser = $usuarios->mostarusuaruio();
     session_start();
+    // Paginado para la tabla de movimientos
+    $casosPorPagina = 10;
+    $totalCasos = count($listadecasos);
+    $totalPaginas = ceil($totalCasos / $casosPorPagina);
+    $paginaActual = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
+    $inicio = ($paginaActual - 1) * $casosPorPagina;
+    $casosPagina = array_slice($listadecasos, $inicio, $casosPorPagina);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -63,7 +70,7 @@
         <div class="flex items-center gap-4">
             <div class="bg-[#007832] p-3 rounded-full text-white">📦</div>
             <div>
-                <h3 class="text-gray-700 text-base font-semibold">Equipos Registrados</h3>
+                <h3 class="text-gray-700 text-base font-semibold">Bienes Registrados</h3>
                 <p class="text-3xl font-bold text-[#007832] mt-1"><?php echo $productos; ?></p>
             </div>
         </div>
@@ -107,50 +114,55 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($listadecasos as $caso): ?>
+                <?php foreach ($casosPagina as $caso): ?>
                     <tr>
                         <td class="p-2 border"><?= $caso['fecha_creacion'] ?></td>
-                        <td class="p-2 border"><?= $caso['producto'] ?></td>
+                        <td class="p-2 border"><?= $caso['clase_equipo'] ?></td>
                         <td class="p-2 border"><?= $caso['ambiente'] ?></td>
-                        <td class="p-2 border text-green-600"><?= $caso['estados_casos'] ?></td>
-                        <td class="p-2 border"><?= $caso['usuario'] ?></td>
+                        <td class="p-2 border">
+                            <?php
+                                $estado = strtolower($caso['estados_casos']);
+                                $color = '';
+                                $bg = '';
+                                if ($estado === 'pendiente') {
+                                    $color = 'text-red-700';
+                                    $bg = 'bg-red-100';
+                                } elseif ($estado === 'en proceso') {
+                                    $color = 'text-yellow-800';
+                                    $bg = 'bg-yellow-100';
+                                } elseif ($estado === 'resuelto') {
+                                    $color = 'text-green-700';
+                                    $bg = 'bg-green-100';
+                                } else {
+                                    $color = 'text-gray-700';
+                                    $bg = 'bg-gray-100';
+                                }
+                            ?>
+                            <span class="px-4 py-1 rounded-full font-semibold text-sm <?= $color ?> <?= $bg ?>">
+                                <?= ucfirst($caso['estados_casos']) ?>
+                            </span>
+                        </td>
+                        <td class="p-2 border"><?= $caso['reportado_por'] ?></td>
                     </tr>
                 <?php endforeach ?>
             </tbody>
         </table>
     </div>
+    <!-- Controles de paginado -->
+    <div class="flex justify-center mt-4 gap-2">
+        <?php if ($paginaActual > 1): ?>
+            <a href="?pagina=<?= $paginaActual - 1 ?>" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">Anterior</a>
+        <?php endif; ?>
+        <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+            <a href="?pagina=<?= $i ?>" class="px-3 py-1 rounded <?php if ($i == $paginaActual) echo 'bg-[#39A900] text-white font-bold'; else echo 'bg-gray-200 hover:bg-gray-300'; ?>"><?= $i ?></a>
+        <?php endfor; ?>
+        <?php if ($paginaActual < $totalPaginas): ?>
+            <a href="?pagina=<?= $paginaActual + 1 ?>" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">Siguiente</a>
+        <?php endif; ?>
+    </div>
 </div>
 
-            <!-- Reportes -->
-            <div class="mt-8 bg-white p-4 shadow rounded-md">
-                <h3 class="text-xl text-gray-700 mb-4">Reportes Generados</h3>
-                <button onclick="exportToExcel()" class="mb-4 px-4 py-2 bg-[#007832] hover:bg-[#00304D] text-white rounded shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-    Descargar Excel
-</button>
 
-                <div class="grid gap-6 md:grid-cols-2">
-                    <div class="p-4 bg-gray-50 border-l-4 border-senaGreen shadow rounded-md">
-                        <h4 class="text-lg font-semibold">Reporte de Inventario</h4>
-                        <p class="text-gray-600">Última actualización: 02/03/2025</p>
-                        <p class="mt-2">Se han registrado 150 nuevos equipos este mes. Reportado por: Almacén.</p>
-                    </div>
-                    <div class="p-4 bg-gray-50 border-l-4 border-senaGreen shadow rounded-md">
-                        <h4 class="text-lg font-semibold">Reporte de Usuarios</h4>
-                        <p class="text-gray-600">Última actualización: 01/03/2025</p>
-                        <p class="mt-2">Se han registrado 50 nuevos usuarios. Reportado por: Administrador.</p>
-                    </div>
-                    <div class="p-4 bg-gray-50 border-l-4 border-senaGreen shadow rounded-md">
-                        <h4 class="text-lg font-semibold">Reporte de Mantenimiento</h4>
-                        <p class="text-gray-600">Última actualización: 28/02/2025</p>
-                        <p class="mt-2">30 equipos han sido reparados este mes. Reportado por: Servicio Técnico.</p>
-                    </div>
-                    <div class="p-4 bg-gray-50 border-l-4 border-senaGreen shadow rounded-md">
-                        <h4 class="text-lg font-semibold">Reporte de Uso</h4>
-                        <p class="text-gray-600">Última actualización: 27/02/2025</p>
-                        <p class="mt-2">Los laboratorios han sido utilizados un 80% del tiempo disponible. Reportado por: Instructores.</p>
-                    </div>
-                </div>
-            </div>
         </main>
     </div>
     <script>

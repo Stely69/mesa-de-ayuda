@@ -27,10 +27,7 @@
             $metodo = $_SERVER["REQUEST_METHOD"];
             // Obtiene la URI solicitada
             $uri = $_SERVER["REQUEST_URI"];
-            // Encuentra la posición de la carpeta 'Public' en la URI
             $posicionPublic = strpos($uri, "Public");
-
-            // Ajusta la URI para eliminar la parte de 'Public'
             $uri = trim(substr($uri, $posicionPublic + 6), "/");
             
             // Verifica si no hay rutas registradas para el método
@@ -74,7 +71,7 @@
                 }  
             }
 
-            var_dump($uri);
+            // var_dump($uri); // Eliminado para evitar impresión no deseada
             // Si no se encuentra la ruta, carga la vista de error 404
             require_once("../Public/Views/404/error404.php");
         }

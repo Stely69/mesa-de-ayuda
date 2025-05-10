@@ -1,0 +1,5 @@
+Array
+(
+    [caso_id] => 31
+    [estado] => 2
+)

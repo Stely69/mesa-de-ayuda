@@ -31,6 +31,8 @@
                 <div id="step2Indicator" class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-gray-300 bg-white text-gray-500 font-semibold shadow transition">2</div>
             </div>
 
+            <div id="mensaje-exito" style="display:none;" class="mb-4 p-4 rounded-lg bg-green-100 text-green-800 text-center font-semibold"></div>
+
             <form id="formReporteFalla" method="POST" enctype="multipart/form-data" class="space-y-8">
                 <input type="hidden" name="usuario_id" value="<?= $_SESSION['id'] ?>">
                 <input type="hidden" name="estado" value="1">
@@ -40,7 +42,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Ambiente -->
                         <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Ambiente</label>
+                            <label class="block text-[#00304D] font-bold text-lg mb-4">Ambiente</label>
                             <select id="selectAmbiente" name="ambiente_id" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#39A900]">
                                 <option value="">-- Seleccionar --</option>
                                 <?php foreach ($ambientes as $ambiente): ?>
@@ -49,21 +51,46 @@
                             </select>
                         </div>
 
-                        <!-- Producto -->
-                        <div>
-                            <label class="block text-gray-700 font-semibold mb-2">Producto</label>
-                            <select id="selectProducto" name="producto_id" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#39A900]">
-                                <option value="">-- Seleccionar --</option>
-                            </select>
+                        <!-- Producto (ocupa toda la fila, diseño mejorado) -->
+                        <div class="md:col-span-2">
+                            <div class="rounded-2xl border border-gray-200 bg-[#F9F9F9] p-6 shadow-sm">
+                                <label class="block text-[#00304D] font-bold text-lg mb-4">Producto</label>
+                                <input type="text" id="buscarProducto" placeholder="Buscar por número de placa..." 
+                                    class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#39A900] mb-4 bg-white text-[#00304D] placeholder-gray-400">
+                                <div class="rounded-xl overflow-x-auto w-full">
+                                    <table class="w-full divide-y divide-gray-200">
+                                        <thead class="bg-[#00304D]">
+                                            <tr>
+                                                <th class="px-4 py-2 text-left text-xs font-semibold text-white uppercase tracking-wider">Seleccionar</th>
+                                                <th class="px-4 py-2 text-left text-xs font-semibold text-white uppercase tracking-wider">Placa</th>
+                                                <th class="px-4 py-2 text-left text-xs font-semibold text-white uppercase tracking-wider">Clase</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tablaProductos" class="bg-white divide-y divide-gray-200">
+                                            <tr>
+                                                <td colspan="3" class="px-4 py-2 text-center text-gray-500">
+                                                    Seleccione un ambiente para ver los productos disponibles
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <input type="hidden" id="producto_id" name="producto_id">
+                                <div id="productoSeleccionado" class="mt-4 p-3 bg-[#E6F4EA] rounded-lg hidden flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-[#39A900]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                                    <span class="text-sm text-[#00304D]">Producto seleccionado: </span>
+                                    <span id="productoSeleccionadoInfo" class="text-sm font-semibold text-[#007832]"></span>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Área Responsable -->
                         <div class="md:col-span-2">
-                            <label class="block text-gray-700 font-semibold mb-2">Área Responsable</label>
-                            <select name="rol" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#39A900]">
+                            <label class="block text-[#00304D] font-bold text-lg mb-4">Área Responsable</label>
+                            <select name="rol" id="rol" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#39A900]">
                                 <option value="">-- Seleccionar --</option>
                                 <option value="3">Area de Sistemas</option>
-                                <option value="4">Area de Almacen</option>
+                                <option value="4">Area de Almacén</option>
                             </select>
                         </div>
                     </div>
@@ -114,7 +141,7 @@
          //formulario dos pasos 
         document.getElementById('btnSiguiente').addEventListener('click', () => {
         const ambiente = document.getElementById('selectAmbiente').value;
-        const producto = document.getElementById('selectProducto').value;
+        const producto = document.getElementById('producto_id').value;
         const rol = document.querySelector('[name="rol"]').value;
 
             if (ambiente && producto && rol) {
@@ -125,7 +152,11 @@
             document.getElementById('step2Indicator').classList.remove('bg-white', 'text-gray-500');
             document.getElementById('step2Indicator').classList.add('bg-[#39A900]', 'text-white');
             } else {
-            alert('Por favor completa todos los campos del paso 1.');
+                let mensaje = [];
+                if (!ambiente) mensaje.push("Seleccione un ambiente");
+                if (!producto) mensaje.push("Seleccione un producto");
+                if (!rol) mensaje.push("Seleccione un área responsable");
+                alert(mensaje.join("\n"));
             }
         });
 
@@ -139,11 +170,11 @@
         });
 
         $(document).ready(function () {
-            // Cambiar productos al seleccionar ambiente
-            $("#selectAmbiente").change(function () {
-                let ambiente_id = $(this).val();
-                $("#selectProducto").html('<option>Cargando...</option>');
+            let productos = [];
+            let timeout = null;
 
+            // Función para cargar productos
+            function cargarProductos(ambiente_id) {
                 if (ambiente_id !== "") {
                     $.ajax({
                         url: "GetAmbienteAction",
@@ -151,56 +182,134 @@
                         data: { ambiente_id },
                         dataType: "json",
                         success: function (response) {
-                            let opciones = '<option value="">-- Seleccionar --</option>';
-                            if (response.length > 0) {
-                                response.forEach(producto => {
-                                    opciones += `<option value="${producto.id}">${producto.clase_id} (Placa: ${producto.numero_placa})</option>`;
-                                });
-                            } else {
-                                opciones = '<option>No hay productos disponibles</option>';
-                            }
-                            $("#selectProducto").html(opciones);
+                            productos = response;
+                            mostrarProductos('');
                         },
                         error: function () {
-                            $("#selectProducto").html('<option>Error al cargar</option>');
+                            $("#tablaProductos").html('<tr><td colspan="3" class="px-4 py-2 text-center text-red-500">Error al cargar productos</td></tr>');
                         }
                     });
+                } else {
+                    $("#tablaProductos").html('<tr><td colspan="3" class="px-4 py-2 text-center text-gray-500">Seleccione un ambiente para ver los productos disponibles</td></tr>');
+                }
+            }
+
+            // Función para mostrar productos filtrados
+            function mostrarProductos(busqueda) {
+                const tabla = $("#tablaProductos");
+                tabla.empty();
+                
+                const productosFiltrados = productos.filter(p => 
+                    p.numero_placa.toLowerCase().includes(busqueda.toLowerCase())
+                );
+
+                if (productosFiltrados.length === 0) {
+                    tabla.html('<tr><td colspan="3" class="px-4 py-2 text-center text-gray-500">No se encontraron productos</td></tr>');
+                    return;
+                }
+
+                productosFiltrados.forEach((producto, idx) => {
+                    const tr = $('<tr>').addClass('hover:bg-[#E6F4EA] cursor-pointer').css('background', idx % 2 === 0 ? '#fff' : '#F3F6F9');
+                    tr.html(`
+                        <td class="px-4 py-2">
+                            <input type="radio" name="producto_radio" value="${producto.id}" 
+                                   class="producto-radio h-4 w-4 text-[#39A900] focus:ring-[#39A900] border-gray-300">
+                        </td>
+                        <td class="px-4 py-2 text-sm text-[#00304D]">${producto.numero_placa}</td>
+                        <td class="px-4 py-2 text-sm text-[#00304D]">${producto.clase_nombre}</td>
+                    `);
+                    tabla.append(tr);
+                });
+            }
+
+            // Cambiar productos al seleccionar ambiente
+            $("#selectAmbiente").change(function () {
+                const ambiente_id = $(this).val();
+                $("#buscarProducto").val('');
+                $("#productoSeleccionado").addClass('hidden');
+                $("#producto_id").val('');
+                cargarProductos(ambiente_id);
+            });
+
+            // Búsqueda de productos
+            $("#buscarProducto").on('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    const busqueda = $(this).val();
+                    mostrarProductos(busqueda);
+                }, 300);
+            });
+
+            // Selección de producto
+            $(document).on('change', '.producto-radio', function() {
+                const productoId = $(this).val();
+                const producto = productos.find(p => p.id == productoId);
+                if (producto) {
+                    $("#producto_id").val(productoId);
+                    $("#productoSeleccionadoInfo").text(`${producto.numero_placa} - ${producto.clase_nombre}`);
+                    $("#productoSeleccionado").removeClass('hidden');
+                        }
+                    });
+
+            // Cerrar resultados al hacer clic fuera
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#resultadosProductos').length && !$(e.target).is('#buscarProducto')) {
+                    $("#resultadosProductos").addClass('hidden');
                 }
             });
 
             // Enviar formulario
             $("#formReporteFalla").submit(function (event) {
                 event.preventDefault();
+                // Validar que los campos requeridos estén completos
+                const ambiente = $("#selectAmbiente").val();
+                const producto = $("#producto_id").val();
+                const rol = $("#rol").val();
+                const descripcion = $("[name='descripcion']").val();
+
+                if (!ambiente || !producto || !rol || !descripcion) {
+                    alert("Por favor complete todos los campos requeridos");
+                    return;
+                }
 
                 // Crear un objeto FormData desde el formulario
                 var formData = new FormData(this);
+                formData.append('rol', rol); // Asegurar que el rol se envíe correctamente
 
+                // Deshabilitar el botón de envío y mostrar indicador de carga
+                const submitButton = $("button[type='submit']");
+                submitButton.prop('disabled', true);
+                submitButton.html(`
+                    <div class="flex items-center justify-center">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Enviando...
+                    </div>
+                `);
+
+                // Enviar el formulario por AJAX con FormData
                 $.ajax({
                     url: "ReportarFallaAction",
                     type: "POST",
                     data: formData,
-                    dataType: "json",
-                    processData: false, // ⛔ No procesar los datos (porque es FormData)
-                    contentType: false, // ⛔ No establecer tipo de contenido (deja que el navegador lo haga)
-                    success: function (response) {
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
                         if (response.success) {
-                            $("#mensajeExito")
-                                .removeClass("hidden text-red-600")
-                                .addClass("text-green-600")
-                                .text("✅ Caso reportado con éxito.");
-                            $("#formReporteFalla")[0].reset();
+                            $("#mensaje-exito").text(response.message).show();
+                            setTimeout(() => {
+                                window.location.href = response.redirect;
+                            }, 1500);
                         } else {
-                            $("#mensajeExito")
-                                .removeClass("hidden text-green-600")
-                                .addClass("text-red-600")
-                                .text("❌ Error: " + response.message);
+                            alert(response.message || "Error al enviar el caso");
+                            submitButton.prop('disabled', false).text('Reportar Falla');
                         }
                     },
-                    error: function () {
-                        $("#mensajeExito")
-                            .removeClass("hidden text-green-600")
-                            .addClass("text-red-600")
-                            .text("❌ Error al conectar con el servidor.");
+                    error: function(xhr, status, error) {
+                        alert("Error al enviar el caso: " + (xhr.responseText ? xhr.responseText : error));
+                        submitButton.prop('disabled', false).text('Reportar Falla');
                     }
                 });
             });

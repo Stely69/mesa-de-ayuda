@@ -44,7 +44,7 @@
                     header('Location: ../admin/admin');
                     break;
                 case 2:
-                    header('Location: ../Instr/IncioInst');
+                    header('Location: ../Instr/InicioInst');
                     break;
                 case 3:
                    header('Location: ../Tics/Tics');

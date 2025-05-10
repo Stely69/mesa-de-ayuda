@@ -59,12 +59,26 @@
         }
 
         public function deleteUser($id) {
-            $query = "DELETE FROM usuarios WHERE id = :id";
-        
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(":id", $id);
-        
-            $stmt->execute();
+            try {
+                // First check if user has any associated cases
+                $checkQuery = "SELECT COUNT(*) FROM casos_generales WHERE instructor_id = :id";
+                $checkStmt = $this->conn->prepare($checkQuery);
+                $checkStmt->bindParam(":id", $id);
+                $checkStmt->execute();
+                $hasCases = $checkStmt->fetchColumn() > 0;
+
+                if ($hasCases) {
+                    throw new Exception("No se puede eliminar el usuario porque tiene casos asociados.");
+                }
+
+                // If no cases are associated, proceed with deletion
+                $query = "DELETE FROM usuarios WHERE id = :id";
+                $stmt = $this->conn->prepare($query);
+                $stmt->bindParam(":id", $id);
+                return $stmt->execute();
+            } catch (Exception $e) {
+                throw $e;
+            }
         }
 
         public function getUser($id) {
